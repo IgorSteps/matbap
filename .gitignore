@@ -3,4 +3,4 @@
 /obj
 
 ## Don't commit user settings
-/vs
+/.vs
