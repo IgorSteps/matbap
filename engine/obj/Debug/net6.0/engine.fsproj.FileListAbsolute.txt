@@ -1,0 +1,11 @@
+D:\Projects\matpab\engine\bin\Debug\net6.0\engine.deps.json
+D:\Projects\matpab\engine\bin\Debug\net6.0\engine.dll
+D:\Projects\matpab\engine\bin\Debug\net6.0\engine.pdb
+D:\Projects\matpab\engine\bin\Debug\net6.0\engine.xml
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.fsproj.AssemblyReference.cache
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.AssemblyInfoInputs.cache
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.AssemblyInfo.fs
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.fsproj.CoreCompileInputs.cache
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.dll
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.xml
+D:\Projects\matpab\engine\obj\Debug\net6.0\engine.pdb

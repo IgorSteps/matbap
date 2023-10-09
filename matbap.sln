@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "matbap", "matbap.csproj", "{15B61C31-57B7-4D68-885A-EA22B385BB17}"
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "engine", "engine\engine.fsproj", "{68E3126A-1AA5-47BF-9013-F0BBFD07B9F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{15B61C31-57B7-4D68-885A-EA22B385BB17}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15B61C31-57B7-4D68-885A-EA22B385BB17}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15B61C31-57B7-4D68-885A-EA22B385BB17}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15B61C31-57B7-4D68-885A-EA22B385BB17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{68E3126A-1AA5-47BF-9013-F0BBFD07B9F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68E3126A-1AA5-47BF-9013-F0BBFD07B9F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68E3126A-1AA5-47BF-9013-F0BBFD07B9F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68E3126A-1AA5-47BF-9013-F0BBFD07B9F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
