@@ -3,7 +3,8 @@
 /engine/obj
 /app/bin
 /app/obj
-/bin/obj
+/bin
+/obj
 
 ## Don't commit user settings
 /.vs
