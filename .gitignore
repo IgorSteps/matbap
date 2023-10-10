@@ -1,4 +1,8 @@
 ## Don't want exe and intermediate files to be pushed to git because they are quite heavy.
+/engine/bin
+/engine/obj
+/app/bin
+/app/obj
 /bin
 /obj
 
