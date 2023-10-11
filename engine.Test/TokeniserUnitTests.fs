@@ -1,6 +1,5 @@
-﻿namespace engine.Tests
+﻿namespace Engine.Tests
 
-open engine
 open NUnit.Framework
 
 [<TestFixture>]
@@ -8,12 +7,24 @@ type TokeniserTests () =
 
     [<Test>]
     member this._Test_Tokeniser_Pass() =
+        // --------
+        // Assemble
+        // --------
         let expected = [
-            engine.Tokeniser.CreateToken "Digit" '1';
-            engine.Tokeniser.CreateToken "Operator" '+';
-            engine.Tokeniser.CreateToken "Digit" '1'
+            Engine.Tokeniser.createToken Engine.Tokeniser.Digit '1';
+            Engine.Tokeniser.createToken Engine.Tokeniser.Operator '+';
+            Engine.Tokeniser.createToken Engine.Tokeniser.Digit '1'
         ]
-        let actual = engine.Tokeniser.Execute "1+1"
+        let args = "1+1"
 
-        Assert.AreEqual(expected |> List.toArray, actual |> List.toArray)
-    
+        // ---
+        // Act
+        // ---
+        let actual = Engine.Tokeniser.tokenise args
+
+        // ------
+        // Assert
+        // ------
+        match actual with
+        | Ok tokenList -> Assert.AreEqual(expected |> List.toArray, tokenList |> List.toArray)
+        | Error errMsg -> failwithf "failed to tokenise: %s" errMsg
