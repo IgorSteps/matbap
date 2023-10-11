@@ -46,6 +46,6 @@ module Tokeniser =
         [for char in noSpaceStr do yield categorizeChar char]
 
     // Test(for now).
-    let results = tokenise "11 + sin(20.4)"
-    for item in results do
-        printfn "Type: %s, Value: %c" item.Type item.Value
+    //let results = tokenise "11 + sin(20.4)"
+    //for item in results do
+    //    printfn "Type: %s, Value: %c" item.Type item.Value

@@ -3,6 +3,8 @@
 /engine/obj
 /app/bin
 /app/obj
+/engine.Test/obj
+/engine.Test/bin
 /bin
 /obj
 
