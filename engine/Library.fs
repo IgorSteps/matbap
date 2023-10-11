@@ -1,46 +1,56 @@
-﻿namespace engine
-
-
-
+﻿namespace Engine
 module Tokeniser =
+    type TokenType =
+        | Digit
+        | Letter
+        | Operator
+        | LeftBracket
+        | RightBracket
+        | Comma
+        | Unknown
+
     type Token = {
-        Type: string;
+        Type: TokenType
         Value: char
     }
-    let CreateToken (tokenType: string) (value: char) : Token = {
+
+    let createToken(tokenType: TokenType) (value: char) : Token = {
         Type = tokenType
         Value = value
      }
 
     // Helpers.
-    let private isDigit char = 
-        System.Char.IsDigit char
-    let private isLetter char = 
-        System.Char.IsLetter char
-    let private isOperator c =
+    let private isDigit(c: char) = 
+        System.Char.IsDigit c
+    let private isLetter(c: char) = 
+        System.Char.IsLetter c
+    let private isOperator(c: char) =
         match c with
         | '+' | '-' | '*' | '/' -> true
         | _ -> false
-    let private isLeftBracket char =  char = '('
-    let private isRightBracket char = char = ')'
-    let private isComma char = char = ','
+    let private isLeftBracket(c: char) =  c = '('
+    let private isRightBracket(c: char) = c = ')'
+    let private isComma (c: char) = c = ','
     let private removeSpaces (str: string) =
            str.Replace(" ", "")
 
     // Decide type.
-    let private categorizeChar char =
-        match char with
-        | _ when isDigit char             -> CreateToken "Digit" char
-        | _ when isLetter char            -> CreateToken "Letter" char
-        | _ when isOperator char          -> CreateToken "Operator" char
-        | _ when isLeftBracket char       -> CreateToken "LeftBracket" char
-        | _ when isRightBracket char      -> CreateToken "RightBracket" char
-        | _ when isComma char             -> CreateToken "Comma" char
-        | _                               -> CreateToken "Unknown" char
+    let private categorizeChar c =
+        match c with
+        | _ when isDigit c             -> createToken Digit c
+        | _ when isLetter c            -> createToken Letter c
+        | _ when isOperator c          -> createToken Operator c
+        | _ when isLeftBracket c       -> createToken LeftBracket c
+        | _ when isRightBracket c      -> createToken RightBracket c
+        | _ when isComma c             -> createToken Comma c
+        | _                            -> createToken Unknown c
 
     // Tokenise.
-    let Execute str =
+    let tokenise (str: string) : Result<Token list, string> =
         let noSpaceStr = removeSpaces str
+        let tokens = [for c in noSpaceStr do yield categorizeChar c]
 
-        // Run through the expression and split into tokens, returns list.
-        [for char in noSpaceStr do yield categorizeChar char]
+        // Return error if any Unknown tokens are found.
+        match List.tryFind(fun t -> t.Type = Unknown) tokens with
+        | Some token    -> Error(sprintf "Unknown token: %c" token.Value)
+        | None          -> Ok tokens
