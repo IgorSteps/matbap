@@ -6,7 +6,7 @@ namespace CSharpApp
     {
         static void Main(string[] args)
         {
-            engine.Say.hello("world");
+            //engine.Say.hello("world");
         }
     }
 }
