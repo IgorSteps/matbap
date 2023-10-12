@@ -59,19 +59,19 @@ type TokeniserTests () =
     // Check tokeniser returns error if Unknown token is passed.
     member this._Test_Tokeniser_Error() =
         // --------
-               // Assemble
-               // --------
-               let args = "1&"
-               let expectedErrorMsg = "Unknown token: &"
+        // Assemble
+        // --------
+        let args = "1&"
+        let expectedErrorMsg = "Unknown token: &"
          
-               // ---
-               // Act
-               // ---
-               let actual = Engine.Tokeniser.tokenise args
+        // ---
+        // Act
+        // ---
+        let actual = Engine.Tokeniser.tokenise args
 
-               // ------
-               // Assert
-               // ------
-               match actual with
-               | Ok tokenList -> failwithf "Unexpected success"
-               | Error errMsg -> Assert.AreEqual(expectedErrorMsg, errMsg)
+        // ------
+        // Assert
+        // ------
+        match actual with
+        | Ok _ -> failwithf "Unexpected success"
+        | Error errMsg -> Assert.AreEqual(expectedErrorMsg, errMsg)
