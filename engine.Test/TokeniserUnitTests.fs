@@ -31,10 +31,11 @@ type TokeniserTests () =
                  Engine.Tokeniser.createToken Engine.Tokeniser.Letter 'b'
                  Engine.Tokeniser.createToken Engine.Tokeniser.RightBracket ')';
             ]
-       }
+       };
     ]
 
     [<TestCaseSource("testCases")>]
+    // Check tokeniser tokenises correectly.
     member this._Test_Tokeniser_Pass(testCase: TokeniserTestCase) =
         // --------
         // Assemble
@@ -53,3 +54,24 @@ type TokeniserTests () =
         match actual with
         | Ok tokenList -> Assert.AreEqual(expected |> List.toArray, tokenList |> List.toArray)
         | Error errMsg -> failwithf "Unexpected failure: failed to tokenise: %s" errMsg
+
+    [<Test>]
+    // Check tokeniser returns error if Unknown token is passed.
+    member this._Test_Tokeniser_Error() =
+        // --------
+               // Assemble
+               // --------
+               let args = "1&"
+               let expectedErrorMsg = "Unknown token: &"
+         
+               // ---
+               // Act
+               // ---
+               let actual = Engine.Tokeniser.tokenise args
+
+               // ------
+               // Assert
+               // ------
+               match actual with
+               | Ok tokenList -> failwithf "Unexpected success"
+               | Error errMsg -> Assert.AreEqual(expectedErrorMsg, errMsg)
