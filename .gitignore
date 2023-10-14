@@ -10,3 +10,4 @@
 
 ## Don't commit user settings
 /.vs
+.fake
