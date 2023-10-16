@@ -54,3 +54,7 @@
             match List.tryFind(fun t -> t.Type = Unknown) tokens with
             | Some token    -> Error(sprintf "Unknown token: %c" token.Value)
             | None          -> Ok tokens
+    
+    module Parser =
+        let parse ( tokens : Tokeniser.Token list )  =
+            0
