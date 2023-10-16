@@ -33,7 +33,7 @@ jobs:
       run: dotnet fsharplint lint ./engine/engine.fsproj
 
     - name: Build
-      run: dotnet build /p:EnableWindowsTargeting=true --no-restore
+      run: dotnet build --no-restore
 
     - name: Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
