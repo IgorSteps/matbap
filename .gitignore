@@ -10,3 +10,5 @@
 
 ## Don't commit user settings
 /.vs
+/.vscode
+.fake
