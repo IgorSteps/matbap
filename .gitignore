@@ -9,6 +9,7 @@
 /obj
 
 ## Don't commit user settings
+.DS_Store
 /.vs
 /.vscode
 .fake
