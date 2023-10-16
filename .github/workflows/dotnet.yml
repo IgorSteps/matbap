@@ -26,11 +26,11 @@ jobs:
     - name: Install F# linter
       run: dotnet tool install -g dotnet-fsharplint
 
-    - name: Run Linter
-      run: dotnet fsharplint lint ./engine/engine.fsproj
-
     - name: Restore dependencies
       run: dotnet restore
+
+    - name: Run Linter
+      run: dotnet fsharplint lint ./engine/engine.fsproj
 
     - name: Build
       run: dotnet build --no-restore
