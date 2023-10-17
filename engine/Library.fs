@@ -1,56 +1,75 @@
 ﻿namespace Engine
     module Tokeniser =
+
         type TokenType =
-            | Digit
-            | Letter
-            | Operator
+            | Variable
+            | Plus
+            | Minus
+            | Multiply
+            | Divide
             | LeftBracket
             | RightBracket
-            | Comma
-            | Unknown
+            | Comma //currently not needed but may be used if we choose to make the interpreter turing complete.
+            | Number
 
         type Token = {
             Type: TokenType
-            Value: char
+            Value: string option //not all tokens have a value so it's optional
         }
 
-        let createToken(tokenType: TokenType) (value: char) : Token = {
+        let createToken(tokenType: TokenType, value: string option) : Token = {
             Type = tokenType
             Value = value
-         }
+        }
 
         // Helpers.
-        let private isDigit(c: char) = 
+        let strtochar (str: string) : char list = [for c in str do yield c]
+        let isDigit(c: char) = 
             System.Char.IsDigit c
-        let private isLetter(c: char) = 
+        let isLetter(c: char) = 
             System.Char.IsLetter c
-        let private isOperator(c: char) =
-            match c with
-            | '+' | '-' | '*' | '/' -> true
-            | _ -> false
-        let private isLeftBracket(c: char) =  c = '('
-        let private isRightBracket(c: char) = c = ')'
-        let private isComma (c: char) = c = ','
-        let private removeSpaces (str: string) =
-               str.Replace(" ", "")
+        let isComma (c: char) = c = ','
 
-        // Decide type.
-        let private categorizeChar c =
-            match c with
-            | _ when isDigit c             -> createToken Digit c
-            | _ when isLetter c            -> createToken Letter c
-            | _ when isOperator c          -> createToken Operator c
-            | _ when isLeftBracket c       -> createToken LeftBracket c
-            | _ when isRightBracket c      -> createToken RightBracket c
-            | _ when isComma c             -> createToken Comma c
-            | _                            -> createToken Unknown c
+        let rec isFloat(chars: char list) = 
+            match chars with 
+            | c::tail when isDigit c   -> isFloat tail
+            | c::tail when isLetter c  -> false
+            | '.'::tail                -> false
+            | _ -> true 
 
-        // Tokenise.
-        let tokenise (str: string) : Result<Token list, string> =
-            let noSpaceStr = removeSpaces str
-            let tokens = [for c in noSpaceStr do yield categorizeChar c]
+        let rec formFractionalPart(chars: char list, accStr : string) =
+            match chars with
+            | c::tail when isDigit c -> formFractionalPart(tail, accStr + string c)
+            | _                      -> (chars, accStr)
 
-            // Return error if any Unknown tokens are found.
-            match List.tryFind(fun t -> t.Type = Unknown) tokens with
-            | Some token    -> Error(sprintf "Unknown token: %c" token.Value)
-            | None          -> Ok tokens
+        let rec formInt(chars: char list, accStr: string) = 
+            match chars with
+            | c :: tail when isDigit c    -> formInt(tail, accStr + string c)
+            | '.'::tail when isFloat tail -> formFractionalPart(tail, accStr + string('.'))
+            | _                           -> (chars, accStr)
+
+        let rec formString(chars: char list, accStr: string) =
+            match chars with
+            | c::tail when isLetter c -> formString(tail, accStr + string c)
+            | c::tail when isDigit c  -> formString(tail, accStr + string c)
+            | _                       -> (chars, accStr)
+
+        let tokenize (str : string) : Token list =
+            let rec matchTokens chars = 
+                match chars with 
+                | []          -> []
+                | '+' :: tail -> createToken(Plus, None)        :: matchTokens tail
+                | '-' :: tail -> createToken(Minus, None)       :: matchTokens tail
+                | '*' :: tail -> createToken(Multiply, None)    :: matchTokens tail
+                | '/' :: tail -> createToken(Divide, None)      :: matchTokens tail
+                | '(' :: tail -> createToken(LeftBracket, None) :: matchTokens tail
+                | ')' :: tail -> createToken(RightBracket, None):: matchTokens tail
+                | ' ' :: tail ->                                   matchTokens tail
+                | head :: tail when isDigit head  -> let (chars, numString) = formInt(tail, string head)
+                                                     createToken (Number, Some numString) 
+                                                     :: matchTokens chars
+                | head :: tail when isLetter head -> let (chars, var) = formString(tail, string head)
+                                                     createToken (Variable, Some var) 
+                                                     :: matchTokens chars
+                | _ -> failwith "Invalid Token"
+            matchTokens (strtochar str)
