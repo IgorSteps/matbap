@@ -11,28 +11,15 @@ namespace app
 {
     public class InterpretationViewModel : ObservableObject
     {
-        /// <summary>
-        /// Interpretation model reference to math engine.
-        /// </summary>
-        private readonly InterpretationModel _model;
         
-        /// <summary>
-        /// Arithemtic expression passed into GUI.
-        /// </summary>
+        private readonly IInterpretModel _model;
         private string _expression;
-       
-        /// <summary>
-        /// Response to the input expression:
-        ///  - Can be an answer to an equation;
-        ///  - Can be an error;
-        /// </summary>
         private string _response;
+        private RelayCommand _interpretCmd;
 
-        private readonly RelayCommand _interpretCmd;
-
-        public InterpretationViewModel()
+        public InterpretationViewModel(IInterpretModel m)
         {
-            _model = new InterpretationModel();
+            _model = m;
             _interpretCmd = new RelayCommand(Interpret);
         }
 
