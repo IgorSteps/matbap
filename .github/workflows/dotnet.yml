@@ -15,15 +15,17 @@ jobs:
     permissions:
         pull-requests: write
         contents: read
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
+  
     - name: Setup .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
-    - name: Install F# linter
+
+    - name: Install tools
       run: dotnet tool install -g dotnet-fsharplint
 
     - name: Restore dependencies
@@ -35,7 +37,7 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Test
+    - name: Unit Test
       run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage" --logger trx --results-directory coverage
 
     - name: Code Coverage Summary Report
