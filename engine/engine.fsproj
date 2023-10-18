@@ -4,15 +4,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Logger.fs" />
-    <Compile Include="Library.fs" />
+    <Compile Include="Lexer.fs" />
   </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Serilog" Version="3.0.1">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
-    <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0">
-      <GeneratePathProperty></GeneratePathProperty>
-    </PackageReference>
-  </ItemGroup>
+
 </Project>
