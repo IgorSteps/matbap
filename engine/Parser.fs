@@ -1,11 +1,14 @@
 ﻿namespace Engine
     module Parser =
-        // Grammar defined as follows:
-        // <E>    ::= <T> <Eopt>
-        // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
-        // <T>    ::= <NR> <Topt>
-        // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
-        // <NR>   ::= Num <value>
+        // Current grammar
+        // <expr> ::= <term>
+        // | <expr> + <term>
+        // | <expr> - <term>
+        // <term> ::= <factor>
+        // | <term> * <factor>
+        // | <term> / <factor>
+        // <factor> ::= <float> | (<expr>)
+        
         type Exp =
             | Term of Term
             | Add of Exp * Term
