@@ -65,7 +65,7 @@ type TokeniserTests () =
         // ------
         match actual with
         | Ok tokenList -> Assert.AreEqual(expected |> List.toArray, tokenList |> List.toArray)
-        | Error errMsg -> failwith "%O" Engine.Tokeniser.InvalidToken
+        | Error errMsg -> failwith "%O"Engine.Tokeniser.InvalidToken
 
     [<Test>]
     // Check tokeniser returns error if Unknown token is passed.
