@@ -5,7 +5,7 @@
             | InvalidFloat
             | InvalidToken
 
-        type TokenType =
+        type Token =
             | Variable of string
             | Int of int
             | Float of float
@@ -21,6 +21,8 @@
             | Cos
             | Tan
 
+        //map stores reserved keywords, used to replace string variables
+        //with the corresponding enum type when encountered in the tokenizer function
         let keywords = Map.empty.Add("sin", Sin).Add("cos", Cos).Add("cos", Cos)
 
         // Helpers.
@@ -30,7 +32,9 @@
         let noStartingSpace(c: char) = if c <> ' ' then true else false
         let isKeyword (str: string)  = if keywords.ContainsKey str then true else false
 
-        //returns an error if the float is formatted wrong
+        //takes fractional part of a float and checks that it doesn't lead with a space or character
+        //then checks that no aditional decimal points are among the digits,
+        //returns no error if it passed both checks, else it returns an InvalidFloat LexicalError
         let isFloat(chars: char list) : Result<unit, LexicalError> =
 
             let firstCharValid = if noStartingSpace chars.Head && not (isLetter chars.Head) then
@@ -48,20 +52,25 @@
             | Ok ()     -> postFirstChar chars
             | Error err -> Error err
 
-        //returns a Result as it may error if the number is an incorrectly formatted string
+        //formFractionalPart and formInt take in the char list and a variable 'accStr' 
+        //(accumulated String) used to store resulting number in string form, 
+        //both functions return Result<(chars, accStr, tokenType), LexicalError> where 
+        //chars = remaining char list,
+        //accStr = number in string form
+        //tokenType = string denoting the type of accStr (int or float)
         let rec formFractionalPart(chars: char list, accStr: string) =
             match chars with
             | c::tail when isDigit c -> formFractionalPart(tail, accStr + string c)
             | _                      -> Ok (chars, accStr, "float")
         
-        //returns a Result as it may error if the number is an incorrectly formatted string
+        
         let rec formInt(chars: char list, accStr: string) = 
             match chars with
-            | c :: tail when isDigit c    -> formInt(tail, accStr + string c)
-            | '.'::tail                   -> match isFloat tail with
-                                             | Ok ()     -> formFractionalPart(tail, accStr + string '.')
-                                             | Error err -> Error err
-            | _                           -> Ok (chars, accStr, "int")
+            | c :: tail when isDigit c -> formInt(tail, accStr + string c)
+            | '.'::tail                -> match isFloat tail with
+                                          | Ok ()     -> formFractionalPart(tail, accStr + string '.')
+                                          | Error err -> Error err
+            | _                        -> Ok (chars, accStr, "int")
 
         let rec formString(chars: char list, accStr: string) =
             match chars with
@@ -70,7 +79,7 @@
             | _                       -> (chars, accStr)
         
         //tail recursive because it has to be wrapped in a result
-        let tokenize (str : string): Result<TokenType list, LexicalError> =
+        let tokenise (str : string): Result<Token list, LexicalError> =
             let rec matchTokens chars acc =
                 match chars with 
                 | []          -> Ok(List.rev acc)
@@ -83,6 +92,7 @@
                 | '%' :: tail -> matchTokens tail (Modulus::acc)
                 | '=' :: tail -> matchTokens tail (Equals::acc)
                 | ' ' :: tail -> matchTokens tail acc
+
                 | head :: tail when isDigit head ->
                     match formInt(tail, string head) with
                     | Ok (chars, numString, tokenType) ->
@@ -91,6 +101,7 @@
                         else
                             matchTokens chars (Float (float numString)::acc)
                     | Error err -> Error err
+
                 | head :: tail when isLetter head ->
                     let (chars, var) = formString(tail, string head)
                     if isKeyword var then 
@@ -98,4 +109,5 @@
                     else 
                         matchTokens chars (Variable var::acc)
                 | _ -> Error InvalidToken
+
             matchTokens(strtochar str) []
