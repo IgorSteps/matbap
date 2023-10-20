@@ -2,19 +2,12 @@
     module Parser =
         // Grammar for rewrite
         // <E>    ::= <T> <Eopt>
-        // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+        // <Eopt> ::= <T> + <Eopt> | <T> - <Eopt> | <empty>
         // <T>    ::= <NR> <Topt>
-        // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
+        // <Topt> ::= <NR> * <Topt> | <NR> / <Topt> | <empty>
         // <NR>   ::= Num <value> | (E)
-        type Ast =
-            | Ident of string
-            | Val of System.Double
-            | Multi of Ast * Ast
-            | Div of Ast * Ast
-            | Plus of Ast * Ast
-            | Minus of Ast * Ast
         let parseError = System.Exception("Parse error")
-        let parse tList =
+        let private parse tList =
             // Doesn't return anything but does parse
             let rec E tList = (T >> Eopt) tList
             and Eopt tList =
@@ -32,37 +25,40 @@
                 match tList with
                 | Tokeniser.Int value :: tail -> tail
                 | Tokeniser.Float value :: tail -> tail
-                // Parser raises an error. Will make this method private and try/catch it
                 | Tokeniser.LeftBracket :: tail -> match E tail with
                                                    | Tokeniser.RightBracket :: tail -> tail
                                                    | _ -> raise parseError
                 | _ -> raise parseError
             E tList
         
-        let parseEval tList =
+        let private parseEval tList =
             let rec E tList = (T >> Eopt) tList
-            and Eopt (tList, inval) =
+            and Eopt (tList, inputValue) =
                 match tList with
-                    | Tokeniser.Add :: tail ->      let (ts1, Tvalue) = T tail
-                                                    Eopt (ts1, inval+Tvalue)
-                    | Tokeniser.Minus :: tail ->    let (ts1, Tvalue) = T tail
-                                                    Eopt (ts1, inval+Tvalue)
-                    | _ -> (tList, inval)
+                    | Tokeniser.Add :: tail ->      let (remainingTokens, Tvalue) = T tail
+                                                    Eopt (remainingTokens, inputValue+Tvalue)
+                    | Tokeniser.Minus :: tail ->    let (remainingTokens, Tvalue) = T tail
+                                                    Eopt (remainingTokens, inputValue+Tvalue)
+                    | _ -> (tList, inputValue)
             and T tList = ( NR >> Topt ) tList
-            and Topt (tList, inval) =
+            and Topt (tList, inputValue) =
                 match tList with
-                | Tokeniser.Multiply :: tail -> let (ts1, NRvalue) = NR tail
-                                                Topt (ts1, inval*NRvalue)
-                | Tokeniser.Divide :: tail ->   let (ts1, NRvalue) = NR tail
-                                                Topt (ts1, inval/NRvalue)
-                | _ -> (tList, inval)
+                | Tokeniser.Multiply :: tail -> let (remainingTokens, NRvalue) = NR tail
+                                                Topt (remainingTokens, inputValue*NRvalue)
+                | Tokeniser.Divide :: tail ->   let (remainingTokens, NRvalue) = NR tail
+                                                Topt (remainingTokens, inputValue/NRvalue)
+                | _ -> (tList, inputValue)
             and NR tList =
                 match tList with
                 | Tokeniser.Float value :: tail ->  (tail, value)
                 | Tokeniser.Int value :: tail ->    (tail, value)
-                | Tokeniser.LeftBracket :: tail ->  let (ts1, Evalue) = E tail
-                                                    match ts1 with
+                | Tokeniser.LeftBracket :: tail ->  let (remainingTokens, Evalue) = E tail
+                                                    match remainingTokens with
                                                     | Tokeniser.RightBracket :: tail -> (tail, Evalue)
                                                     | _ -> raise parseError
                 | _ -> raise parseError
-            E tList
+            
+            try
+                Ok (snd (E tList) : float)
+            with
+                | parseError -> Error "Error parsing expression."
