@@ -2,16 +2,17 @@
     module Tokeniser =
 
         type LexicalError =
-            | InvalidFloat
-            | InvalidToken
+            | InvalidFloat of string
+            | InvalidToken of string
 
         type NumberToken =
             | IntToken of int
             | FloatToken of float
 
         type Token =
-            | Variable of string
-            | NumberToken of NumberToken
+            | Identifier of string
+            | Int of int
+            | Float of float
             | Add
             | Minus
             | Multiply
@@ -32,52 +33,34 @@
         // Helpers.
         let private strTochar(str: string) : char list = [for c in str do yield c]
         let private charToInt(char: char) = int char - int '0'
-
+        let private charToFloat(char: char) = char |> charToInt |> float
         let private isDigit(c: char)         = System.Char.IsDigit c
         let private isLetter(c: char)        = System.Char.IsLetter c
+        let private isAlphaNumeric(c: char)  = System.Char.IsLetterOrDigit c
         let private noStartingSpace(c: char) = c <> ' '
         let private isKeyword(str: string)   = keywords.ContainsKey str
 
-        // Takes fractional part of a float and checks that it doesn't lead with a space or character
-        // then checks that no aditional decimal points are among the digits,
-        // returns no error if it passed both checks, else it returns an InvalidFloat LexicalError
-        let private isFloat(chars: char list) : Result<unit, LexicalError> =
-
-            let firstCharValid = if noStartingSpace chars.Head && not (isLetter chars.Head) then
-                                    Ok ()
-                                 else
-                                    Error InvalidFloat
-
-            let rec postFirstChar chars =
-                match chars with
-                    | c::tail when isDigit c -> postFirstChar tail
-                    | '.'::_                 -> Error InvalidFloat
-                    | _                      -> Ok ()
-
-            match firstCharValid with
-            | Ok ()     -> postFirstChar chars
-            | Error err -> Error err
-
-        let rec private formFractionalPart(chars: char list, acc: float) =
+        let rec private formFloat(chars: char list, acc: float, multi: float) =
             match chars with
-            | c::tail when isDigit c -> formFractionalPart(tail, acc + float ((charToInt c)/10))
-            | _                      -> Ok (chars, FloatToken acc)
-        
+            | c::tail when isDigit c -> formFloat(tail, acc + (charToFloat c * multi), multi*0.1)
+            | '.'::tail              -> Error (InvalidFloat ("Invalid Float: " +
+                                              "Can't have 2 decimal places in a float"))
+            | _                      -> Ok(chars, FloatToken acc)
         
         let rec private formInt(chars: char list, acc: int) =
             match chars with
-            | c :: tail when isDigit c -> formInt(tail, (acc*10) + charToInt c)
-            | '.'::tail                -> match isFloat tail with
-                                          | Ok ()     -> formFractionalPart(tail, float acc)
-                                            
-                                          | Error err -> Error err
-            | _                        -> Ok (chars, IntToken acc)
+            | c :: tail when isDigit c  -> formInt(tail, (acc*10) + charToInt c)
+            | '.'::c::tail              -> match isDigit c with
+                                           | true  -> formFloat(c::tail, float acc, 0.1)
+                                           | false -> Error (InvalidFloat ("Invalid Float: "+
+                                                             "decimal fraction "+ 
+                                                             "cannot lead with non digit"))
+            | _                         -> Ok(chars, IntToken acc)
 
-        let rec private formVariable(chars: char list, accStr: string) =
+        let rec private formIdentifier(chars: char list, accStr: string) =
             match chars with
-            | c::tail when isLetter c -> formVariable(tail, accStr + string c)
-            | c::tail when isDigit c  -> formVariable(tail, accStr + string c)
-            | _                       -> (chars, accStr)
+            | c::tail when isAlphaNumeric c -> formIdentifier(tail, accStr + string c)
+            | _                             -> (chars, accStr)
         
         // Tail recursive because it has to be wrapped in a result
         let tokenise(str : string): Result<Token list, LexicalError> =
@@ -96,16 +79,17 @@
                 | ' ' :: tail -> matchTokens tail acc
 
                 | head :: tail when isDigit head ->
-                    match formInt(tail, int head) with
-                    | Ok (chars, num) -> matchTokens chars ( NumberToken num::acc)
-                    | Error err -> Error err
+                    match formInt(tail, charToInt head) with
+                    | Ok(chars, num) -> match num with
+                                        | IntToken x   -> matchTokens chars (Int x::acc)
+                                        | FloatToken x -> matchTokens chars (Float x::acc)
+                    | Error err      -> Error err
 
                 | head :: tail when isLetter head ->
-                    let (chars, var) = formVariable(tail, string head)
-                    if isKeyword var then 
-                        matchTokens chars (keywords[var]::acc)
-                    else 
-                        matchTokens chars (Variable var::acc)
-                | _ -> Error InvalidToken
+                    let (chars, identifier) = formIdentifier(tail, string head)
+                    match isKeyword identifier with
+                    | true  -> matchTokens chars (keywords[identifier]::acc)
+                    | false -> matchTokens chars (Identifier identifier::acc)
+                | head :: _ -> Error (InvalidToken $"Invalid Token: {head}")
 
             matchTokens(strTochar str) []
