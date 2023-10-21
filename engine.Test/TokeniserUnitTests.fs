@@ -128,12 +128,12 @@ type TokeniserTests () =
     static member lexicalErrorTestCases: TokeniserLexicalErrorCase list = [
         {
             Args = "1. + 43";
-            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: decimal fraction "+
+            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: the mantissa "+
                                                        "cannot lead with non digit")
         };
         {
             Args = "1.a / 34";
-            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: decimal fraction "+
+            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: the mantissa "+
                                                        "cannot lead with non digit")
         };
         {
