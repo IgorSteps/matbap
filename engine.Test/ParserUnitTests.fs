@@ -93,6 +93,36 @@ type ParserTests () =
             Args = [Tokeniser.LeftBracket; Tokeniser.Int(0); Tokeniser.RightBracket]
             Expected = Ok 0
        }
+       {
+            // Negative addition
+            Args = [Tokeniser.Int(3); Tokeniser.Add; Tokeniser.Int(-2)]
+            Expected = Ok 1
+       }
+       {
+            // Negative subtraction
+            Args = [Tokeniser.Int(4); Tokeniser.Minus; Tokeniser.Int(-2)]
+            Expected = Ok 6
+       }
+       {
+            // Negative multiplication
+            Args = [Tokeniser.Int(-3); Tokeniser.Multiply; Tokeniser.Int(-9)]
+            Expected = Ok 27
+       }
+       {
+            // As above
+            Args = [Tokeniser.Int(6); Tokeniser.Multiply; Tokeniser.Float(-10.5)]
+            Expected = Ok 63
+       }
+       {
+            // Negative division
+            Args = [Tokeniser.Int(8); Tokeniser.Divide; Tokeniser.Int(-2)]
+            Expected = Ok -4
+       }
+       {
+            // As above
+            Args = [Tokeniser.Int(-320); Tokeniser.Divide; Tokeniser.Int(-64)]
+            Expected = Ok 5
+       }
     ]
     static member parserErrorCases: ParserTestCase list = [
        {
