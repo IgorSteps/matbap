@@ -1,40 +1,14 @@
 ﻿namespace Engine
     module Parser =
-        // Grammar for rewrite
+        // Grammar:
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
         // <T>    ::= <NR> <Topt>
         // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
-        // <NR>   ::= Num <value> | (E)
+        // <NR>   ::= <int> | <float> | (E)
         let parseError = System.Exception("Parse error")
-        // Doesn't return anything but does parse. Keeping code in case it's used to generate an AST in future,
-        // and is a useful skeleton
-        (*
-        let private parse tList =
-            let rec E tList = (T >> Eopt) tList
-            and Eopt tList =
-                match tList with
-                | Tokeniser.Add :: tail -> (T >> Eopt) tail
-                | Tokeniser.Minus :: tail -> (T >> Eopt) tail
-                | _ -> tList
-            and T tList = (NR >> Topt) tList
-            and Topt tList =
-                match tList with
-                | Tokeniser.Multiply :: tail -> (NR >> Topt) tail
-                | Tokeniser.Divide :: tail -> (NR >> Topt) tail
-                | _ -> tList
-            and NR tList =
-                match tList with
-                | Tokeniser.Int value :: tail -> tail
-                | Tokeniser.Float value :: tail -> tail
-                | Tokeniser.LeftBracket :: tail -> match E tail with
-                                                   | Tokeniser.RightBracket :: tail -> tail
-                                                   | _ -> raise parseError
-                | _ -> raise parseError
-            E tList
-        *)
         
-        let parseEval tList =
+        let parseEval (tList : Tokeniser.Token list) : Result<float,string> =
             // Recursive functions
             // For first call, assumes it starts with a T as part of an Eopt
             let rec grammarE tList = (grammarT >> grammarEopt) tList
@@ -54,13 +28,15 @@
                 | Tokeniser.Multiply :: tail -> let remainingTokens, valueNR = grammarNr tail
                                                 grammarTopt (remainingTokens, inputValue*valueNR)
                 | Tokeniser.Divide :: tail ->   let remainingTokens, valueNR = grammarNr tail
+                                                // Disallow division by 0. Must be a float to match valueNR
+                                                if valueNR = float 0 then raise parseError
                                                 grammarTopt (remainingTokens, inputValue/valueNR)
                 | _ -> (tList, inputValue)
             and grammarNr tList =
                 match tList with
                 // Floats and ints are both treated as floats for the sake of evaluation
                 | Tokeniser.Float value :: tail ->  (tail, value)
-                | Tokeniser.Int value :: tail ->    (tail, value)
+                | Tokeniser.Int value :: tail ->    (tail, float value)
                 // Follows grammar for brackets
                 | Tokeniser.LeftBracket :: tail ->  let remainingTokens, valueE = grammarE tail
                                                     match remainingTokens with
