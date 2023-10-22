@@ -6,7 +6,7 @@
         // <T>    ::= <NR> <Topt>
         // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
         // <NR>   ::= <int> | <float> | (E)
-        exception ParseError of string
+        exception ParseErrorException of string
         
         let parseEval (tList : Tokeniser.Token list) : Result<float,string> =
             // Recursive functions
@@ -30,7 +30,7 @@
                 | Tokeniser.Divide :: tail ->   let remainingTokens, valueNR = grammarNr tail
                                                 // Disallow division by 0. Must be a float to match valueNR
                                                 if valueNR = float 0 then
-                                                    raise (ParseError "Error while parsing: division by 0")
+                                                    raise (ParseErrorException "Error while parsing: division by 0")
                                                 grammarTopt (remainingTokens, inputValue/valueNR)
                 | _ -> (tList, inputValue)
             and grammarNr tList =
@@ -42,9 +42,9 @@
                 | Tokeniser.LeftBracket :: tail ->  let remainingTokens, valueE = grammarE tail
                                                     match remainingTokens with
                                                     | Tokeniser.RightBracket :: tail -> (tail, valueE)
-                                                    | _ -> raise (ParseError "Error while parsing: Unexpected token
+                                                    | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
                                                                   or end of expression")
-                | _ -> raise (ParseError "Error while parsing: Unexpected token or end of expression")
+                | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
             
             // Parsing function raises an exception, so catches it and returns result appropriately
             // TODO: return more detailed errors
@@ -55,6 +55,6 @@
                 if (fst result).IsEmpty then
                     Ok (snd result : float)
                 else
-                    raise (ParseError "Error while parsing: Could not parse all of expression")
+                    raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with
-                | ParseError value -> Error value
+                | ParseErrorException value -> Error value
