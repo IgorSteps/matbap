@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Compile Include="TokeniserUnitTests.fs" />
+    <Compile Include="ParserUnitTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

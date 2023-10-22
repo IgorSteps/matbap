@@ -1,4 +1,4 @@
-﻿namespace Engine
+namespace Engine
     module Logger =
 
         open Serilog
