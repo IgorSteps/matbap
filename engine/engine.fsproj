@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Logger.fs" />
-    <Compile Include="Library.fs" />
+    <Compile Include="Lexer.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.0.1">
