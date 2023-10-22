@@ -111,7 +111,7 @@ type ParserTests () =
        {
             // As above
             Args = [Tokeniser.Int(6); Tokeniser.Multiply; Tokeniser.Float(-10.5)]
-            Expected = Ok 63
+            Expected = Ok -63
        }
        {
             // Negative division
