@@ -2,6 +2,7 @@ namespace Engine.Tests
 
 open Engine
 open NUnit.Framework
+open System
 
 type ParserTestCase = {
     Args: Tokeniser.Token list;
@@ -109,6 +110,7 @@ type ParserTests () =
   
         // Act
         let actual = Parser.parseEval args
+        Console.WriteLine(actual)
 
         // Assert
         Assert.AreEqual(actual, expected)
