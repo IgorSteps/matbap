@@ -5,8 +5,13 @@
 /app/obj
 /engine.Test/obj
 /engine.Test/bin
+/app.Test/obj
+/app.Test/bin
 /bin
 /obj
+.DS_Store
 
-## Don't commit user settings
+## Don't commit user settings.
 /.vs
+/.vscode
+.fake
