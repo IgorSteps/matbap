@@ -10,7 +10,7 @@ type ParserTestCase = {
 
 [<TestFixture>]
 type ParserTests () =
-    static member testCases: ParserTestCase list = [
+    static member parserTestCases: ParserTestCase list = [
        {
             Args = [Tokeniser.Int(2); Tokeniser.Add; Tokeniser.Int(10);]
             Expected = Ok 12
@@ -101,7 +101,7 @@ type ParserTests () =
 
     [<TestCaseSource("parserTestCases")>]
     // Check parser test cases
-    member this._Test_Tokeniser_Pass(testCase: ParserTestCase) =
+    member this._Test_Parser_Pass(testCase: ParserTestCase) =
         // Assemble
         let args = testCase.Args
         let expected = testCase.Expected
