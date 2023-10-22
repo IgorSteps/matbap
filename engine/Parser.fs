@@ -40,18 +40,18 @@
                 match tList with
                 // Calls the function matching grammar on the tail after finding an appropriate token.
                 // Then calls itself again, performing the appropriate operation.
-                | Tokeniser.Add :: tail ->      let (remainingTokens, Tvalue) = T tail
+                | Tokeniser.Add :: tail ->      let remainingTokens, Tvalue = T tail
                                                 Eopt (remainingTokens, inputValue+Tvalue)
-                | Tokeniser.Minus :: tail ->    let (remainingTokens, Tvalue) = T tail
+                | Tokeniser.Minus :: tail ->    let remainingTokens, Tvalue = T tail
                                                 Eopt (remainingTokens, inputValue+Tvalue)
                 | _ -> (tList, inputValue)
             and T tList = ( NR >> Topt ) tList
             and Topt (tList, inputValue) =
                 match tList with
                 // Same as Eopt
-                | Tokeniser.Multiply :: tail -> let (remainingTokens, NRvalue) = NR tail
+                | Tokeniser.Multiply :: tail -> let remainingTokens, NRvalue = NR tail
                                                 Topt (remainingTokens, inputValue*NRvalue)
-                | Tokeniser.Divide :: tail ->   let (remainingTokens, NRvalue) = NR tail
+                | Tokeniser.Divide :: tail ->   let remainingTokens, NRvalue = NR tail
                                                 Topt (remainingTokens, inputValue/NRvalue)
                 | _ -> (tList, inputValue)
             and NR tList =
@@ -60,7 +60,7 @@
                 | Tokeniser.Float value :: tail ->  (tail, value)
                 | Tokeniser.Int value :: tail ->    (tail, value)
                 // Follows grammar for brackets
-                | Tokeniser.LeftBracket :: tail ->  let (remainingTokens, Evalue) = E tail
+                | Tokeniser.LeftBracket :: tail ->  let remainingTokens, Evalue = E tail
                                                     match remainingTokens with
                                                     | Tokeniser.RightBracket :: tail -> (tail, Evalue)
                                                     | _ -> raise parseError
