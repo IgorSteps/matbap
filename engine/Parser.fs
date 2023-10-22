@@ -8,7 +8,8 @@
         // <NR>   ::= Num <value> | (E)
         let parseError = System.Exception("Parse error")
         let private parse tList =
-            // Doesn't return anything but does parse. Keeping code in case used to generate an AST in future
+            // Doesn't return anything but does parse. Keeping code in case it's used to generate an AST in future,
+            // and is a useful skeleton 
             let rec E tList = (T >> Eopt) tList
             and Eopt tList =
                 match tList with
@@ -66,7 +67,14 @@
                 | _ -> raise parseError
             
             // Parsing function raises an exception, so catches it and returns result appropriately
+            // TODO: return more detailed errors
             try
-                Ok (snd (E tList) : float)
+                let result = E tList
+                // Only return second (parsing result) if the list is empty.
+                // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
+                if (fst result) = [] then
+                    Ok (snd result : float)
+                else
+                    raise parseError
             with
                 | parseError -> Error "Error parsing expression."
