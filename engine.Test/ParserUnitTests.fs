@@ -45,7 +45,7 @@ type ParserTests () =
        }
        {
             Args = [Tokeniser.Float(13.56); Tokeniser.Minus; Tokeniser.Int(6); Tokeniser.Add; Tokeniser.Int(14)
-                    Tokeniser.Multiply; Tokeniser. Float(20.1)]
+                    Tokeniser.Multiply; Tokeniser.Float(20.1)]
             Expected = Ok 288.96
        }
        {
@@ -60,8 +60,9 @@ type ParserTests () =
             Expected = Ok 5.8
        }
        {
-            Args = [Tokeniser.Float(2.5); Tokeniser.LeftBracket; Tokeniser.LeftBracket; Tokeniser.Float(2.5)
-                    Tokeniser.RightBracket; Tokeniser.RightBracket; Tokeniser.Multiply; Tokeniser.Int(3)]
+            Args = [Tokeniser.Float(2.5); Tokeniser.Add; Tokeniser.LeftBracket; Tokeniser.LeftBracket
+                    Tokeniser.Float(2.5); Tokeniser.RightBracket; Tokeniser.RightBracket; Tokeniser.Multiply
+                    Tokeniser.Int(3)]
             Expected= Ok 10
        }
        {
