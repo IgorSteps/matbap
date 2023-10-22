@@ -36,7 +36,7 @@ type ParserTests () =
             Expected = Ok 41.58
        }
        {
-            Args = [Tokeniser.Int(49); Tokeniser.Multiply; Tokeniser.Float(7.0)]
+            Args = [Tokeniser.Int(49); Tokeniser.Divide; Tokeniser.Float(7.0)]
             Expected = Ok 7
        }
        {

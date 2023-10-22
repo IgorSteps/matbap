@@ -45,7 +45,7 @@
                 | Tokeniser.Add :: tail ->      let remainingTokens, valueT = grammarT tail
                                                 grammarEopt (remainingTokens, inputValue+valueT)
                 | Tokeniser.Minus :: tail ->    let remainingTokens, valueT = grammarT tail
-                                                grammarEopt (remainingTokens, inputValue+valueT)
+                                                grammarEopt (remainingTokens, inputValue-valueT)
                 | _ -> (tList, inputValue)
             and grammarT tList = ( grammarNr >> grammarTopt ) tList
             and grammarTopt (tList, inputValue) =
