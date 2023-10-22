@@ -75,8 +75,8 @@
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
                 if (fst result).IsEmpty then
-                    raise parseError
-                else
                     Ok (snd result : float)
+                else
+                    raise parseError
             with
                 | parseError -> Error "Error parsing expression."
