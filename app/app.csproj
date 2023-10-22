@@ -9,14 +9,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="internal\Models\" />
-    <Folder Include="internal\" />
-    <Folder Include="internal\ViewModels\" />
-    <Folder Include="internal\Views\" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.1" />
+    <Page Include="App.xaml" />
   </ItemGroup>
 
 </Project>
