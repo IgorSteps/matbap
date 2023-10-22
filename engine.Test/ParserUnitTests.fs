@@ -93,37 +93,6 @@ type ParserTests () =
             Args = [Tokeniser.LeftBracket; Tokeniser.Int(0); Tokeniser.RightBracket]
             Expected = Ok 0
        }
-       
-       {
-            // No input
-            Args = []
-            Expected = Error "Error parsing expression."
-       }
-       {
-            // Operators without an operand between
-            Args = [Tokeniser.Int(5); Tokeniser.Add; Tokeniser.Minus; Tokeniser.Int(2)]
-            Expected = Error "Error parsing expression."
-       }
-       {
-            // Operator without an operand following
-            Args = [Tokeniser.Int(5); Tokeniser.Divide]
-            Expected = Error "Error parsing expression."
-       }
-       {
-            // Operator with no operands at all
-            Args = [Tokeniser.Multiply]
-            Expected = Error "Error parsing expression."
-       }
-       {
-            // Opening a bracket without closing it
-            Args = [Tokeniser.LeftBracket; Tokeniser.LeftBracket; Tokeniser.RightBracket]
-            Expected = Error "Error parsing expression."
-       }
-       {
-            // Closing a bracket without having opened a matching one
-            Args = [Tokeniser.LeftBracket; Tokeniser.RightBracket; Tokeniser.RightBracket]
-            Expected = Error "Error parsing expression."
-       }
     ]
     static member parserErrorCases: ParserTestCase list = [
        {
