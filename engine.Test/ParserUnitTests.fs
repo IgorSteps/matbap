@@ -125,6 +125,43 @@ type ParserTests () =
             Expected = Error "Error parsing expression."
        }
     ]
+    static member parserErrorCases: ParserTestCase list = [
+       {
+            // No input
+            Args = []
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Operators without an operand between
+            Args = [Tokeniser.Int(5); Tokeniser.Add; Tokeniser.Minus; Tokeniser.Int(2)]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Operator without an operand following
+            Args = [Tokeniser.Int(5); Tokeniser.Divide]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Operator with no operands at all
+            Args = [Tokeniser.Multiply]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Opening a bracket without closing it
+            Args = [Tokeniser.LeftBracket; Tokeniser.LeftBracket; Tokeniser.RightBracket]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Closing a bracket without having opened a matching one
+            Args = [Tokeniser.LeftBracket; Tokeniser.RightBracket; Tokeniser.RightBracket]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Division by 0
+            Args = [Tokeniser.Int(1); Tokeniser.Divide; Tokeniser.Int(0)]
+            Expected = Error "Error while parsing: division by 0"
+       }
+    ]
 
     [<TestCaseSource("parserTestCases")>]
     // Check parser test cases
@@ -135,9 +172,19 @@ type ParserTests () =
   
         // Act
         let actual = Parser.parseEval args
-        match actual with
-        | Ok x -> Console.WriteLine(x)
-        | Error e -> Console.WriteLine(e)
+
+        // Assert (within tolerance to the 10th decimal place, for floating point errors)
+        Assert.That(actual, Is.EqualTo(expected).Within(0.0000000001));
+        
+    [<TestCaseSource("parserErrorCases")>]
+    // Check parser error cases
+    member this._Test_Parser_Error(testCase: ParserTestCase) =
+        // Assemble
+        let args = testCase.Args
+        let expected = testCase.Expected
+  
+        // Act
+        let actual = Parser.parseEval args
 
         // Assert
         Assert.AreEqual(actual, expected)
