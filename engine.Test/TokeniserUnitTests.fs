@@ -123,6 +123,24 @@ type TokeniserTests () =
                 Engine.Tokeniser.Identifier "a";
             ]
        };
+       {
+            Args = "6(4(2(1(0))))";
+            Expected = [
+                Engine.Tokeniser.Int 6;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 4;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 2;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 1;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 0;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+            ]
+       };
     ]
 
     static member lexicalErrorTestCases: TokeniserLexicalErrorCase list = [

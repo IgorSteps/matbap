@@ -37,11 +37,10 @@
         let private isDigit(c: char)         = System.Char.IsDigit c
         let private isLetter(c: char)        = System.Char.IsLetter c
         let private isAlphaNumeric(c: char)  = System.Char.IsLetterOrDigit c
-        let private noStartingSpace(c: char) = c <> ' '
         let private isKeyword(str: string)   = keywords.ContainsKey str
 
         let private createInvalidFloatError(errMsg: string) =
-            Result.Error (InvalidFloat errMsg)
+            errMsg |> InvalidFloat |> Result.Error
 
         // chars = remaining char list to be tokenized
         // acc = accumulator storing the value of the token
