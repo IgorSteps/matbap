@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace app
 {
@@ -13,7 +12,14 @@ namespace app
             _supportedTokens = new List<TokenHelp>
             {
                 new TokenHelp('+'),
-                // TODO other tokens
+                new TokenHelp('-'),
+                new TokenHelp('*'),
+                new TokenHelp('/'),
+                new TokenHelp('%'),
+                new TokenHelp('^'),
+                new TokenHelp('('),
+                new TokenHelp(')'),
+                new TokenHelp('.'),
             };
         }
 	}

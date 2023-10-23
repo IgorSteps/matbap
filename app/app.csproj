@@ -20,7 +20,4 @@
   <ItemGroup>
     <None Remove="internal\Views\HelpMenuView.xml" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="internal\Views\HelpMenuView.xaml.cs" />
-  </ItemGroup>
 </Project>
