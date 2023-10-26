@@ -10,6 +10,4 @@ namespace Engine
             match Tokeniser.tokenise exp with
             // If tokeniser returns an error need to get string from it
             | Error e -> Error (getStr e)
-            | Ok x ->   match Parser.parseEval x with
-                        | Ok x -> Ok x
-                        | Error e -> Error e
+            | Ok x -> Parser.parseEval x
