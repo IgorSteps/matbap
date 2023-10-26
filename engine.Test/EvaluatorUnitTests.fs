@@ -53,7 +53,7 @@ type EvaluatorTests () =
 
     [<TestCaseSource("evaluatorTestCases")>]
     // Check evaluator test cases
-    member this._Test_Parser_Pass(testCase: EvaluatorTestCase) =
+    member this._Test_Evaluator_Pass(testCase: EvaluatorTestCase) =
         // Assemble
         let args = testCase.Args
         let expected = testCase.Expected
