@@ -2,7 +2,6 @@ namespace Engine.Tests
 
 open Engine
 open NUnit.Framework
-open System
 
 type ParserTestCase = {
     Args: Tokeniser.Token list;
