@@ -10,6 +10,7 @@
   <ItemGroup>
     <Compile Include="TokeniserUnitTests.fs" />
     <Compile Include="ParserUnitTests.fs" />
+    <Compile Include="EvaluatorUnitTests.fs" />
   </ItemGroup>
 
   <ItemGroup>
