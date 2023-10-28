@@ -25,7 +25,7 @@ type ParserTests () =
        {
             // Basic multiplication
             Args = [Tokeniser.Int 5; Tokeniser.Multiply; Tokeniser.Int 7]
-            Expected = Ok (Int 7)
+            Expected = Ok (Int 35)
        }
        {
             // Basic division, with integer truncation
@@ -178,7 +178,14 @@ type ParserTests () =
         let actual = parseEval args
 
         // Assert correct return type
-        // Assert.AreEqual(actual.GetType, expected.GetType)
+        match expected with
+        | Ok (Int x) -> match actual with
+                        | Ok (Int x) -> Assert.IsTrue(true)
+                        | _ -> Assert.IsTrue(false)
+        | Ok (Float x) -> match actual with
+                          | Ok (Float x) -> Assert.IsTrue(true)
+                          | _ -> Assert.IsTrue(false)
+        | _ -> Assert.IsTrue(false)
         // Assert correct value (within tolerance to the 10th decimal place, for floating point errors)
         let actualValue = match actual with
                           | Ok x -> match x with
