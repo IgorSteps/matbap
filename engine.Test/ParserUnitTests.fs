@@ -6,7 +6,7 @@ open NUnit.Framework
 
 type ParserTestCase = {
     Args: Tokeniser.Token list;
-    Expected: Result<numType,string>;
+    Expected: Result<NumType,string>;
 }
 
 [<TestFixture>]

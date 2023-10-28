@@ -5,7 +5,7 @@ open NUnit.Framework
 
 type EvaluatorTestCase = {
     Args: string;
-    Expected: Result<Parser.numType,string>;
+    Expected: Result<Parser.NumType,string>;
 }
 
 [<TestFixture>]
