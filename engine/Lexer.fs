@@ -31,7 +31,7 @@
         let private keywords = Map.empty.Add("sin", Sin).Add("cos", Cos).Add("tan", Tan)
 
         // Helpers.
-        let private strTochar(str: string)   = [for c in str do yield c]
+        let private strToChar(str: string)   = [for c in str do yield c]
         let private charToInt(char: char)    = int char - int '0'
         let private charToFloat(char: char)  = char |> charToInt |> float
         let private isDigit(c: char)         = System.Char.IsDigit c
@@ -45,7 +45,7 @@
 
         // chars = remaining char list to be tokenized
         // acc = accumulator storing the value of the token
-        // multi = stores the position of the next char in the token i.e. tenth (0.1), hundreth (0.01)
+        // multi = stores the position of the next char in the token i.e. tenth (0.1), hundredth (0.01)
         let rec private formFloat(chars: char list, acc: float, multi: float) =
             match chars with
                                         // c*multi because 1.7 gets processed as 1.0 + 7.0*0.1
@@ -104,4 +104,4 @@
                 | head :: _ -> Error (InvalidToken $"Invalid Token: {head}")
 
         let tokenise(str : string): Result<Token list, LexicalError> = 
-            matchTokens(strTochar str) []
+            matchTokens(strToChar str) []
