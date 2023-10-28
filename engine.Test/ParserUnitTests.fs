@@ -144,6 +144,11 @@ type ParserTests () =
             Expected = Ok (Float 0.25)
        }
        {
+            // Testing order of operations with exponent
+            Args = [Tokeniser.Int 2; Tokeniser.Multiply; Tokeniser.Float 3; Tokeniser.Power; Tokeniser.Int 2]
+            Expected = Ok (Float 18)
+       }
+       {
             // Test for modulo
             Args = [Tokeniser.Int 5; Tokeniser.Modulus; Tokeniser.Int 3]
             Expected = Ok (Int 2)
