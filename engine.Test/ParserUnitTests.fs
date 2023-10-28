@@ -185,7 +185,7 @@ type ParserTests () =
                                     | Int y -> float y
                                     | Float y -> y
                           | _ -> 0
-        let expectedValue = match actual with
+        let expectedValue = match expected with
                             | Ok x -> match x with
                                       | Int y -> float y
                                       | Float y -> y
