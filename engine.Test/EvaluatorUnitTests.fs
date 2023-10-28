@@ -5,28 +5,28 @@ open NUnit.Framework
 
 type EvaluatorTestCase = {
     Args: string;
-    Expected: Result<float,string>;
+    Expected: Result<Parser.numType,string>;
 }
 
 [<TestFixture>]
 type EvaluatorTests () =
     static member evaluatorTestCases: EvaluatorTestCase list = [
-       // Error tests
+       // Basic tests (parser's tests should test its own function)
        {
             Args = "7+9"
-            Expected = Ok 16
+            Expected = Ok (Parser.Int 16)
        }
        {
             Args = "6-1"
-            Expected = Ok 5
+            Expected = Ok (Parser.Int 5)
        }
        {
             Args = "6*8"
-            Expected = Ok 48
+            Expected = Ok (Parser.Int 48)
        }
        {
             Args = "121/11"
-            Expected = Ok 11
+            Expected = Ok (Parser.Int 11)
        }
        // Error tests
        {
