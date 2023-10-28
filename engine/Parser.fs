@@ -9,15 +9,15 @@
         // <num>  ::= <int> | <float>
         exception ParseErrorException of string
         // Define number type
-        type numType =
+        type NumType =
             | Int of int
             | Float of float
         
-        let parseEval (tList : Tokeniser.Token list) : Result<numType,string> =
+        let parseEval (tList : Tokeniser.Token list) : Result<NumType,string> =
             // Recursive functions
             // For first call, assumes it starts with a T as part of an Eopt
             let rec grammarE tList = (grammarT >> grammarEopt) tList
-            and grammarEopt (tList, inputValue) : (Tokeniser.Token list * numType) =
+            and grammarEopt (tList, inputValue) : (Tokeniser.Token list * NumType) =
                 match tList with
                 // Calls the function matching grammar on the tail after finding an appropriate token.
                 // Then calls itself again, performing the appropriate operation.
@@ -28,7 +28,6 @@
                                             | Int x, Float y   -> grammarEopt (remainingTokens, Float(float x+y))
                                             | Float x, Int y   -> grammarEopt (remainingTokens, Float(x+float y))
                                             | Float x, Float y -> grammarEopt (remainingTokens, Float(x+y))
-                                                
                 | Tokeniser.Minus::tail ->  let remainingTokens, valueT = grammarT tail
                                             match (inputValue, valueT) with
                                             | Int x, Int y     -> grammarEopt (remainingTokens, Int(x-y))
@@ -36,9 +35,9 @@
                                             | Float x, Int y   -> grammarEopt (remainingTokens, Float(x-float y))
                                             | Float x, Float y -> grammarEopt (remainingTokens, Float(x-y))
                 | _ -> (tList, inputValue)
-            and grammarT tList : (Tokeniser.Token list * numType) =
+            and grammarT tList : (Tokeniser.Token list * NumType) =
                 ( grammarNr >> grammarTopt ) tList
-            and grammarTopt (tList, inputValue) : (Tokeniser.Token list * numType) =
+            and grammarTopt (tList, inputValue) : (Tokeniser.Token list * NumType) =
                 match tList with
                 // Same as Eopt
                 | Tokeniser.Multiply::tail ->   let remainingTokens, valueNR = grammarNr tail
@@ -58,9 +57,9 @@
                                                 | Float x, Int y   -> grammarTopt (remainingTokens, Float(x/float y))
                                                 | Float x, Float y -> grammarTopt (remainingTokens, Float(x/y))
                 | _ -> (tList, inputValue)
-            and grammarNr tList : (Tokeniser.Token list * numType) =
+            and grammarNr tList : (Tokeniser.Token list * NumType) =
                 match tList with
-                // Return number as a numType. Expected by n 
+                // Return number as a NumType
                 | Tokeniser.Float value :: tail ->  (tail, Float(value))
                 | Tokeniser.Int value :: tail ->    (tail, Int(value))
                 // Follows grammar for brackets
@@ -77,7 +76,7 @@
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
                 if (fst result).IsEmpty then
-                    Ok (snd result : numType)
+                    Ok (snd result : NumType)
                 else
                     raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with
