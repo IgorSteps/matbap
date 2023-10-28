@@ -71,7 +71,8 @@
                                                 match (inputValue, valueNR) with
                                                 // Modulo operator should only be used with integers
                                                 | Int x, Int y     -> grammarEopt (remainingTokens, Int(x%y))
-                                                | _ -> failwith "Error while parsing: modulo cannot be used with floats"
+                                                | _ -> raise (ParseErrorException
+                                                            "Error while parsing: modulo cannot be used with floats")
                                                 
                 | _ -> (tList, inputValue)
                 
