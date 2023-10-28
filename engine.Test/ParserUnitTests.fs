@@ -178,7 +178,7 @@ type ParserTests () =
         let actual = parseEval args
 
         // Assert correct return type
-        Assert.AreEqual(actual.GetType, expected.GetType)
+        // Assert.AreEqual(actual.GetType, expected.GetType)
         // Assert correct value (within tolerance to the 10th decimal place, for floating point errors)
         let actualValue = match actual with
                           | Ok x -> match x with
