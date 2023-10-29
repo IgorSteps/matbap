@@ -149,6 +149,11 @@ type ParserTests () =
             Expected = Ok (Float 18)
        }
        {
+            // Subsequent exponent
+            Args = [Tokeniser.Int 4; Tokeniser.Power; Tokeniser.Int 2; Tokeniser.Power; Tokeniser.Int 3]
+            Expected = Ok (Float 65536)
+       }
+       {
             // Test for modulo
             Args = [Tokeniser.Int 5; Tokeniser.Modulus; Tokeniser.Int 3]
             Expected = Ok (Int 2)
@@ -157,6 +162,11 @@ type ParserTests () =
             // As above
             Args = [Tokeniser.Int 5216; Tokeniser.Modulus; Tokeniser.Int 413]
             Expected = Ok (Int 260)
+       }
+       {
+            // Subsequent modulo
+            Args = [Tokeniser.Int 763; Tokeniser.Modulus; Tokeniser.Int 129; Tokeniser.Modulus; Tokeniser.Int 20]
+            Expected = Ok (Int 18)
        }
     ]
     static member parserErrorCases: ParserTestCase list = [
