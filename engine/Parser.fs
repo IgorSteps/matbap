@@ -3,8 +3,11 @@
         // Grammar:
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
-        // <T>    ::= <NR> <Topt>
-        // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
+        // <T>    ::= <P> <Topt>
+        // <Topt> ::= * <P> <Topt> | / <P> <Topt>
+        //          | % <P> <Topt> | <empty>
+        // <P>    ::= <NR> <Popt>
+        // <Popt> ::= ^ <NR> <Popt> | <empty>
         // <NR>   ::= <num> | (E)
         // <num>  ::= <int> | <float>
         exception ParseErrorException of string
@@ -16,8 +19,10 @@
         let parseEval (tList : Tokeniser.Token list) : Result<NumType,string> =
             // Recursive functions
             // For first call, assumes it starts with a T as part of an Eopt
-            let rec grammarE tList = (grammarT >> grammarEopt) tList
-            and grammarEopt (tList, inputValue) : (Tokeniser.Token list * NumType) =
+            let rec grammarE tList =
+                (grammarT >> grammarEopt) tList
+
+            and grammarEopt (tList, inputValue) : Tokeniser.Token list * NumType =
                 match tList with
                 // Calls the function matching grammar on the tail after finding an appropriate token.
                 // Then calls itself again, performing the appropriate operation.
@@ -28,36 +33,66 @@
                                             | Int x, Float y   -> grammarEopt (remainingTokens, Float(float x+y))
                                             | Float x, Int y   -> grammarEopt (remainingTokens, Float(x+float y))
                                             | Float x, Float y -> grammarEopt (remainingTokens, Float(x+y))
+                                            
                 | Tokeniser.Minus::tail ->  let remainingTokens, valueT = grammarT tail
                                             match (inputValue, valueT) with
                                             | Int x, Int y     -> grammarEopt (remainingTokens, Int(x-y))
                                             | Int x, Float y   -> grammarEopt (remainingTokens, Float(float x-y))
                                             | Float x, Int y   -> grammarEopt (remainingTokens, Float(x-float y))
                                             | Float x, Float y -> grammarEopt (remainingTokens, Float(x-y))
+                // If it finds nothing, means that it's the end of the Eopt
                 | _ -> (tList, inputValue)
-            and grammarT tList : (Tokeniser.Token list * NumType) =
-                ( grammarNr >> grammarTopt ) tList
-            and grammarTopt (tList, inputValue) : (Tokeniser.Token list * NumType) =
+                
+            and grammarT tList : Tokeniser.Token list * NumType =
+                ( grammarP >> grammarTopt ) tList
+
+            and grammarTopt (tList, inputValue) : Tokeniser.Token list * NumType =
                 match tList with
-                // Same as Eopt
-                | Tokeniser.Multiply::tail ->   let remainingTokens, valueNR = grammarNr tail
-                                                match (inputValue, valueNR) with
+                // Similar to Eopt, with more operations
+                | Tokeniser.Multiply::tail ->   let remainingTokens, valueP = grammarP tail
+                                                match (inputValue, valueP) with
                                                 | Int x, Int y     -> grammarTopt (remainingTokens, Int(x*y))
                                                 | Int x, Float y   -> grammarTopt (remainingTokens, Float(float x*y))
                                                 | Float x, Int y   -> grammarTopt (remainingTokens, Float(x*float y))
                                                 | Float x, Float y -> grammarTopt (remainingTokens, Float(x*y))
-                | Tokeniser.Divide::tail ->     let remainingTokens, valueNR = grammarNr tail
+                                                
+                | Tokeniser.Divide::tail ->     let remainingTokens, valueP = grammarP tail
                                                 // Disallow division by 0
-                                                if (valueNR = Float(0) || valueNR = Int(0))  then
+                                                if (valueP = Float(0) || valueP = Int(0))  then
                                                     raise (ParseErrorException "Error while parsing: division by 0")
-                                                match (inputValue, valueNR) with
+                                                match (inputValue, valueP) with
                                                 // Integer division is fine, gets truncated
                                                 | Int x, Int y     -> grammarTopt (remainingTokens, Int(x/y))
                                                 | Int x, Float y   -> grammarTopt (remainingTokens, Float(float x/y))
                                                 | Float x, Int y   -> grammarTopt (remainingTokens, Float(x/float y))
                                                 | Float x, Float y -> grammarTopt (remainingTokens, Float(x/y))
+                                                
+                | Tokeniser.Modulus::tail ->    let remainingTokens, valueNR = grammarNR tail
+                                                match (inputValue, valueNR) with
+                                                // Modulo operator should only be used with integers
+                                                | Int x, Int y     -> grammarTopt (remainingTokens, Int(x%y))
+                                                | _ -> raise (ParseErrorException
+                                                            "Error while parsing: modulo cannot be used with floats")
+                                                
                 | _ -> (tList, inputValue)
-            and grammarNr tList : (Tokeniser.Token list * NumType) =
+                
+            and grammarP tList : Tokeniser.Token list * NumType =
+                ( grammarNR >> grammarPopt ) tList
+                
+            and grammarPopt (tList, inputValue) : Tokeniser.Token list * NumType =
+                match tList with
+                | Tokeniser.Power::tail ->      let remainingTokens, valueP = grammarP tail
+                                                match (inputValue, valueP) with
+                                                // Exponent operation can only return float.
+                                                // Still need to match to get value of x and y
+                                                | Int x, Int y     -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Int x, Float y   -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Float x, Int y   -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Float x, Float y -> grammarPopt (remainingTokens, Float(x**y))
+                                                
+                | _ -> (tList, inputValue)
+                                                
+            and grammarNR tList : Tokeniser.Token list * NumType =
                 match tList with
                 // Return number as a NumType
                 | Tokeniser.Float value :: tail ->  (tail, Float(value))

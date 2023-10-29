@@ -123,6 +123,51 @@ type ParserTests () =
             Args = [Tokeniser.Int -320; Tokeniser.Divide; Tokeniser.Int -64]
             Expected = Ok (Int 5)
        }
+       {
+            // Test for exponent
+            Args = [Tokeniser.Int 2; Tokeniser.Power; Tokeniser.Int 8]
+            Expected = Ok (Float 256)
+       }
+       {
+            // As above
+            Args = [Tokeniser.Int 6; Tokeniser.Power; Tokeniser.Float 2.3]
+            Expected = Ok (Float 61.6237149387)
+       }
+       {
+            // As above
+            Args = [Tokeniser.Int 25; Tokeniser.Power; Tokeniser.Float 0.5]
+            Expected = Ok (Float 5)
+       }
+       {
+            // As above
+            Args = [Tokeniser.Float 4; Tokeniser.Power; Tokeniser.Int -1]
+            Expected = Ok (Float 0.25)
+       }
+       {
+            // Testing order of operations with exponent
+            Args = [Tokeniser.Int 2; Tokeniser.Multiply; Tokeniser.Float 3; Tokeniser.Power; Tokeniser.Int 2]
+            Expected = Ok (Float 18)
+       }
+       {
+            // Subsequent exponent
+            Args = [Tokeniser.Int 4; Tokeniser.Power; Tokeniser.Int 2; Tokeniser.Power; Tokeniser.Int 3]
+            Expected = Ok (Float 65536)
+       }
+       {
+            // Test for modulo
+            Args = [Tokeniser.Int 5; Tokeniser.Modulus; Tokeniser.Int 3]
+            Expected = Ok (Int 2)
+       }
+       {
+            // As above
+            Args = [Tokeniser.Int 5216; Tokeniser.Modulus; Tokeniser.Int 413]
+            Expected = Ok (Int 260)
+       }
+       {
+            // Subsequent modulo
+            Args = [Tokeniser.Int 763; Tokeniser.Modulus; Tokeniser.Int 129; Tokeniser.Modulus; Tokeniser.Int 20]
+            Expected = Ok (Int 18)
+       }
     ]
     static member parserErrorCases: ParserTestCase list = [
        {
@@ -164,6 +209,11 @@ type ParserTests () =
             // As above but with float 0
             Args = [Tokeniser.Int 1; Tokeniser.Divide; Tokeniser.Float 0]
             Expected = Error "Error while parsing: division by 0"
+       }
+       {
+            // Modulo with non-ints
+            Args = [Tokeniser.Int 2; Tokeniser.Modulus; Tokeniser.Float 3]
+            Expected = Error "Error while parsing: modulo cannot be used with floats"
        }
     ]
 
