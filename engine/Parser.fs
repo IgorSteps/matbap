@@ -70,7 +70,7 @@
                 | Tokeniser.Modulus::tail ->    let remainingTokens, valueNR = grammarNR tail
                                                 match (inputValue, valueNR) with
                                                 // Modulo operator should only be used with integers
-                                                | Int x, Int y     -> grammarEopt (remainingTokens, Int(x%y))
+                                                | Int x, Int y     -> grammarTopt (remainingTokens, Int(x%y))
                                                 | _ -> raise (ParseErrorException
                                                             "Error while parsing: modulo cannot be used with floats")
                                                 
@@ -85,10 +85,10 @@
                                                 match (inputValue, valueP) with
                                                 // Exponent operation can only return float.
                                                 // Still need to match to get value of x and y
-                                                | Int x, Int y     -> grammarTopt (remainingTokens, Float(x**y))
-                                                | Int x, Float y   -> grammarTopt (remainingTokens, Float(x**y))
-                                                | Float x, Int y   -> grammarTopt (remainingTokens, Float(x**y))
-                                                | Float x, Float y -> grammarTopt (remainingTokens, Float(x**y))
+                                                | Int x, Int y     -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Int x, Float y   -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Float x, Int y   -> grammarPopt (remainingTokens, Float(x**y))
+                                                | Float x, Float y -> grammarPopt (remainingTokens, Float(x**y))
                                                 
                 | _ -> (tList, inputValue)
                                                 
