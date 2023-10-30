@@ -23,8 +23,8 @@ namespace app
     {
         public HelpWindow()
         {
-           //InitializeComponent();
-           DataContext = App.Current.Services.GetService<TokenHelpViewModel>();
+            InitializeComponent();
+            DataContext = App.Current.Services.GetService<TokenHelpViewModel>();
         }
     }
 }

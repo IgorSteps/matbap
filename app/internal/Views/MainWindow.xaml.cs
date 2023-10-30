@@ -26,5 +26,13 @@ namespace app
             InitializeComponent();
             DataContext = App.Current.Services.GetService<InterpretationViewModel>();
         }
+        private void OpenTokenHelp_Click(object sender, RoutedEventArgs e)
+        {
+            HelpWindow tokenHelpWindow = new HelpWindow();
+            tokenHelpWindow.Show();
+        }
     }
+
+
+
 }
