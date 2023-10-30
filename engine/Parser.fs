@@ -16,7 +16,7 @@
             | Int of int
             | Float of float
         
-        let parseEval (tList : Tokeniser.Token list) : Result<NumType,string> =
+        let parseEval (tList : Tokeniser.Token list) : string =
             // Recursive functions
             // For first call, assumes it starts with a T as part of an Eopt
             let rec grammarE tList =
@@ -111,8 +111,10 @@
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
                 if (fst result).IsEmpty then
-                    Ok (snd result : NumType)
+                    match snd result with 
+                    | NumType.Int x -> x.ToString()
+                    | NumType.Float x -> x.ToString()                       
                 else
                     raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with
-                | ParseErrorException value -> Error value
+                | ParseErrorException value -> value.ToString()

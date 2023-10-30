@@ -1,3 +1,4 @@
+using Microsoft.FSharp.Core;
 using System.Xml.Linq;
 
 namespace app
@@ -9,7 +10,10 @@ namespace app
         /// </summary>
         public string Interpret(string expression)
         {
-            return $"I am not implemented yet, but here is your expression {expression}";
+            var result = Engine.Evaluator.eval(expression);
+
+            return result; 
         }
+
     }
 }

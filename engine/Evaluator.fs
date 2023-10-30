@@ -6,8 +6,8 @@ namespace Engine
                 | Tokeniser.InvalidFloat str -> str
                 | Tokeniser.InvalidToken str -> str
         // Evaluator function
-        let eval (exp : string) : Result<Parser.NumType, string> =
+        let eval (exp : string) : string =
             match Tokeniser.tokenise exp with
             // If tokeniser returns an error need to get string from it
-            | Error e -> Error (getStr e)
+            | Error e -> (getStr e)
             | Ok x -> Parser.parseEval x

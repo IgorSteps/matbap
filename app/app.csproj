@@ -17,4 +17,8 @@
     <Page Include="App.xaml" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\engine\engine.fsproj" />
+  </ItemGroup>
+
 </Project>
