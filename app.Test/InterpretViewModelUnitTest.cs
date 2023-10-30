@@ -89,5 +89,26 @@ namespace app.Test
             Assert.That(eventRaised, Is.True);
         }
 
+        [Test]
+        public void InterpretModeView_FT()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var interpreter = new InterpretationModel();
+            var viewModel = new InterpretationViewModel(interpreter);
+
+            // ---
+            // ACT
+            // ---
+            viewModel.InterpretCmd.Execute("1+1");
+
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.AreEqual("2", viewModel.Response);
+        }
+
     }
 }
