@@ -41,6 +41,13 @@
 
         let private createInvalidFloatError(errMsg: string) =
             errMsg |> InvalidFloat |> Result.Error
+                
+        let private createErrorWithPosition(err: LexicalError, position: int) =
+            match err with 
+            | InvalidFloat errMsg -> 
+                ($"Invalid Float at token position {position}: " + errMsg) |> InvalidFloat |> Result.Error
+            | InvalidToken errMsg -> 
+                ($"Invalid Token at token position {position}: " + errMsg) |> InvalidToken |> Result.Error
 
         // chars = remaining char list to be tokenized
         // acc = accumulator storing the value of the token
@@ -49,8 +56,7 @@
             match chars with
                                         // c*multi because 1.7 gets processed as 1.0 + 7.0*0.1
             | c::tail when isDigit c -> formFloat(tail, acc + (charToFloat c * multi), multi/10.0)
-            | '.'::tail              -> createInvalidFloatError ("Invalid Float: " +
-                                              "Can't have 2 decimal places in a float")
+            | '.'::tail              -> createInvalidFloatError "Can't have 2 decimal places in a float"
             | _                      -> Ok(chars, FloatToken acc)
         
         let rec private formInt(chars: char list, acc: int) =
@@ -60,8 +66,7 @@
             | c :: tail when isDigit c  -> formInt(tail, (acc*10) + charToInt c)
             | '.'::c::tail              -> match isDigit c with
                                            | true  -> formFloat(c::tail, float acc, 0.1)
-                                           | false -> createInvalidFloatError ("Invalid Float: "+
-                                                             "the mantissa "+ 
+                                           | false -> createInvalidFloatError ("the mantissa " + 
                                                              "cannot lead with non digit")
             | _                         -> Ok(chars, IntToken acc)
 
@@ -70,9 +75,6 @@
             | c::tail when isAlphaNumeric c -> formIdentifier(tail, acc + string c)
             | _                             -> (chars, acc)
         
-        // Tail recursive because it has to be wrapped in a result.
-        // Regular recursion led to a nested structure Ok(Ok(Ok(... only solution I can think of
-        // is pattern matching against Ok | Error on every case, which looks messy
         let rec private matchTokens (chars: char list) (acc: Token list) =
                 match chars with 
                 | []          -> Ok(List.rev acc)
@@ -86,13 +88,13 @@
                 | '^' :: tail -> matchTokens tail (Power::acc)
                 | '=' :: tail -> matchTokens tail (Equals::acc)
                 | ' ' :: tail -> matchTokens tail acc
-
+                 
                 | head :: tail when isDigit head ->
                     match formInt(tail, charToInt head) with
                     | Ok(chars, num) -> match num with
                                         | IntToken x   -> matchTokens chars (Int x::acc)
                                         | FloatToken x -> matchTokens chars (Float x::acc)
-                    | Error err      -> Error err
+                    | Error err -> createErrorWithPosition (err, List.length acc + 1)
 
                 | head :: tail when isLetter head ->
                     let (chars, identifier) = formIdentifier(tail, string head)
@@ -100,7 +102,7 @@
                     | true  -> matchTokens chars (keywords[identifier]::acc)
                     | false -> matchTokens chars (Identifier identifier::acc)
 
-                | head :: _ -> Error (InvalidToken $"Invalid Token: {head}")
+                | head :: _ -> createErrorWithPosition (InvalidToken $"{head}", List.length acc + 1)
 
         let tokenise(str : string): Result<Token list, LexicalError> = 
             matchTokens(strTochar str) []
