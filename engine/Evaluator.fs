@@ -1,7 +1,6 @@
 namespace Engine
     module Evaluator =
-        // Helper function to extract string from tokeniser LexicalError
-        let private getStrFromLexererror(err : Tokeniser.LexicalError) =
+        let private getStrFromLexerError(err : Tokeniser.LexicalError) =
             match err with
                 | Tokeniser.InvalidFloat str -> str
                 | Tokeniser.InvalidToken str -> str
@@ -14,12 +13,9 @@ namespace Engine
                 | Parser.Int i -> string i
                 | Parser.Float f -> string f
 
-        // Evaluator function
         let eval(exp : string) : string =
             match Tokeniser.tokenise exp with
-            // If tokeniser returns an error need to get string from it
-            | Error e -> getStrFromLexererror(e)
+            // To keep C# app indepenendet, we return a string by dealing with conversions in here.
+            | Error e -> getStrFromLexerError(e)
             | Ok tokens -> parse(tokens)
                 
-                
-
