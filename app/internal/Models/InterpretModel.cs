@@ -10,9 +10,7 @@ namespace app
         /// </summary>
         public string Interpret(string expression)
         {
-            var result = Engine.Evaluator.eval(expression);
-
-            return result; 
+            return Engine.Evaluator.eval(expression);
         }
 
     }
