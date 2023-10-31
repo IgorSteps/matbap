@@ -111,7 +111,7 @@
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
                 if (fst result).IsEmpty then
-                    Ok (snd result : NumType)
+                    Ok (snd result : NumType)                
                 else
                     raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with

@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="internal\Views\HelpMenuView.xml" />
+    <ProjectReference Include="..\engine\engine.fsproj" />
   </ItemGroup>
+
 </Project>
