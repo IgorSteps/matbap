@@ -3,14 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:app"
         mc:Ignorable="d"
-        Title="Matbap" Height="377" Width="394">
+        Title="Matbap" Height="500" Width="394">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="2*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <TextBox Grid.Row="0" Text="{Binding Expression}" Margin="10,10,10,0" x:Name="ExpressionInputBox" VerticalAlignment="Stretch" FontSize="18"/>
@@ -28,10 +28,25 @@
             </TextBlock.Style>
         </TextBlock>
 
-        <Border Grid.Row="1" Margin="10,0,10,10" BorderBrush="Black" BorderThickness="1" Background="LightGray" Padding="5" >
-            <TextBlock TextWrapping="Wrap" Text="{Binding Response}" FontSize="18"/>
+        <Border Grid.Row="1" Margin="10,0,10,10" BorderBrush="Black" BorderThickness="1" Padding="5" >
+            <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Response}" FontSize="18"/>
         </Border>
-        <Button Grid.Row="2" Content="Evaluate" Command="{Binding InterpretCmd}" Margin="10"/>
+        <TextBlock Grid.Row="1" IsHitTestVisible="False" Text="Answer..." Padding="5,5,0,0" Margin="10,0,10,10" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
+            <TextBlock.Style>
+                <Style TargetType="{x:Type TextBlock}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <!-- Check if the answer text box is empty and change placeholder visibility accordingly. -->
+                        <DataTrigger Binding="{Binding Text, ElementName=AnswerBox}" Value="">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+        
+        <Button Grid.Row="2" Content="Evaluate" FontSize="20" FontWeight="Bold"  Command="{Binding InterpretCmd}" Margin="10" Background="#FFE29E9E"/>
+        <Button Grid.Row="3" Content="Help" FontSize="20"  FontWeight="Bold"  Click="OpenTokenHelp_Click" Margin="10" Background="#FFE29E9E"/>
 
     </Grid>
 </Window>

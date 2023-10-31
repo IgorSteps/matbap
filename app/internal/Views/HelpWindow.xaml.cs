@@ -17,22 +17,14 @@ using Microsoft.Extensions.DependencyInjection;
 namespace app
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml.
+    /// Interaction logic for HelpWindow.xaml.
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class HelpWindow : Window
     {
-        public MainWindow()
+        public HelpWindow()
         {
             InitializeComponent();
-            DataContext = App.Current.Services.GetService<InterpretationViewModel>();
-        }
-        private void OpenTokenHelp_Click(object sender, RoutedEventArgs e)
-        {
-            HelpWindow tokenHelpWindow = new HelpWindow();
-            tokenHelpWindow.Show();
+            DataContext = App.Current.Services.GetService<TokenHelpViewModel>();
         }
     }
-
-
-
 }
