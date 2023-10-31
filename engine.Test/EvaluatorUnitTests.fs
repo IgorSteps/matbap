@@ -5,7 +5,7 @@ open NUnit.Framework
 
 type EvaluatorTestCase = {
     Args: string;
-    Expected: Result<Parser.NumType,string>;
+    Expected: string;
 }
 
 [<TestFixture>]
@@ -14,40 +14,40 @@ type EvaluatorTests () =
        // Basic tests (parser's tests should test its own function)
        {
             Args = "7+9"
-            Expected = Ok (Parser.Int 16)
+            Expected = "16"
        }
        {
             Args = "6-1"
-            Expected = Ok (Parser.Int 5)
+            Expected = "5"
        }
        {
             Args = "6*8"
-            Expected = Ok (Parser.Int 48)
+            Expected = "48"
        }
        {
             Args = "121/11"
-            Expected = Ok (Parser.Int 11)
+            Expected = "11"
        }
        // Error tests
        {
             Args = ""
-            Expected = Error "Error while parsing: Unexpected token or end of expression"
+            Expected =  "Error while parsing: Unexpected token or end of expression"
        }
        {
             Args = "4+-3"
-            Expected = Error "Error while parsing: Unexpected token or end of expression"
+            Expected =  "Error while parsing: Unexpected token or end of expression"
        }
        {
             Args = "2*"
-            Expected = Error "Error while parsing: Unexpected token or end of expression"
+            Expected =  "Error while parsing: Unexpected token or end of expression"
        }
        {
             Args = "/"
-            Expected = Error "Error while parsing: Unexpected token or end of expression"
+            Expected =  "Error while parsing: Unexpected token or end of expression"
        }
        {
             Args = "9/0"
-            Expected = Error "Error while parsing: division by 0"
+            Expected =  "Error while parsing: division by 0"
        }
     ]
 
