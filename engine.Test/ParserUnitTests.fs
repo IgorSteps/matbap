@@ -119,16 +119,6 @@ type ParserTests () =
             Expected = Ok (Int 5)
        }
        {
-            // Negative exponents
-            Args = [Tokeniser.Int 4; Tokeniser.Power; Tokeniser.Minus; Tokeniser.Int -2]
-            Expected = Ok (Float 0.0625)
-       }
-       {
-            // Negative modulo
-            Args = [Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Minus; Tokeniser.Int 15]
-            Expected = Ok (Int -4)
-       }
-       {
             // Negative brackets
             Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int 6; Tokeniser.Add; Tokeniser.Int 11;
                     Tokeniser.RightBracket]
@@ -179,6 +169,24 @@ type ParserTests () =
             // Subsequent modulo
             Args = [Tokeniser.Int 763; Tokeniser.Modulus; Tokeniser.Int 129; Tokeniser.Modulus; Tokeniser.Int 20]
             Expected = Ok (Int 18)
+       }
+       {
+            // Negative exponent
+            Args = [Tokeniser.Int 4; Tokeniser.Power; Tokeniser.Minus; Tokeniser.Int 2]
+            Expected = Ok (Float 0.0625)
+       }
+       {
+            // Negative modulo
+            Args = [Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Minus; Tokeniser.Int 15]
+            Expected = Ok (Int 11)
+       }
+       {
+            Args = [Tokeniser.Minus; Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Int 15]
+            Expected = Ok (Int -11)
+       }
+       {
+            Args = [Tokeniser.Minus; Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Minus; Tokeniser.Int 15]
+            Expected = Ok (Int -11)
        }
     ]
     static member parserErrorCases: ParserTestCase list = [
