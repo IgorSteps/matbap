@@ -103,7 +103,7 @@
                                                   | Tokeniser.RightBracket :: tail -> (tail, valueE)
                                                   | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
                                                                 or end of expression")
-                | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
+                | _ -> grammarNum tList
                 
             and grammarNum tList : Tokeniser.Token list * NumType =
                 match tList with

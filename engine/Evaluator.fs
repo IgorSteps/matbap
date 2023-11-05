@@ -15,7 +15,6 @@ namespace Engine
 
         let eval(exp : string) : string =
             match Tokeniser.tokenise exp with
-            // To keep C# app indepenendet, we return a string by dealing with conversions in here.
+            // To keep C# app independent, we return a string by dealing with conversions in here.
             | Error e -> getStrFromLexerError(e)
             | Ok tokens -> parse(tokens)
-                

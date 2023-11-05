@@ -95,32 +95,32 @@ type ParserTests () =
        }
        {
             // Negative addition
-            Args = [Tokeniser.Int 3; Tokeniser.Add; Tokeniser.Int -2]
+            Args = [Tokeniser.Int 3; Tokeniser.Add; Tokeniser.Minus; Tokeniser.Int 2]
             Expected = Ok (Int 1)
        }
        {
             // Negative subtraction
-            Args = [Tokeniser.Int 4; Tokeniser.Minus; Tokeniser.Int -2]
+            Args = [Tokeniser.Int 4; Tokeniser.Minus; Tokeniser.Minus; Tokeniser.Int 2]
             Expected = Ok (Int 6)
        }
        {
             // Negative multiplication
-            Args = [Tokeniser.Int -3; Tokeniser.Multiply; Tokeniser.Int -9]
+            Args = [Tokeniser.Minus; Tokeniser.Int 3; Tokeniser.Multiply; Tokeniser.Minus; Tokeniser.Int 9]
             Expected = Ok (Int 27)
        }
        {
             // As above
-            Args = [Tokeniser.Int 6; Tokeniser.Multiply; Tokeniser.Float -10.5]
+            Args = [Tokeniser.Int 6; Tokeniser.Multiply; Tokeniser.Minus; Tokeniser.Float 10.5]
             Expected = Ok (Float -63)
        }
        {
             // Negative division
-            Args = [Tokeniser.Int 8; Tokeniser.Divide; Tokeniser.Int -2]
+            Args = [Tokeniser.Int 8; Tokeniser.Divide; Tokeniser.Minus; Tokeniser.Int 2]
             Expected = Ok (Int -4)
        }
        {
             // As above
-            Args = [Tokeniser.Int -320; Tokeniser.Divide; Tokeniser.Int -64]
+            Args = [Tokeniser.Minus; Tokeniser.Int 320; Tokeniser.Divide; Tokeniser.Minus; Tokeniser.Int 64]
             Expected = Ok (Int 5)
        }
        {
