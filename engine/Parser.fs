@@ -4,11 +4,10 @@
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
         // <T>    ::= <P> <Topt>
-        // <Topt> ::= * <P> <Topt> | / <P> <Topt>
-        //          | % <P> <Topt> | <empty>
+        // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
         // <P>    ::= <NR> <Popt>
         // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= <num> | (E)
+        // <NR>   ::= (E) | -<num> | <num>
         // <num>  ::= <int> | <float>
         exception ParseErrorException of string
         // Define number type
@@ -18,7 +17,6 @@
         
         let parseEval (tList : Tokeniser.Token list) : Result<NumType,string> =
             // Recursive functions
-            // For first call, assumes it starts with a T as part of an Eopt
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
 
@@ -94,24 +92,34 @@
                                                 
             and grammarNR tList : Tokeniser.Token list * NumType =
                 match tList with
+                // For negative numbers must return negative of the NumType
+                | Tokeniser.Minus::tail -> let numTail, num = grammarNum tail
+                                           match num with
+                                           | Float x -> numTail, Float(-x)
+                                           | Int x -> numTail, Int(-x)
+                // Follows grammar for brackets
+                | Tokeniser.LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
+                                                  match remainingTokens with
+                                                  | Tokeniser.RightBracket :: tail -> (tail, valueE)
+                                                  | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
+                                                                or end of expression")
+                | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
+                
+            and grammarNum tList : Tokeniser.Token list * NumType =
+                match tList with
                 // Return number as a NumType
                 | Tokeniser.Float value :: tail ->  (tail, Float(value))
                 | Tokeniser.Int value :: tail ->    (tail, Int(value))
-                // Follows grammar for brackets
-                | Tokeniser.LeftBracket :: tail ->  let remainingTokens, valueE = grammarE tail
-                                                    match remainingTokens with
-                                                    | Tokeniser.RightBracket :: tail -> (tail, valueE)
-                                                    | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
-                                                                  or end of expression")
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
             
             // Parsing function raises an exception, so catches it and returns result appropriately
             try
+                // For first call, assumes it starts with an E, as it is the highest level of grammar
                 let result = grammarE tList
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
                 if (fst result).IsEmpty then
-                    Ok (snd result : NumType)                
+                    Ok (snd result : NumType)
                 else
                     raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with
