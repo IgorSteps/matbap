@@ -177,7 +177,7 @@ type ParserTests () =
        }
        {
             // Operators without an operand between
-            Args = [Tokeniser.Int 5; Tokeniser.Add; Tokeniser.Minus; Tokeniser.Int 2]
+            Args = [Tokeniser.Int 5; Tokeniser.Add; Tokeniser.Add; Tokeniser.Int 2]
             Expected = Error "Error while parsing: Unexpected token or end of expression"
        }
        {

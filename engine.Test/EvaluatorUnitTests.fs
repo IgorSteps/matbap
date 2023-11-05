@@ -28,13 +28,13 @@ type EvaluatorTests () =
             Args = "121/11"
             Expected = "11"
        }
+       {
+            Args = "4+-3"
+            Expected = "1"
+       }
        // Error tests
        {
             Args = ""
-            Expected =  "Error while parsing: Unexpected token or end of expression"
-       }
-       {
-            Args = "4+-3"
             Expected =  "Error while parsing: Unexpected token or end of expression"
        }
        {
