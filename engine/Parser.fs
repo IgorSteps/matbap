@@ -93,17 +93,25 @@
                                                 
             and grammarNR tList : Token list * NumType =
                 match tList with
-                // For negative numbers must return negative of the NumType
-                | Minus::tail ->    let numTail, num = grammarNum tail
-                                    match num with
-                                    | Float x -> numTail, Float(-x)
-                                    | Int x -> numTail, Int(-x)
+                // Check negative brackets before anything else (more specific)
+                | Minus::LeftBracket::tail ->   let remainingTokens, valueE = grammarE tail
+                                                match remainingTokens with
+                                                | RightBracket :: tail -> match valueE with
+                                                                          | Float x -> tail, Float(-x)
+                                                                          | Int x -> tail, Int(-x)
+                                                | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
+                                                              or end of expression")
                 // Follows grammar for brackets
                 | LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
                                         match remainingTokens with
                                         | RightBracket :: tail -> (tail, valueE)
                                         | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
                                                       or end of expression")
+                // For negative numbers must return negative of the NumType
+                | Minus::tail ->    let numTail, num = grammarNum tail
+                                    match num with
+                                    | Float x -> numTail, Float(-x)
+                                    | Int x -> numTail, Int(-x)
                 | _ -> grammarNum tList
                 
             and grammarNum tList : Token list * NumType =
