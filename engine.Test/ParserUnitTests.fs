@@ -38,7 +38,6 @@ type ParserTests () =
             Expected = Ok (Float 7.3)
        }
        {
-            // As above
             Args = [Tokeniser.Int 5; Tokeniser.Minus; Tokeniser.Float 2.3]
             Expected = Ok (Float 2.7)
        }
@@ -48,7 +47,6 @@ type ParserTests () =
             Expected = Ok (Float 41.58)
        }
        {
-            // As above
             Args = [Tokeniser.Int 49; Tokeniser.Divide; Tokeniser.Float 7]
             Expected = Ok (Float 7)
        }
@@ -77,7 +75,6 @@ type ParserTests () =
             Expected = Ok (Float 5.8)
        }
        {
-            // As above
             Args = [Tokeniser.Float 2.5; Tokeniser.Add; Tokeniser.LeftBracket; Tokeniser.LeftBracket;
                     Tokeniser.Float 2.5; Tokeniser.RightBracket; Tokeniser.RightBracket; Tokeniser.Multiply;
                     Tokeniser.Int 3]
@@ -109,7 +106,6 @@ type ParserTests () =
             Expected = Ok (Int 27)
        }
        {
-            // As above
             Args = [Tokeniser.Int 6; Tokeniser.Multiply; Tokeniser.Minus; Tokeniser.Float 10.5]
             Expected = Ok (Float -63)
        }
@@ -119,9 +115,29 @@ type ParserTests () =
             Expected = Ok (Int -4)
        }
        {
-            // As above
             Args = [Tokeniser.Minus; Tokeniser.Int 320; Tokeniser.Divide; Tokeniser.Minus; Tokeniser.Int 64]
             Expected = Ok (Int 5)
+       }
+       {
+            // Negative exponents
+            Args = [Tokeniser.Int 4; Tokeniser.Power; Tokeniser.Minus; Tokeniser.Int -2]
+            Expected = Ok (Float 0.0625)
+       }
+       {
+            // Negative modulo
+            Args = [Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Minus; Tokeniser.Int 15]
+            Expected = Ok (Int -4)
+       }
+       {
+            // Negative brackets
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int 6; Tokeniser.Add; Tokeniser.Int 11;
+                    Tokeniser.RightBracket]
+            Expected = Ok (Int -17)
+       }
+       {
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int 8; Tokeniser.Add; Tokeniser.LeftBracket;
+                    Tokeniser.Minus; Tokeniser.Int 24; Tokeniser.RightBracket; Tokeniser.RightBracket]
+            Expected = Ok (Int 16)
        }
        {
             // Test for exponent
@@ -129,17 +145,14 @@ type ParserTests () =
             Expected = Ok (Float 256)
        }
        {
-            // As above
             Args = [Tokeniser.Int 6; Tokeniser.Power; Tokeniser.Float 2.3]
             Expected = Ok (Float 61.6237149387)
        }
        {
-            // As above
             Args = [Tokeniser.Int 25; Tokeniser.Power; Tokeniser.Float 0.5]
             Expected = Ok (Float 5)
        }
        {
-            // As above
             Args = [Tokeniser.Float 4; Tokeniser.Power; Tokeniser.Int -1]
             Expected = Ok (Float 0.25)
        }
@@ -159,7 +172,6 @@ type ParserTests () =
             Expected = Ok (Int 2)
        }
        {
-            // As above
             Args = [Tokeniser.Int 5216; Tokeniser.Modulus; Tokeniser.Int 413]
             Expected = Ok (Int 260)
        }

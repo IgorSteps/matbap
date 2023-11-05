@@ -1,6 +1,6 @@
 ﻿namespace Engine
-    open Tokeniser
     module Parser =
+        open Tokeniser
         // Grammar:
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
@@ -70,8 +70,8 @@
                                       match (inputValue, valueNR) with
                                       // Modulo operator should only be used with integers
                                       | Int x, Int y     -> grammarTopt (remainingTokens, Int(x%y))
-                                      | _ -> raise (ParseErrorException "Error while parsing: modulo cannot be used
-                                                    with floats")
+                                      | _ -> raise (ParseErrorException ("Error while parsing: modulo cannot be used " +
+                                                    "with floats"))
                                                 
                 | _ -> (tList, inputValue)
                 
@@ -99,14 +99,14 @@
                                                 | RightBracket :: tail -> match valueE with
                                                                           | Float x -> tail, Float(-x)
                                                                           | Int x -> tail, Int(-x)
-                                                | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
-                                                              or end of expression")
+                                                | _ -> raise (ParseErrorException ("Error while parsing: Unexpected " +
+                                                              "token or end of expression"))
                 // Follows grammar for brackets
                 | LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
                                         match remainingTokens with
                                         | RightBracket :: tail -> (tail, valueE)
-                                        | _ -> raise (ParseErrorException "Error while parsing: Unexpected token
-                                                      or end of expression")
+                                        | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
                 // For negative numbers must return negative of the NumType
                 | Minus::tail ->    let numTail, num = grammarNum tail
                                     match num with
