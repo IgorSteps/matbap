@@ -10,8 +10,8 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 ## App Spec
 ### F# Engine
 - [ ] Expressions
-  - [ ] Interger
-  - [ ] Float
+  - [x] Interger
+  - [x] Float
   - [ ] Rational   
   - [ ] Complex
   - [ ] Functions
@@ -24,7 +24,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Compiler
 
 ### C# GUI
-- [ ] Basic GUI
+- [x] Basic GUI
 - [ ] Basic Plotting
 - [ ] Advanced Plotting
   - [ ] GPU speed up
