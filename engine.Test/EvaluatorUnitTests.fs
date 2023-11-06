@@ -11,44 +11,95 @@ type EvaluatorTestCase = {
 [<TestFixture>]
 type EvaluatorTests () =
     static member evaluatorTestCases: EvaluatorTestCase list = [
-       // Basic tests (parser's tests should test its own function)
-       {
+        // Basic tests (parser's tests should test its own function)
+        {
             Args = "7+9"
             Expected = "16"
-       }
-       {
+        }
+        {
             Args = "6-1"
             Expected = "5"
-       }
-       {
+        }
+        {
             Args = "6*8"
             Expected = "48"
-       }
-       {
+        }
+        {
             Args = "121/11"
             Expected = "11"
-       }
-       {
+        }
+        // Unary Minus
+        {
             Args = "4+-3"
             Expected = "1"
-       }
-       // Error tests
-       {
+        }
+        {
+            Args = "-2 + -3"
+            Expected = "-5"
+        }
+        {
+            Args = "-2 - (-3)"
+            Expected = "1"
+        }
+        {
+            Args = "-(2+3)"
+            Expected = "-5"
+        }
+        {
+            Args = "-(2 + (-3))"
+            Expected = "1"
+        }
+        // Power
+        {
+            Args = "2^2"
+            Expected = "4"
+        }
+        {
+            Args = "2^(2+2)"
+            Expected = "16"
+        }
+        {
+            Args = "2^-2"
+            Expected = "0.25"
+        }
+        {
+            Args = "2^-(2 + (-3))"
+            Expected = "2"
+        }
+        // Modulo
+        {
+            Args = "10 % 3"
+            Expected = "1"
+        }
+        {
+            Args = "10 % -3"
+            Expected = "1"
+        }
+        {
+            Args = "-10 % 3"
+            Expected = "-1"
+        }
+        {
+            Args = "-10 % -3"
+            Expected = "-1"
+        }
+        // Error tests
+        {
             Args = ""
             Expected =  "Error while parsing: Unexpected token or end of expression"
-       }
-       {
+        }
+        {
             Args = "2*"
             Expected =  "Error while parsing: Unexpected token or end of expression"
-       }
-       {
+        }
+        {
             Args = "/"
             Expected =  "Error while parsing: Unexpected token or end of expression"
-       }
-       {
+        }
+        {
             Args = "9/0"
             Expected =  "Error while parsing: division by 0"
-       }
+        }
     ]
 
     [<TestCaseSource("evaluatorTestCases")>]
@@ -62,4 +113,4 @@ type EvaluatorTests () =
         let actual = Evaluator.eval args
 
         // Assert
-        Assert.AreEqual(actual, expected)
+        Assert.AreEqual(expected, actual, "Expected and actual are not equal")
