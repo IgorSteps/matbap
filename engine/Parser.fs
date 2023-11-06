@@ -8,7 +8,8 @@
         // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
         // <P>    ::= <NR> <Popt>
         // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= (E) | -(E) | <num> | -<num>
+        // <NR>   ::= <pNR> | -<pNR>
+        // <NRpt> ::= (E) | <num>
         // <num>  ::= <int> | <float>
         exception ParseErrorException of string
         // Define number type
@@ -93,14 +94,15 @@
                                                 
             and grammarNR tList : Token list * NumType =
                 match tList with
-                // Check negative brackets before anything else (more specific)
-                | Minus::LeftBracket::tail ->   let remainingTokens, valueE = grammarE tail
-                                                match remainingTokens with
-                                                | RightBracket :: tail -> match valueE with
-                                                                          | Float x -> tail, Float(-x)
-                                                                          | Int x -> tail, Int(-x)
-                                                | _ -> raise (ParseErrorException ("Error while parsing: Unexpected " +
-                                                              "token or end of expression"))
+                // For negative numbers must return negative of the NumType
+                | Minus::tail ->    let numTail, num = grammarNRpt tail
+                                    match num with
+                                    | Float x -> numTail, Float(-x)
+                                    | Int x -> numTail, Int(-x)
+                | _ -> grammarNRpt tList
+            
+            and grammarNRpt tList : Token list * NumType =
+                match tList with
                 // Follows grammar for brackets
                 | LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
                                         match remainingTokens with
