@@ -123,35 +123,53 @@ type TokeniserTests () =
                 Engine.Tokeniser.Identifier "a";
             ]
        };
+       {
+            Args = "6(4(2(1(0))))";
+            Expected = [
+                Engine.Tokeniser.Int 6;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 4;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 2;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 1;
+                Engine.Tokeniser.LeftBracket;
+                Engine.Tokeniser.Int 0;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+                Engine.Tokeniser.RightBracket;
+            ]
+       };
     ]
 
     static member lexicalErrorTestCases: TokeniserLexicalErrorCase list = [
         {
             Args = "1. + 43";
-            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: the mantissa "+
+            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float at token position 1: the mantissa "+
                                                        "cannot lead with non digit")
         };
         {
-            Args = "1.a / 34";
-            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: the mantissa "+
+            Args = "123 * 4 / 1.a";
+            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float at token position 5: the mantissa "+
                                                        "cannot lead with non digit")
         };
         {
             Args = "1.4.2 (3)";
-            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float: " +
+            Expected = Engine.Tokeniser.InvalidFloat ("Invalid Float at token position 1: " +
                                                      "Can't have 2 decimal places in a float")
         };
         {
             Args = "1&";
-            Expected = Engine.Tokeniser.InvalidToken "Invalid Token: &"
+            Expected = Engine.Tokeniser.InvalidToken "Invalid Token at token position 2: &"
         };
         {
-            Args = "4\3";
-            Expected = Engine.Tokeniser.InvalidToken "Invalid Token: \\"
+            Args = "4*\3";
+            Expected = Engine.Tokeniser.InvalidToken "Invalid Token at token position 3: \\"
         };
         {
             Args = ".6 + 34.5"
-            Expected = Engine.Tokeniser.InvalidToken "Invalid Token: ."
+            Expected = Engine.Tokeniser.InvalidToken "Invalid Token at token position 1: ."
         };
     ]
 
