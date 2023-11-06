@@ -2,6 +2,7 @@
     module Parser =
         open Tokeniser
         // Grammar:
+        // <varA> ::= <varID> = <E>
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
         // <T>    ::= <P> <Topt>
@@ -10,7 +11,8 @@
         // <Popt> ::= ^ <NR> <Popt> | <empty>
         // <NR>   ::= <pNR> | -<pNR>
         // <NRpt> ::= (E) | <num>
-        // <num>  ::= <int> | <float>
+        // <num>  ::= <int> | <float> | <varVal>
+        // varVal is fetched from symbol table.
         exception ParseErrorException of string
         // Define number type
         type NumType =
