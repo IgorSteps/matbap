@@ -97,17 +97,19 @@ namespace app.Test
             // --------
             var interpreter = new InterpretationModel();
             var viewModel = new InterpretationViewModel(interpreter);
+            viewModel.Expression = "1+1";
 
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute("1+1");
+            viewModel.InterpretCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.AreEqual("2", viewModel.Response);
+            // We check F# engine returns a string to make sure our GUI output is a clear string
+            Assert.That(viewModel.Response, Is.EqualTo("2"), "F# engine returned a value C# can't understand");
         }
 
     }
