@@ -51,6 +51,14 @@ type EvaluatorTests () =
         }
         // Power
         {
+            Args = "2^2"
+            Expected = "4"
+        }
+        {
+            Args = "2^(2+2)"
+            Expected = "16"
+        }
+        {
             Args = "2^-2"
             Expected = "0.25"
         }
@@ -59,6 +67,10 @@ type EvaluatorTests () =
             Expected = "2"
         }
         // Modulo
+        {
+            Args = "10 % 3"
+            Expected = "1"
+        }
         {
             Args = "10 % -3"
             Expected = "1"
