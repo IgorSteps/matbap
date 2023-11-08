@@ -12,14 +12,27 @@
         // <NR>   ::= <pNR> | -<pNR>
         // <NRpt> ::= (E) | <num>
         // <num>  ::= <int> | <float> | <varVal>
-        // varVal is fetched from symbol table.
+        // varVal is fetched from symbol table using varID
         exception ParseErrorException of string
         // Define number type
         type NumType =
             | Int of int
             | Float of float
         
-        let parseEval (tList : Token list) : Result<NumType,string> =
+        // Helper function to search symbol table
+        let rec searchSym(varID : string) (symTable : list<string*NumType>) : bool*NumType =
+            match symTable with
+            | head :: tail ->   if (fst head = varID) then (true, snd head)
+                                else searchSym varID tail
+            | _ ->              (false, Int 0)
+        // Helper function to set value within symbol table (returning new one)
+        let rec setSym (varID : string) (varVal : NumType) (symTable : list<string*NumType>) : list<string*NumType> =
+            match symTable with
+            | head :: tail -> if (fst head) = varID then [(varID,varVal)]@tail // Return updated value, plus tail
+                              else [head]@(setSym varID varVal symTable) // Continue searching if not found
+            | _ -> []
+        
+        let parseEval (tList : Token list) (symTable : list<string*NumType>) : Result<NumType,string> =
             // Recursive functions
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
