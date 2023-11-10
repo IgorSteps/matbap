@@ -45,6 +45,7 @@ namespace app
             // Viewmodels.
             services.AddTransient<InterpretationViewModel>();
             services.AddTransient<TokenHelpViewModel>();
+            services.AddTransient<PlotViewModel>();
 
             return services.BuildServiceProvider();
         }
