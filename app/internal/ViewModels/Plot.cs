@@ -83,7 +83,3 @@ namespace app
         }
     }
 } 
-
-/*
- Give me a ViewModel specifically for handling plotting functionality. This ViewModel should expose properties for data to be plotted, such as points for lines in form of equation y = ax + b (line with slope a and intercept b) . I am using OxyPlot and WPF with MVVM toolkit.
- */
