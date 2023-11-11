@@ -20,6 +20,7 @@ namespace app
             _slope = 1; // Default slope.
             _intercept = 0; // Default intercept.
             SetUpAxis();
+            UpdatePlot();
         }
 
         private void SetUpAxis()
@@ -50,5 +51,39 @@ namespace app
             // Update the model which in turn updates the view
             _plotModel.InvalidatePlot(true);
         }
+
+        public PlotModel PlotModel
+        {
+            get => _plotModel;
+            private set => SetProperty(ref _plotModel, value);
+        }
+
+        public double Slope
+        {
+            get => _slope;
+            set
+            {
+                if (SetProperty(ref _slope, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
+        public double Intercept
+        {
+            get => _intercept;
+            set
+            {
+                if (SetProperty(ref _intercept, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
     }
-}
+} 
+
+/*
+ Give me a ViewModel specifically for handling plotting functionality. This ViewModel should expose properties for data to be plotted, such as points for lines in form of equation y = ax + b (line with slope a and intercept b) . I am using OxyPlot and WPF with MVVM toolkit.
+ */
