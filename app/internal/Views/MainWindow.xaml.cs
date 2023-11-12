@@ -26,10 +26,16 @@ namespace app
             InitializeComponent();
             DataContext = App.Current.Services.GetService<InterpretationViewModel>();
         }
-        private void OpenTokenHelp_Click(object sender, RoutedEventArgs e)
+        private void OpenTokenHelpClick(object sender, RoutedEventArgs e)
         {
             HelpWindow tokenHelpWindow = new HelpWindow();
             tokenHelpWindow.Show();
+        }
+
+        private void OpenPlotClick(object sender, RoutedEventArgs e)
+        {
+            PlotWindow plotWindow = new PlotWindow();
+            plotWindow.Show();
         }
     }
 
