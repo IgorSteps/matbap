@@ -10,6 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         
@@ -21,7 +22,17 @@
             <!--UpdateSourceTrigger=PropertyChanged makes the binding updates on the PlotViewModel as soon as the text in the boxes changes.-->
             <TextBox Width="50" Margin="5" Text="{Binding Intercept, UpdateSourceTrigger=PropertyChanged}"/>
         </StackPanel>
-        
-        <oxy:PlotView Grid.Row="1" Model="{Binding PlotModel}" />
+
+        <!-- Polynomial Coefficients controls -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Label Content="X Min:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XMinimum, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="X Max:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XMaximum, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="X Step:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XStep, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
+
+        <oxy:PlotView Grid.Row="2" Model="{Binding PlotModel}" />
     </Grid>
 </Window>

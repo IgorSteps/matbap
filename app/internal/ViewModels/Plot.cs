@@ -13,13 +13,18 @@ namespace app
         private PlotModel _plotModel;
         private double _slope;
         private double _intercept;
+        private ObservableCollection<double> _polynomialCoefficients;
+        private double _xMinimum = -10;
+        private double _xMaximum = 10;
+        private double _xStep = 0.1;
 
         public PlotViewModel()
         {
             _plotModel = new PlotModel{ Title="Line Graph"};
             _slope = 1; // Default slope.
             _intercept = 0; // Default intercept.
-            
+            _polynomialCoefficients = new ObservableCollection<double>();
+
             SetUpAxis();
             UpdatePlot();
         }
@@ -45,6 +50,22 @@ namespace app
             }
 
             _plotModel.Series.Add(lineSeries);
+
+            // Update polynomial series using new range and step size properties
+            if (_polynomialCoefficients.Count > 0)
+            {
+                var polynomialSeries = new LineSeries();
+                for (double x = _xMinimum; x <= _xMaximum; x += _xStep)
+                {
+                    double y = 0;
+                    for (int i = 0; i < _polynomialCoefficients.Count; i++)
+                    {
+                        y += _polynomialCoefficients[i] * Math.Pow(x, i);
+                    }
+                    polynomialSeries.Points.Add(new DataPoint(x, y));
+                }
+                _plotModel.Series.Add(polynomialSeries);
+            }
 
             // Update the model which in turn updates the view.
             _plotModel.InvalidatePlot(true);
@@ -79,5 +100,54 @@ namespace app
                 }
             }
         }
+
+        public ObservableCollection<double> PolynomialCoefficients
+        {
+            get => _polynomialCoefficients;
+            set
+            {
+                if (SetProperty(ref _polynomialCoefficients, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
+        public double XMinimum
+        {
+            get => _xMinimum;
+            set
+            {
+                if (SetProperty(ref _xMinimum, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
+        public double XMaximum
+        {
+            get => _xMaximum;
+            set
+            {
+                if (SetProperty(ref _xMaximum, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
+        public double XStep
+        {
+            get => _xStep;
+            set
+            {
+                if (SetProperty(ref _xStep, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
     }
 } 
