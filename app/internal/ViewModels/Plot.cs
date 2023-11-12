@@ -15,16 +15,21 @@ namespace app
         private double _intercept;
         // @NOTE: Must be populated with coefficients in descending order of their corresponding powers of.
         private ObservableCollection<double> _polynomialCoefficients;
-        private double _xMinimum = -10;
-        private double _xMaximum = 10;
-        private double _xStep = 0.1;
+        private double _xMinimum;
+        private double _xMaximum;
+        private double _xStep;
 
         public PlotViewModel()
         {
-            _plotModel = new PlotModel{ Title="Line Graph"};
-            _slope = 1; // Default slope.
-            _intercept = 0; // Default intercept.
+            _plotModel = new PlotModel{ Title="Plot model"};
             _polynomialCoefficients = new ObservableCollection<double>();
+
+            // Set defaults.
+            _slope = 1; 
+            _intercept = 0;
+            _xMinimum = -10;
+            _xMaximum = 10;
+            _xStep = 0.1;
 
             SetUpAxis();
             UpdatePlot();
@@ -41,9 +46,12 @@ namespace app
             _plotModel.Series.Clear();
 
             PlotLine();
-            PlotPolynomial();
-           
 
+            if (_polynomialCoefficients.Count > 0)
+            {
+                PlotPolynomial();
+            }
+           
             // Update the model which in turn updates the view.
             _plotModel.InvalidatePlot(true);
         }
@@ -65,8 +73,7 @@ namespace app
 
         private void PlotPolynomial()
         {
-            if (_polynomialCoefficients.Count > 0)
-            {
+
                 var polynomialSeries = new LineSeries();
                 // Using user input of range and step sizes, calculate y values for range of x values.
                 for (double x = _xMinimum; x <= _xMaximum; x += _xStep)
@@ -76,11 +83,10 @@ namespace app
                     polynomialSeries.Points.Add(new DataPoint(x, y));
                 }
                 _plotModel.Series.Add(polynomialSeries);
-            }
         }
 
         // Horner Method  for Polynomial Evaluation.
-        private double Horner(double x)
+        public double Horner(double x)
         {
             double y = _polynomialCoefficients[0];
             for (int i = 1; i < _polynomialCoefficients.Count; i++)
@@ -89,6 +95,10 @@ namespace app
             }
             return y;
         }
+
+        // ------------------------------------------------------------------------------------------------------
+        // -------------------------------------- Getters & Setters below. --------------------------------------
+        // ------------------------------------------------------------------------------------------------------
 
         public PlotModel PlotModel
         {
