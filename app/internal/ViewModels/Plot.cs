@@ -19,6 +19,7 @@ namespace app
             _plotModel = new PlotModel{ Title="Line Graph"};
             _slope = 1; // Default slope.
             _intercept = 0; // Default intercept.
+            
             SetUpAxis();
             UpdatePlot();
         }
@@ -33,22 +34,19 @@ namespace app
         {
             _plotModel.Series.Clear();
 
-            var lineSeries = new LineSeries
-            {
-                Title = $"y = {_slope}x + {_intercept}",
-                MarkerType = MarkerType.None
-            };
+            var lineSeries = new LineSeries();
 
-            // Generate points for the line
+            // Generate points for the line.
             for (double x = -10; x <= 10; x += 1)
             {
+                // y = ax + b
                 double y = _slope * x + _intercept;
                 lineSeries.Points.Add(new DataPoint(x, y));
             }
 
             _plotModel.Series.Add(lineSeries);
 
-            // Update the model which in turn updates the view
+            // Update the model which in turn updates the view.
             _plotModel.InvalidatePlot(true);
         }
 
