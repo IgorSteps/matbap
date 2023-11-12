@@ -51,16 +51,17 @@ namespace app
 
             _plotModel.Series.Add(lineSeries);
 
-            // Update polynomial series using new range and step size properties
             if (_polynomialCoefficients.Count > 0)
             {
                 var polynomialSeries = new LineSeries();
+                // Using user input of range and step sizes, calcaulte y values for range of x values.
                 for (double x = _xMinimum; x <= _xMaximum; x += _xStep)
                 {
-                    double y = 0;
-                    for (int i = 0; i < _polynomialCoefficients.Count; i++)
+                    // Evaluate polynomial using Horner's method.
+                    double y = _polynomialCoefficients[0];
+                    for (int i = 1; i < _polynomialCoefficients.Count; i++)
                     {
-                        y += _polynomialCoefficients[i] * Math.Pow(x, i);
+                        y = y * x + _polynomialCoefficients[i];
                     }
                     polynomialSeries.Points.Add(new DataPoint(x, y));
                 }
