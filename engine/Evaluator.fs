@@ -6,7 +6,7 @@ namespace Engine
                 | Tokeniser.InvalidToken str -> str
 
         let private parse(tokens: Tokeniser.Token list) =
-            match Parser.parseEval tokens with
+            match Parser.parseEval tokens [] with
             | Error parseError -> parseError
             | Ok result ->
                 match result with
