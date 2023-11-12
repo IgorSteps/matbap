@@ -26,6 +26,8 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 ### C# GUI
 - [x] Basic GUI
 - [ ] Basic Plotting
+  - [x] Lines
+  - [ ] Polynomials
 - [ ] Advanced Plotting
   - [ ] GPU speed up
 
