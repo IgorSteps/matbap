@@ -30,7 +30,7 @@
             match symTable with
             | head :: tail -> if (fst head) = varID then [(varID,varVal)]@tail // Return updated value, plus tail
                               else [head]@(setSym varID varVal symTable) // Continue searching if not found
-            | _ -> []
+            | _ -> [(varID, varVal)] // Not found in symbol table so add it ourselves
         
         let parseEval (tList : Token list) (symTable : list<string*NumType>) : Result<NumType,string> =
             // Recursive functions
