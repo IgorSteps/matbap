@@ -9,7 +9,7 @@
         // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
         // <P>    ::= <NR> <Popt>
         // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= <pNR> | -<pNR>
+        // <NR>   ::= <NRpt> | -<NRpt>
         // <NRpt> ::= (E) | <num>
         // <num>  ::= <int> | <float> | <varVal>
         // varVal is fetched from symbol table using varID
