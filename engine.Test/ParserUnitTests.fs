@@ -188,6 +188,27 @@ type ParserTests () =
             Args = [Tokeniser.Minus; Tokeniser.Int 71; Tokeniser.Modulus; Tokeniser.Minus; Tokeniser.Int 15]
             Expected = Ok (Int -11)
        }
+       {
+            //basic variable assignment with integer
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 3]
+            Expected = Ok(Int 3)
+       }
+       {
+            //basic variable assignment with float
+            Args = [Tokeniser.Identifier "var1"; Tokeniser.Equals; Tokeniser.Float 5]
+            Expected = Ok(Float 5)
+       }
+       {
+            //asignment with float and int
+            Args = [Tokeniser.Identifier "var_1"; Tokeniser.Equals; Tokeniser.Float 5.5; Tokeniser.Add; Tokeniser.Int 2]
+            Expected = Ok(Float 7.5)
+       }
+       {
+            // Negative brackets assignment
+            Args = [Tokeniser.Identifier "y"; Tokeniser.Equals; Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int 6; Tokeniser.Add; Tokeniser.Int 11;
+                    Tokeniser.RightBracket]
+            Expected = Ok (Int -17)
+       }
     ]
     static member parserErrorCases: ParserTestCase list = [
        {
@@ -245,7 +266,7 @@ type ParserTests () =
         let expected = testCase.Expected
 
         // Act
-        let actual = parseEval args
+        let actual = parseEval args []
 
         // Assert correct return type
         match expected with
@@ -277,7 +298,7 @@ type ParserTests () =
         let expected = testCase.Expected
   
         // Act
-        let actual = parseEval args
+        let actual = parseEval args []
 
         // Assert
         Assert.AreEqual(actual, expected)
