@@ -17,8 +17,7 @@ namespace Engine
                 | ((s, Parser.Int i), symTable)    -> Ok(string i, symTable)
                 | ((s, Parser.Float f), symTable)  -> Ok(string f, symTable)
 
-        let eval(exp : string) : Result<string * Dictionary<string, Parser.NumType>,string>  =
-            let symTable = new Dictionary<string, Parser.NumType>()
+        let eval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<string * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
             // To keep C# app independent, we return a string by dealing with conversions in here.
             | Error e   -> Error (getStrFromLexerError(e))
