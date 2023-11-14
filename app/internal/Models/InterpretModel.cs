@@ -10,7 +10,14 @@ namespace app
         /// </summary>
         public string Interpret(string expression)
         {
-            return Engine.Evaluator.eval(expression);
+            var result = Engine.Evaluator.eval(expression);
+
+            if (!result.IsOk) {
+                return result.ErrorValue as string;
+            }
+            // Item1 is result of expression, Item2 is symTable
+            return result.ResultValue.Item1 as string;
+
         }
 
     }

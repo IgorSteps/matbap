@@ -4,7 +4,7 @@ open NUnit.Framework
 
 type TokeniserTestCase = {
     Args: string;
-    Expected: Engine.Tokeniser.Token list
+    Expected: Engine.Tokeniser.Token list list
 }
 
 type TokeniserLexicalErrorCase = {
@@ -17,16 +17,16 @@ type TokeniserTests () =
     static member testCases: TokeniserTestCase list = [
        {
             Args = "1a+12";
-            Expected = [
+            Expected = [[
                Engine.Tokeniser.Int 1;
                Engine.Tokeniser.Identifier "a";
                Engine.Tokeniser.Add;
                Engine.Tokeniser.Int 12
-            ]
+            ]]
        };
        {
             Args = "1a+(4b)";
-            Expected = [
+            Expected = [[
                  Engine.Tokeniser.Int 1;
                  Engine.Tokeniser.Identifier "a";
                  Engine.Tokeniser.Add;
@@ -34,11 +34,11 @@ type TokeniserTests () =
                  Engine.Tokeniser.Int 4;
                  Engine.Tokeniser.Identifier "b";
                  Engine.Tokeniser.RightBracket;
-            ]
+            ]]
        };
        {
             Args = "33.3 / (12 + 3.5a)";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Float 33.3;
                 Engine.Tokeniser.Divide;
                 Engine.Tokeniser.LeftBracket;
@@ -47,11 +47,11 @@ type TokeniserTests () =
                 Engine.Tokeniser.Float 3.5;
                 Engine.Tokeniser.Identifier "a"
                 Engine.Tokeniser.RightBracket;
-            ]
+            ]]
        };
        {
             Args = "sin(43)/cos(1.5) * tan(34)";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Sin;
                 Engine.Tokeniser.LeftBracket;
                 Engine.Tokeniser.Int 43;
@@ -66,38 +66,37 @@ type TokeniserTests () =
                 Engine.Tokeniser.LeftBracket;
                 Engine.Tokeniser.Int 34;
                 Engine.Tokeniser.RightBracket;
-
-            ]
+            ]]
        };
        {
             Args = "5 +            10.5";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Int 5;
                 Engine.Tokeniser.Add;
                 Engine.Tokeniser.Float 10.5;
-            ]
+            ]]
        };
        {
             Args = "var1 + var2 = 4";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Identifier "var1";
                 Engine.Tokeniser.Add;
                 Engine.Tokeniser.Identifier "var2";
                 Engine.Tokeniser.Equals;
                 Engine.Tokeniser.Int 4;
-            ]
+            ]]
        };
        {
             Args = "4 % 2";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Int 4;
                 Engine.Tokeniser.Modulus;
                 Engine.Tokeniser.Int 2
-            ]
+            ]]
        };
        {
             Args = "4^3 / tan(44)";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Int 4;
                 Engine.Tokeniser.Power;
                 Engine.Tokeniser.Int 3;
@@ -106,26 +105,26 @@ type TokeniserTests () =
                 Engine.Tokeniser.LeftBracket;
                 Engine.Tokeniser.Int 44;
                 Engine.Tokeniser.RightBracket;
-            ]
+            ]]
        };
        {
             Args = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Identifier "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-            ]
+            ]]
        };
        {
             Args = "4 3.21 + a";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Int 4;
                 Engine.Tokeniser.Float 3.21;
                 Engine.Tokeniser.Add;
                 Engine.Tokeniser.Identifier "a";
-            ]
+            ]]
        };
        {
             Args = "6(4(2(1(0))))";
-            Expected = [
+            Expected = [[
                 Engine.Tokeniser.Int 6;
                 Engine.Tokeniser.LeftBracket;
                 Engine.Tokeniser.Int 4;
@@ -139,7 +138,7 @@ type TokeniserTests () =
                 Engine.Tokeniser.RightBracket;
                 Engine.Tokeniser.RightBracket;
                 Engine.Tokeniser.RightBracket;
-            ]
+            ]]
        };
     ]
 

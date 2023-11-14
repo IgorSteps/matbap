@@ -25,6 +25,7 @@
             | Sin
             | Cos
             | Tan
+            | EOL
 
         // Map stores reserved keywords, used to replace string variables
         // with the corresponding enum type when encountered in the tokenizer function
@@ -76,8 +77,9 @@
             | _                             -> (chars, acc)
         
         let rec private matchTokens (chars: char list) (acc: Token list) =
-                match chars with 
-                | []          -> Ok(List.rev acc)
+                match chars with
+                | []          -> Ok(List.rev acc, [])
+                | ';' :: tail -> Ok(List.rev acc, tail)
                 | '+' :: tail -> matchTokens tail (Add::acc)
                 | '-' :: tail -> matchTokens tail (Minus::acc)
                 | '*' :: tail -> matchTokens tail (Multiply::acc)
@@ -88,7 +90,6 @@
                 | '^' :: tail -> matchTokens tail (Power::acc)
                 | '=' :: tail -> matchTokens tail (Equals::acc)
                 | ' ' :: tail -> matchTokens tail acc
-                 
                 | head :: tail when isDigit head ->
                     match formInt(tail, charToInt head) with
                     | Ok(chars, num) -> match num with
@@ -103,6 +104,16 @@
                     | false -> matchTokens chars (Identifier identifier::acc)
 
                 | head :: _ -> createErrorWithPosition (InvalidToken $"{head}", List.length acc + 1)
-
-        let tokenise(str : string): Result<Token list, LexicalError> = 
-            matchTokens(strToChar str) []
+ 
+        let tokenise(str : string): Result<Token list list, LexicalError> =
+            let chars = strToChar str
+            let rec tokeniseLine line list = 
+                match matchTokens line [] with
+                | Ok(tokenLine, remainingTokens) -> if remainingTokens.IsEmpty then 
+                                                        let lines = tokenLine::list
+                                                        Ok(List.rev lines)
+                                                    else
+                                                        let lines = tokenLine::list
+                                                        tokeniseLine remainingTokens lines
+                | Error err                 -> Error err
+            tokeniseLine chars []

@@ -1,5 +1,6 @@
 ﻿namespace Engine
     module Parser =
+        open System.Collections.Generic
         open Tokeniser
         // Grammar:
         // <E>    ::= <T> <Eopt>
@@ -15,20 +16,8 @@
         type NumType =
             | Int of int
             | Float of float
-        
-        let rec searchSym(varID : string) (symTable : list<string*NumType>) : bool*NumType =
-            match symTable with
-            | head :: tail ->   if (fst head = varID) then (true, snd head)
-                                else searchSym varID tail
-            | _ ->              (false, Int 0)
-        // Helper function to set value within symbol table (returning new one)
-        let rec setSym (varID : string) (varVal : NumType) (symTable : list<string*NumType>) : list<string*NumType> =
-            match symTable with
-            | head :: tail -> if (fst head) = varID then [(varID,varVal)]@tail // Return updated value, plus tail
-                              else [head]@(setSym varID varVal symTable) // Continue searching if not found
-            | _ -> []
 
-        let parseEval (tList : Token list) (symTable : list<string*NumType>)  : Result<NumType,string> =
+        let parseEval (tList : Token list list) (symTable : Dictionary<string, NumType>) =
             // Recursive functions
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
@@ -105,18 +94,19 @@
                                                 
             and grammarNR tList : Token list * (string * NumType) =
                 match tList with
-                // Check negative brackets before anything else (more specific)
-                | Minus::LeftBracket::tail ->   let remainingTokens, (vID, valueE) = grammarE tail
-                                                match remainingTokens with
-                                                | RightBracket :: tail -> match valueE with
-                                                                          | Float x -> tail, (vID, Float(-x))
-                                                                          | Int x -> tail, (vID, Int(-x))
-                                                | _ -> raise (ParseErrorException ("Error while parsing: Unexpected " +
-                                                              "token or end of expression"))
+                // For negative numbers must return negative of the NumType
+                | Minus::tail ->    let numTail, (vID, num) = grammarNRpt tail
+                                    match num with
+                                    | Float x -> numTail, (vID, Float(-x))
+                                    | Int x -> numTail, (vID, Int(-x))
+                | _ -> grammarNRpt tList
+
+            and grammarNRpt tList : Token list * (string * NumType) =
+                match tList with
                 // Follows grammar for brackets
-                | LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
+                | LeftBracket::tail ->  let remainingTokens, (vID, valueE) = grammarE tail
                                         match remainingTokens with
-                                        | RightBracket :: tail -> (tail, valueE)
+                                        | RightBracket :: tail -> (tail, (vID, valueE))
                                         | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
                                                       "or end of expression"))
                 // For negative numbers must return negative of the NumType
@@ -129,31 +119,40 @@
             and grammarNum tList : Token list * (string * NumType) =
                 match tList with
                 // Return number as a NumType
-                | Tokeniser.Identifier vName::tail  -> let result = searchSym vName symTable
-                                                       if (fst result) then (tail, ("", (snd result)))
-                                                       else raise (ParseErrorException "Error while parsing: Identifier not found") 
+                | Tokeniser.Identifier vName::tail  -> match symTable.ContainsKey vName with
+                                                       | true  -> (tail, (vName, symTable.[vName]))
+                                                       | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
 
-            let varA tList = 
+            let varA tList : Token list * (string * NumType) = 
                 match tList with 
                 | Tokeniser.Identifier vName :: tail -> match tail with 
                                                         | Tokeniser.Equals :: tail -> 
-                                                            let (tLst, (vID, tval)) = grammarE tail
+                                                            let (tLst, (_, tval)) = grammarE tail
                                                             (tLst, (vName, tval))
                                                         | _ -> grammarE tList
-                | _ -> grammarE tList
-            
+                | _ -> grammarE tList 
+
+            let parseLines tList =
+                let parseLine tList=
+                    let (tList, (vID, tval)) = varA tList
+                    match List.isEmpty tList with
+                    | true -> match symTable.ContainsKey vID with
+                              | true  -> symTable.[vID] <- tval
+                              | false -> symTable.Add(vID, tval)
+                              ((vID, tval), symTable)
+                    | false  -> raise (ParseErrorException "Error while parsing: could not parse all of expression")
+                let results = List.map parseLine tList
+                List.last results
+
             // Parsing function raises an exception, so catches it and returns result appropriately
             try
-                // For first call, assumes it starts with an E, as it is the highest level of grammar
-                let result = varA tList
+                                                                         
+                // For first call, assumes it starts with an varA, as it is the highest level of grammar
+                Ok(parseLines tList)
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
-                if (fst result).IsEmpty then
-                    Ok (snd (snd result) : NumType)
-                else
-                    raise (ParseErrorException "Error while parsing: Could not parse all of expression")
             with
                 | ParseErrorException value -> Error value

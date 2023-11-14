@@ -2,10 +2,11 @@ namespace Engine.Tests
 
 open Engine
 open NUnit.Framework
+open System.Collections.Generic
 
 type EvaluatorTestCase = {
     Args: string;
-    Expected: string;
+    Expected: Result<string * Dictionary<string, Parser.NumType>,string>;
 }
 
 [<TestFixture>]
@@ -14,91 +15,91 @@ type EvaluatorTests () =
         // Basic tests (parser's tests should test its own function)
         {
             Args = "7+9"
-            Expected = "16"
+            Expected = Ok("16", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "6-1"
-            Expected = "5"
+            Expected = Ok("5", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "6*8"
-            Expected = "48"
+            Expected = Ok("48", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "121/11"
-            Expected = "11"
+            Expected = Ok("11", Dictionary<string, Parser.NumType>())
         }
         // Unary Minus
         {
             Args = "4+-3"
-            Expected = "1"
+            Expected = Ok("1", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-2 + -3"
-            Expected = "-5"
+            Expected = Ok("-5", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-2 - (-3)"
-            Expected = "1"
+            Expected = Ok("1", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-(2+3)"
-            Expected = "-5"
+            Expected = Ok("-5", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-(2 + (-3))"
-            Expected = "1"
+            Expected = Ok("1", Dictionary<string, Parser.NumType>())
         }
         // Power
         {
             Args = "2^2"
-            Expected = "4"
+            Expected = Ok("4", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "2^(2+2)"
-            Expected = "16"
+            Expected = Ok("16", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "2^-2"
-            Expected = "0.25"
+            Expected = Ok("0.25", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "2^-(2 + (-3))"
-            Expected = "2"
+            Expected = Ok("2", Dictionary<string, Parser.NumType>())
         }
         // Modulo
         {
             Args = "10 % 3"
-            Expected = "1"
+            Expected = Ok("1", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "10 % -3"
-            Expected = "1"
+            Expected = Ok("1", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-10 % 3"
-            Expected = "-1"
+            Expected = Ok("-1", Dictionary<string, Parser.NumType>())
         }
         {
             Args = "-10 % -3"
-            Expected = "-1"
+            Expected = Ok("-1", Dictionary<string, Parser.NumType>())
         }
         // Error tests
         {
             Args = ""
-            Expected =  "Error while parsing: Unexpected token or end of expression"
+            Expected =  Error("Error while parsing: Unexpected token or end of expression")
         }
         {
             Args = "2*"
-            Expected =  "Error while parsing: Unexpected token or end of expression"
+            Expected =  Error("Error while parsing: Unexpected token or end of expression")
         }
         {
             Args = "/"
-            Expected =  "Error while parsing: Unexpected token or end of expression"
+            Expected =  Error("Error while parsing: Unexpected token or end of expression")
         }
         {
             Args = "9/0"
-            Expected =  "Error while parsing: division by 0"
+            Expected =  Error("Error while parsing: division by 0")
         }
     ]
 
@@ -113,4 +114,11 @@ type EvaluatorTests () =
         let actual = Evaluator.eval args
 
         // Assert
-        Assert.AreEqual(expected, actual, "Expected and actual are not equal")
+        match expected, actual with
+        | Ok (expectedValue, _), Ok (actualValue, _) ->
+            Assert.AreEqual(expectedValue, actualValue, "Values are not equal")
+
+        | Error expectedError, Error actualError ->
+            Assert.AreEqual(expectedError, actualError, "Errors are not equal")
+        | _ ->
+            Assert.Fail("Expected and actual have different result types")
