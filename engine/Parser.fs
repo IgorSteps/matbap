@@ -138,7 +138,9 @@
                                                             (tLst, (varName, tval))
                                                         | _ -> grammarE tList
                 | _ -> grammarE tList 
-
+            
+            // Takes list of token lists and parses all values of the list with map, updating the dictionary each time
+            // Returns the result of the final line
             let parseLines tList =
                 let parseLine tList =
                     let (tList, (varName, tval)) = varA tList
