@@ -3,14 +3,17 @@
         open System.Collections.Generic
         open Tokeniser
         // Grammar:
+        // <varA> ::= <varID> = <E>
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
         // <T>    ::= <P> <Topt>
         // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
         // <P>    ::= <NR> <Popt>
         // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= (E) | -(E) | <num> | -<num>
-        // <num>  ::= <int> | <float>
+        // <NR>   ::= <NRpt> | -<NRpt>
+        // <NRpt> ::= (E) | <num>
+        // <num>  ::= <int> | <float> | <varVal>
+        // varVal is fetched from symbol table using varID
         exception ParseErrorException of string
         // Define number type
         type NumType =
