@@ -139,7 +139,7 @@
                 | _ -> grammarE tList 
 
             let parseLines tList =
-                let parseLine tList=
+                let parseLine tList =
                     let (tList, (vID, tval)) = varA tList
                     match List.isEmpty tList with
                     | true -> match symTable.ContainsKey vID with

@@ -143,7 +143,7 @@ type TokeniserTests () =
        };
        {
             //test delimeter and correct order
-            Args = "x = 5; y = x + 3";
+            Args = "x = 5; \n y = x + 3";
             Expected = [
                 [
                     Token.Identifier "x";
