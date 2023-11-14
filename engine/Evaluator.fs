@@ -15,8 +15,8 @@ namespace Engine
                 // Parsing a line returns a varName if it was an assigment and "" if it was an expression. 
                 | (("", Parser.Int i), symTable)   -> Ok(string i, symTable)
                 | (("", Parser.Float f), symTable) -> Ok(string f, symTable)
-                | ((varName, Parser.Int i), symTable)    -> Ok(string i, symTable)
-                | ((varName, Parser.Float f), symTable)  -> Ok(string f, symTable)
+                | ((varName, Parser.Int i), symTable)    -> Ok((varName + " = " + string i), symTable)
+                | ((varName, Parser.Float f), symTable)  -> Ok((varName + " = " + string f), symTable)
 
         let eval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<string * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
