@@ -1,6 +1,7 @@
 ﻿namespace Engine.Tests
 
 open NUnit.Framework
+open Engine.Tokeniser
 
 type TokeniserTestCase = {
     Args: string;
@@ -140,6 +141,24 @@ type TokeniserTests () =
                 Engine.Tokeniser.RightBracket;
             ]]
        };
+       {
+            //test delimeter and correct order
+            Args = "x = 5; y = x + 3";
+            Expected = [
+                [
+                    Token.Identifier "x";
+                    Token.Equals;
+                    Token.Int 5;
+                ];
+                [
+                    Token.Identifier "y";
+                    Token.Equals;
+                    Token.Identifier "x";
+                    Token.Add;
+                    Token.Int 3
+                ]
+            ]
+       }
     ]
 
     static member lexicalErrorTestCases: TokeniserLexicalErrorCase list = [

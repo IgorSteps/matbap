@@ -230,6 +230,12 @@ type ParserTests () =
             Expected = Ok (("y", Int -17), (Helper.createDictionary "y" (Int -17)))
 
        }
+       {
+            // Parse multiple expressions
+            Args = [[Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 5]; [Tokeniser.Identifier "y"; Tokeniser.Equals;
+                    Tokeniser.Int 2; Tokeniser.Add; Tokeniser.Identifier "x"]]
+            Expected = Ok (("y", Int 7), Dictionary<string, Parser.NumType>() )
+       }
     ]
     static member parserErrorCases: ParserTestCase list = [
        {
