@@ -109,13 +109,14 @@ type EvaluatorTests () =
         // Assemble
         let args = testCase.Args
         let expected = testCase.Expected
+        let symTable = new Dictionary<string, Parser.NumType>()
   
         // Act
-        let actual = Evaluator.eval args
+        let actual = Evaluator.eval args symTable
 
         // Assert
         match expected, actual with
-        | Ok (expectedValue, _), Ok (actualValue, _) ->
+        | Ok(expectedValue, exdict), Ok(actualValue, acdict) ->
             Assert.AreEqual(expectedValue, actualValue, "Values are not equal")
 
         | Error expectedError, Error actualError ->
