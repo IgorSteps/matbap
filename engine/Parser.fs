@@ -2,21 +2,37 @@
     module Parser =
         open Tokeniser
         // Grammar:
+        // <varA> ::= <varID> = <E>
         // <E>    ::= <T> <Eopt>
         // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
         // <T>    ::= <P> <Topt>
         // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
         // <P>    ::= <NR> <Popt>
         // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= (E) | -(E) | <num> | -<num>
-        // <num>  ::= <int> | <float>
+        // <NR>   ::= <NRpt> | -<NRpt>
+        // <NRpt> ::= (E) | <num>
+        // <num>  ::= <int> | <float> | <varVal>
+        // varVal is fetched from symbol table using varID
         exception ParseErrorException of string
         // Define number type
         type NumType =
             | Int of int
             | Float of float
         
-        let parseEval (tList : Token list) : Result<NumType,string> =
+        // Helper function to search symbol table
+        let rec searchSym(varID : string) (symTable : list<string*NumType>) : bool*NumType =
+            match symTable with
+            | head :: tail ->   if (fst head = varID) then (true, snd head)
+                                else searchSym varID tail
+            | _ ->              (false, Int 0)
+        // Helper function to set value within symbol table (returning new one)
+        let rec setSym (varID : string) (varVal : NumType) (symTable : list<string*NumType>) : list<string*NumType> =
+            match symTable with
+            | head :: tail -> if (fst head) = varID then [(varID,varVal)]@tail // Return updated value, plus tail
+                              else [head]@(setSym varID varVal symTable) // Continue searching if not found
+            | _ -> [(varID, varVal)] // Not found in symbol table so add it ourselves
+        
+        let parseEval (tList : Token list) (symTable : list<string*NumType>) : Result<NumType,string> =
             // Recursive functions
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
@@ -93,14 +109,15 @@
                                                 
             and grammarNR tList : Token list * NumType =
                 match tList with
-                // Check negative brackets before anything else (more specific)
-                | Minus::LeftBracket::tail ->   let remainingTokens, valueE = grammarE tail
-                                                match remainingTokens with
-                                                | RightBracket :: tail -> match valueE with
-                                                                          | Float x -> tail, Float(-x)
-                                                                          | Int x -> tail, Int(-x)
-                                                | _ -> raise (ParseErrorException ("Error while parsing: Unexpected " +
-                                                              "token or end of expression"))
+                // For negative numbers must return negative of the NumType
+                | Minus::tail ->    let numTail, num = grammarNRpt tail
+                                    match num with
+                                    | Float x -> numTail, Float(-x)
+                                    | Int x -> numTail, Int(-x)
+                | _ -> grammarNRpt tList
+            
+            and grammarNRpt tList : Token list * NumType =
+                match tList with
                 // Follows grammar for brackets
                 | LeftBracket::tail ->  let remainingTokens, valueE = grammarE tail
                                         match remainingTokens with
