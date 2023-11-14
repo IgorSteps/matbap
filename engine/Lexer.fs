@@ -78,6 +78,7 @@
         
         let rec private matchTokens (chars: char list) (acc: Token list) =
                 match chars with
+                // A line is terminated once it either it reaches a ';' or all chars are consumed if it is the final line
                 | []          -> Ok(List.rev acc, [])
                 | ';' :: tail -> Ok(List.rev acc, tail)
                 | '+' :: tail -> matchTokens tail (Add::acc)
@@ -107,14 +108,19 @@
                 | head :: _ -> createErrorWithPosition (InvalidToken $"{head}", List.length acc + 1)
  
         let tokenise(str : string): Result<Token list list, LexicalError> =
-            let chars = strToChar str
-            let rec tokeniseLine line list = 
+            // Since multiple lines can be entered in one evaluation call, tokeniseLine calls matchtokens which returns
+            // A list of tokens terminating on a newline or empty list. This list of tokens represents one line
+            // Which gets appended to a list of lines.
+            let rec tokeniseLines line listOfLines = 
                 match matchTokens line [] with
-                | Ok(tokenLine, remainingTokens) -> if remainingTokens.IsEmpty then 
-                                                        let lines = tokenLine::list
+                | Ok(tokenLine, remainingTokens) -> if remainingTokens.IsEmpty then
+                                                        // Once all tokens are lexed, it appends the final line to the list
+                                                        // Ending the recursion and reversing the list 
+                                                        // As they get appended in reverse order.
+                                                        let lines = tokenLine::listOfLines
                                                         Ok(List.rev lines)
                                                     else
-                                                        let lines = tokenLine::list
-                                                        tokeniseLine remainingTokens lines
+                                                        let lines = tokenLine::listOfLines
+                                                        tokeniseLines remainingTokens lines
                 | Error err                 -> Error err
-            tokeniseLine chars []
+            tokeniseLines (strToChar str) []
