@@ -48,7 +48,7 @@
         
         <Button Grid.Row="2" Content="Evaluate" FontSize="20" FontWeight="Bold"  Command="{Binding InterpretCmd}" Margin="10" Background="#FFE29E9E"/>
         <Button Grid.Row="3" Content="Help" FontSize="20"  FontWeight="Bold"  Click="OpenTokenHelpClick" Margin="10" Background="#FFE29E9E"/>
-        <Button Grid.Row="4" Content="Plot" FontSize="20"  FontWeight="Bold"  Click="OpenPlotClick" Margin="10" Background="#FFE29E9E"/>
+        <Button Grid.Row="4" Content="Plot Mode" FontSize="20"  FontWeight="Bold"  Click="OpenPlotClick" Margin="10" Background="#FFE29E9E"/>
 
     </Grid>
 </Window>

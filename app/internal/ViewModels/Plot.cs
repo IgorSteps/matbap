@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -11,6 +12,9 @@ namespace app
     public class PlotViewModel : ObservableObject
     {
         private PlotModel _plotModel;
+        private RelayCommand _interpretCmd;
+
+        private string _inputEquation;
         private double _slope;
         private double _intercept;
         // @NOTE: Must be populated with coefficients in descending order of their corresponding powers of.
@@ -21,8 +25,9 @@ namespace app
 
         public PlotViewModel()
         {
-            _plotModel = new PlotModel{ Title="Plot model"};
+            _plotModel = new PlotModel{ Title="Your Plot"};
             _polynomialCoefficients = new ObservableCollection<double>();
+            _interpretCmd = new RelayCommand(Interpret);
 
             // Set defaults.
             _slope = 1; 
@@ -61,12 +66,12 @@ namespace app
             var lineSeries = new LineSeries();
 
             // Generate points for the line.
-            for (double x = -10; x <= 10; x += 1)
-            {
-                // y = ax + b
-                double y = _slope * x + _intercept;
-                lineSeries.Points.Add(new DataPoint(x, y));
-            }
+            //for (double x = -10; x <= 10; x += 1)
+            //{
+            //    // y = ax + b
+            //    double y = _slope * x + _intercept;
+            //    lineSeries.Points.Add(new DataPoint(x, y));
+            //}
 
             _plotModel.Series.Add(lineSeries);
         }
@@ -76,16 +81,16 @@ namespace app
 
                 var polynomialSeries = new LineSeries();
                 // Using user input of range and step sizes, calculate y values for range of x values.
-                for (double x = _xMinimum; x <= _xMaximum; x += _xStep)
-                {
-                    // Evaluate polynomial using Horner's method.
-                    double y = Horner(x);
-                    polynomialSeries.Points.Add(new DataPoint(x, y));
-                }
+                //for (double x = _xMinimum; x <= _xMaximum; x += _xStep)
+                //{
+                //    // Evaluate polynomial using Horner's method.
+                //    double y = Horner(x);
+                //    polynomialSeries.Points.Add(new DataPoint(x, y));
+                //}
                 _plotModel.Series.Add(polynomialSeries);
         }
 
-        // Horner Method  for Polynomial Evaluation.
+        // Horner Method for Polynomial Evaluation.
         public double Horner(double x)
         {
             double y = _polynomialCoefficients[0];
@@ -96,6 +101,17 @@ namespace app
             return y;
         }
 
+        /// <summary>
+        ///  InterpretCmd binds to a button in the plot view, executes the Interpret() when clicked.
+        /// </summary>
+        public RelayCommand InterpretCmd => _interpretCmd;
+
+        private void Interpret()
+        {
+            // Here will be the call to F# engine to do something.
+        }
+
+
         // ------------------------------------------------------------------------------------------------------
         // -------------------------------------- Getters & Setters below. --------------------------------------
         // ------------------------------------------------------------------------------------------------------
@@ -105,6 +121,13 @@ namespace app
             get => _plotModel;
             private set => SetProperty(ref _plotModel, value);
         }
+
+        public string InputEquation
+        {
+            get => _inputEquation;
+            set => SetProperty(ref _inputEquation, value);
+        }
+
 
         public double Slope
         {
