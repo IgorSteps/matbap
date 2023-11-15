@@ -11,10 +11,11 @@ namespace app
 {
     public class PlotViewModel : ObservableObject
     {
+        private readonly IPlotEquationEvaluator _equationEvaluator;
+
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
 
-        private string _inputEquation;
         private double _slope;
         private double _intercept;
         // @NOTE: Must be populated with coefficients in descending order of their corresponding powers of.
@@ -23,19 +24,22 @@ namespace app
         private double _xMaximum;
         private double _xStep;
 
-        public PlotViewModel()
+        private string _inputEquation;
+        
+
+        public PlotViewModel(IPlotEquationEvaluator p)
         {
+            _equationEvaluator = p;
             _plotModel = new PlotModel{ Title="Your Plot"};
-            _polynomialCoefficients = new ObservableCollection<double>();
             _interpretCmd = new RelayCommand(Interpret);
+            _polynomialCoefficients = new ObservableCollection<double>();
 
             // Set defaults.
-            _slope = 1; 
+            _slope = 1;
             _intercept = 0;
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
-
             SetUpAxis();
             UpdatePlot();
         }
@@ -108,7 +112,7 @@ namespace app
 
         private void Interpret()
         {
-            // Here will be the call to F# engine to do something.
+            _equationEvaluator.Evaluate(InputEquation);
         }
 
 

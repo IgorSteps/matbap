@@ -16,7 +16,7 @@
 
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Grid>
-                <TextBox Grid.Row="0" Width="600" Text="{Binding Expression}" Margin="5" x:Name="EquationInputBox" FontSize="18"/>
+                <TextBox Grid.Row="0" Width="600" Text="{Binding InputEquation}" Margin="5" x:Name="EquationInputBox" FontSize="18"/>
                 <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter equation to plot here..." Padding="5,5,0,0" Margin="5" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
