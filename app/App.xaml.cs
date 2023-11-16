@@ -38,9 +38,9 @@ namespace app
         {
             var services = new ServiceCollection();
 
-            // Models.
-            // (which is our maths engine which is a collection of services).
+            // Models/Services.
             services.AddSingleton<IInterpretModel, InterpretationModel>();
+            services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
 
             // Viewmodels.
             services.AddTransient<InterpretationViewModel>();

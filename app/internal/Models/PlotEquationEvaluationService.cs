@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace app
 {
 
-    public class PlotEquationEvaluationService
+    public class PlotEquationEvaluationService: IPlotEquationEvaluator
     {
         public string Evaluate(string equation)
         {

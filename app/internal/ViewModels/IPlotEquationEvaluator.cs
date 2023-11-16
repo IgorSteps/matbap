@@ -9,6 +9,5 @@ namespace app
     public interface IPlotEquationEvaluator
     {
         public string Evaluate(string equation);
-
     }
 }
