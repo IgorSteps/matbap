@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -10,45 +11,75 @@ namespace app
 {
     public class PlotViewModel : ObservableObject
     {
-        private PlotModel _plotModel;
-        private double _slope;
-        private double _intercept;
+        const double AxisMin = -10;
+        const double AxisMax = -10; 
 
-        public PlotViewModel()
+        private readonly IPlotEquationEvaluator _equationEvaluator;
+
+        private PlotModel _plotModel;
+        private RelayCommand _interpretCmd;
+
+        // @NOTE: Must be populated with coefficients in descending order of their corresponding powers of.
+        private List<double> _polynomialCoefficients;
+        private double _xMinimum;
+        private double _xMaximum;
+        private double _xStep;
+
+        private string _inputEquation;
+        
+
+        public PlotViewModel(IPlotEquationEvaluator p)
         {
-            _plotModel = new PlotModel{ Title="Line Graph"};
-            _slope = 1; // Default slope.
-            _intercept = 0; // Default intercept.
-            
+            _equationEvaluator = p;
+            _plotModel = new PlotModel{ Title="Your Plot"};
+            _interpretCmd = new RelayCommand(Interpret);
+            _polynomialCoefficients = new List<double>();
+
+            // Set defaults.
+            _xMinimum = -10;
+            _xMaximum = 10;
+            _xStep = 0.1;
+
             SetUpAxis();
             UpdatePlot();
         }
 
         private void SetUpAxis()
         {
-            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Minimum = -10, Maximum = 10 });
-            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = -10, Maximum = 10 });
+            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Minimum = AxisMin, Maximum = AxisMax });
+            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = AxisMin, Maximum = AxisMax });
         }
 
         public void UpdatePlot()
         {
             _plotModel.Series.Clear();
-
-            var lineSeries = new LineSeries();
-
-            // Generate points for the line.
-            for (double x = -10; x <= 10; x += 1)
-            {
-                // y = ax + b
-                double y = _slope * x + _intercept;
-                lineSeries.Points.Add(new DataPoint(x, y));
-            }
-
-            _plotModel.Series.Add(lineSeries);
-
-            // Update the model which in turn updates the view.
             _plotModel.InvalidatePlot(true);
         }
+
+        private void PlotLine()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void PlotPolynomial()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        ///  InterpretCmd binds to a button in the plot view, executes the Interpret() when clicked.
+        /// </summary>
+        public RelayCommand InterpretCmd => _interpretCmd;
+
+        private void Interpret()
+        {
+            _equationEvaluator.Evaluate(InputEquation);
+        }
+
+
+        // ------------------------------------------------------------------------------------------------------
+        // -------------------------------------- Getters & Setters below. --------------------------------------
+        // ------------------------------------------------------------------------------------------------------
 
         public PlotModel PlotModel
         {
@@ -56,28 +87,59 @@ namespace app
             private set => SetProperty(ref _plotModel, value);
         }
 
-        public double Slope
+        public string InputEquation
         {
-            get => _slope;
+            get => _inputEquation;
+            set => SetProperty(ref _inputEquation, value);
+        }
+
+        public List<double> PolynomialCoefficients
+        {
+            get => _polynomialCoefficients;
             set
             {
-                if (SetProperty(ref _slope, value))
+                if (SetProperty(ref _polynomialCoefficients, value))
                 {
                     UpdatePlot();
                 }
             }
         }
 
-        public double Intercept
+        public double XMinimum
         {
-            get => _intercept;
+            get => _xMinimum;
             set
             {
-                if (SetProperty(ref _intercept, value))
+                if (SetProperty(ref _xMinimum, value))
                 {
                     UpdatePlot();
                 }
             }
         }
+
+        public double XMaximum
+        {
+            get => _xMaximum;
+            set
+            {
+                if (SetProperty(ref _xMaximum, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
+        public double XStep
+        {
+            get => _xStep;
+            set
+            {
+                if (SetProperty(ref _xStep, value))
+                {
+                    UpdatePlot();
+                }
+            }
+        }
+
     }
 } 

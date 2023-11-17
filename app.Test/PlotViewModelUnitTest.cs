@@ -1,61 +1,43 @@
 ﻿
+using Moq;
 using OxyPlot.Series;
+using System.Collections.ObjectModel;
 
 namespace app.Test
 {
     internal class PlotViewModelUnitTest
     {
+        private app.PlotViewModel _viewModel;
+        private Mock<IPlotEquationEvaluator> _modelMock;
 
-        [Test]
-        public void PlotViewModel_Updates_WhenSlopeChanges()
+        [SetUp]
+        public void Setup()
         {
-            // --------
-            // ASSEMBLE
-            // --------
-            var viewModel = new PlotViewModel();
-            var expectedSlope = 2.0;
-
-            // ---
-            // ACT
-            // ---
-            viewModel.Slope = expectedSlope;
-            LineSeries lineSeries = viewModel.PlotModel.Series[0] as LineSeries;
-
-            // ------
-            // ASSERT
-            // ------
-            Assert.That(lineSeries, Is.Not.Null, "line series shouldn't be null");
-
-            // Points[1].Y = -18
-            // Points[1].X = -9
-            // Slope = y/x =-18/-9 = 2
-            Assert.That(lineSeries.Points[1].Y / lineSeries.Points[1].X, Is.EqualTo(expectedSlope), "slope should be equal to 2");
+            _modelMock = new Mock<IPlotEquationEvaluator>();
+            _viewModel = new PlotViewModel(_modelMock.Object);
         }
 
+        // Test stub for future.
         [Test]
-        public void PlotViewModel_ShouldUpdate_WhenInterceptChanges()
+        public void PlotViewModel_InterpretCommand_WillDoSomething()
         {
             // --------
             // ASSEMBLE
             // --------
-            var viewModel = new PlotViewModel();
-            var slope = viewModel.Slope; // Default value is 1.
-            var expectedIntercept = 10.0;
+            var testInput = "y=2x+12";
+            var expectedResponse = "123";
+            _viewModel.InputEquation = testInput;
+            _modelMock.Setup(i => i.Evaluate(testInput)).Returns(expectedResponse);
 
             // ---
             // ACT
             // ---
-            viewModel.Intercept = expectedIntercept;
-            LineSeries lineSeries = viewModel.PlotModel.Series[0] as LineSeries;
+            _viewModel.InterpretCmd.Execute(null);
 
             // ------
             // ASSERT
             // ------
-            Assert.That(lineSeries, Is.Not.Null, "line series shouldn't be null");
-            
-            // From the line equation y=ax+b, where b(intercept) = y-ax.
-            var actualIntercept = lineSeries.Points[0].Y - slope * lineSeries.Points[0].X;
-            Assert.That(actualIntercept, Is.EqualTo(expectedIntercept), "intercept  should be equal to 10");
+            //Assert.That(_viewModel.Response, Is.EqualTo(expectedResponse), "Actual response is not equal expected");
         }
     }
 }

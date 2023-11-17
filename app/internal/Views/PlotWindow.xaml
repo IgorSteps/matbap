@@ -11,17 +11,39 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
+
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label Content="Slope:" Margin="5"/>
-            <!--UpdateSourceTrigger=PropertyChanged makes the binding updates on the PlotViewModel as soon as the text in the boxes changes.-->
-            <TextBox Width="50" Margin="5" Text="{Binding Slope, UpdateSourceTrigger=PropertyChanged}"/>
-            <Label Content="Intercept:" Margin="5"/>
-            <!--UpdateSourceTrigger=PropertyChanged makes the binding updates on the PlotViewModel as soon as the text in the boxes changes.-->
-            <TextBox Width="50" Margin="5" Text="{Binding Intercept, UpdateSourceTrigger=PropertyChanged}"/>
+            <Grid>
+                <TextBox Grid.Row="0" Width="600" Text="{Binding InputEquation}" Margin="5" x:Name="EquationInputBox" FontSize="18"/>
+                <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter equation to plot here..." Padding="5,5,0,0" Margin="5" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
+                    <TextBlock.Style>
+                        <Style TargetType="{x:Type TextBlock}">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <!-- Check if the expression text box is empty and change placeholder visibility accordingly. -->
+                                <DataTrigger Binding="{Binding Text, ElementName=EquationInputBox}" Value="">
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+            </Grid>
+            <Button Grid.Row="0"  Width="150" Content="Plot" FontSize="20" FontWeight="Bold" Command="{Binding InterpretCmd}" Margin="5" Background="#FFE29E9E"/>
         </StackPanel>
-        
+
         <oxy:PlotView Grid.Row="1" Model="{Binding PlotModel}" />
+        
+        <!-- Polynomial Coefficients controls -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Label Content="X Min:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XMinimum, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="X Max:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XMaximum, UpdateSourceTrigger=PropertyChanged}"/>
+            <Label Content="X Step:" Margin="5"/>
+            <TextBox Width="50" Margin="5" Text="{Binding XStep, UpdateSourceTrigger=PropertyChanged}"/>
+        </StackPanel>
     </Grid>
 </Window>
