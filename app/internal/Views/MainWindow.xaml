@@ -14,7 +14,15 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBox Grid.Row="0" Text="{Binding Expression}" Margin="10,10,10,0" x:Name="ExpressionInputBox" VerticalAlignment="Stretch" FontSize="18"/>
+        <TextBox Grid.Row="0"
+                 Text="{Binding Expression}"
+                 Margin="10,10,10,0"
+                 x:Name="ExpressionInputBox"
+                 VerticalAlignment="Stretch"
+                 FontSize="18"
+                 TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Visible"
+                AcceptsReturn="True"/>
         <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter expression here..." Padding="5,5,0,0" Margin="10,10,10,0" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">

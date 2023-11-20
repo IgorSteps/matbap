@@ -12,7 +12,7 @@ namespace app
     public class PlotViewModel : ObservableObject
     {
         const double AxisMin = -10;
-        const double AxisMax = -10; 
+        const double AxisMax = 10; 
 
         private readonly IPlotEquationEvaluator _equationEvaluator;
 
