@@ -90,7 +90,7 @@ namespace app.Test
         }
 
         [Test]
-        public void InterpretModeView_FT()
+        public void InterpretModeView_TestReturnType()
         {
             // --------
             // ASSEMBLE
@@ -110,6 +110,35 @@ namespace app.Test
             // ------
             // We check F# engine returns a string to make sure our GUI output is a clear string
             Assert.That(viewModel.Response, Is.EqualTo("2"), "F# engine returned a value C# can't understand");
+        }
+
+
+        [Test]
+        public void InterpretModeView_TestNewLine()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var interpreter = new InterpretationModel();
+            var viewModel = new InterpretationViewModel(interpreter);
+            // Same as 
+            // x=1;
+            // y=1;
+            // x+y
+            // What is \r\n https://stackoverflow.com/questions/15433188/what-is-the-difference-between-r-n-r-and-n
+            viewModel.Expression = "x=1;\r\ny=1;\r\nx+y";
+
+            // ---
+            // ACT
+            // ---
+            viewModel.InterpretCmd.Execute(null);
+
+
+            // ------
+            // ASSERT
+            // ------
+            // We check F# engine returns a string to make sure our GUI output is a clear string
+            Assert.That(viewModel.Response, Is.EqualTo("y = 2"), "Expression with new lines has returned wrong answer");
         }
 
     }

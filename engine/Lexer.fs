@@ -92,6 +92,7 @@
                 | '=' :: tail -> matchTokens tail (Equals::acc)
                 | ' ' :: tail -> matchTokens tail acc
                 | '\n':: tail -> matchTokens tail acc
+                | '\r':: tail -> matchTokens tail acc
                 | head :: tail when isDigit head ->
                     match formInt(tail, charToInt head) with
                     | Ok(chars, num) -> match num with
