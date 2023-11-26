@@ -64,6 +64,7 @@ namespace app
             {
                 lineSeries.Points.Add(new DataPoint(pair[0], pair[1]));
             }
+            _plotModel.Series.Add(lineSeries);
         }
 
         /// <summary>

@@ -18,24 +18,14 @@ namespace app.Test
         }
 
         [Test]
-        public void PlotViewModel_InterpretCommand_WillDoSomething()
+        public void PlotViewModel_InterpretCommand_CallsEvaluateOnce()
         {
             // --------
             // ASSEMBLE
             // --------
             var testInput = "y=2x+12";
-            var expectedResponse = new List<double[]>
-            {
-                new double[] { 0, 2 },
-                new double[] { 1, 4 },
-                new double[] { 2, 6 } 
-            };
             _viewModel.InputEquation = testInput;
-            _modelMock.Setup(i => i.Evaluate(testInput)).Returns(expectedResponse);
-            
-            LineSeries lineSeries = _viewModel.PlotModel.Series[0] as LineSeries;
-            Assert.IsNotNull(lineSeries);
-            
+
             // ---
             // ACT
             // ---
@@ -44,7 +34,7 @@ namespace app.Test
             // ------
             // ASSERT
             // ------
-            //Assert.That(_viewModel.Response, Is.EqualTo(expectedResponse), "Actual response is not equal expected");
+            _modelMock.Verify(m => m.Evaluate(testInput), Times.Once);
         }
     }
 }
