@@ -133,10 +133,10 @@
             let varA tList : Token list * (string * NumType) = 
                 match tList with 
                 | Tokeniser.Identifier varName :: tail -> match tail with 
-                                                        | Tokeniser.Equals :: tail -> 
+                                                          | Tokeniser.Equals :: tail -> 
                                                             let (tLst, (_, tval)) = grammarE tail
                                                             (tLst, (varName, tval))
-                                                        | _ -> grammarE tList
+                                                          | _ -> grammarE tList
                 | _ -> grammarE tList 
             
             // Takes list of token lists and parses all values of the list with map, updating the dictionary each time

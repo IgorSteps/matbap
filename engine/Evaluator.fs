@@ -25,3 +25,21 @@ namespace Engine
             | Ok tokens -> match parse tokens symTable with
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
+                           
+        // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive
+        // For now hooks into the evaluation engine so it's possible to do something such as "y=x=x+1" and it will crash,
+        // so in future it should check for cases such as this while parsing. 
+        let plotPoints (exp : string) (symTable: Dictionary<string, Parser.NumType>) =
+            let mutable points = ResizeArray<float list>()
+            let min = 1
+            let max = 10
+            let step = 0.5
+            let mutable i = float min
+            while (i < max) do
+                let result = eval exp symTable
+                match result with
+                | Ok (string, symTable) -> points.Add([i; float string])
+                | Error e -> points.Add([])
+                printfn $"%f{i}"
+                i <- i + step
+            points.ToArray()
