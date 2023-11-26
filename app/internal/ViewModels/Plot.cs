@@ -20,7 +20,7 @@ namespace app
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
 
-        private List<List<double>> _coords;
+        private List<double[]> _coords;
         private double _xMinimum;
         private double _xMaximum;
         private double _xStep;
@@ -33,7 +33,7 @@ namespace app
             _equationEvaluator = p;
             _plotModel = new PlotModel{ Title="Your Plot"};
             _interpretCmd = new RelayCommand(Interpret);
-            _coords = new List<List<double>>();
+            _coords = new List<double[]>();
 
             // Set defaults.
             _xMinimum = -10;
@@ -60,7 +60,7 @@ namespace app
         private void Plot()
         {
             var lineSeries = new LineSeries();
-            foreach (List<double> pair in _coords)
+            foreach (double[] pair in _coords)
             {
                 lineSeries.Points.Add(new DataPoint(pair[0], pair[1]));
             }
@@ -91,18 +91,6 @@ namespace app
         {
             get => _inputEquation;
             set => SetProperty(ref _inputEquation, value);
-        }
-
-        public List<double> PolynomialCoefficients
-        {
-            get => _polynomialCoefficients;
-            set
-            {
-                if (SetProperty(ref _polynomialCoefficients, value))
-                {
-                    UpdatePlot();
-                }
-            }
         }
 
         public double XMinimum

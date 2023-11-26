@@ -17,7 +17,6 @@ namespace app.Test
             _viewModel = new PlotViewModel(_modelMock.Object);
         }
 
-        // Test stub for future.
         [Test]
         public void PlotViewModel_InterpretCommand_WillDoSomething()
         {
@@ -25,10 +24,18 @@ namespace app.Test
             // ASSEMBLE
             // --------
             var testInput = "y=2x+12";
-            var expectedResponse = "123";
+            var expectedResponse = new List<double[]>
+            {
+                new double[] { 0, 2 },
+                new double[] { 1, 4 },
+                new double[] { 2, 6 } 
+            };
             _viewModel.InputEquation = testInput;
             _modelMock.Setup(i => i.Evaluate(testInput)).Returns(expectedResponse);
-
+            
+            LineSeries lineSeries = _viewModel.PlotModel.Series[0] as LineSeries;
+            Assert.IsNotNull(lineSeries);
+            
             // ---
             // ACT
             // ---

@@ -11,10 +11,10 @@ namespace app
 
     public class PlotEquationEvaluationService: IPlotEquationEvaluator
     {
-        public string Evaluate(string equation)
+        public List<double[]> Evaluate(string equation)
         {
             // Call to F# enginge to do its magic.
-            return "";
+            return null;
         }
     }
 }
