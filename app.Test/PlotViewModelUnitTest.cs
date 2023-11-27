@@ -17,17 +17,14 @@ namespace app.Test
             _viewModel = new PlotViewModel(_modelMock.Object);
         }
 
-        // Test stub for future.
         [Test]
-        public void PlotViewModel_InterpretCommand_WillDoSomething()
+        public void PlotViewModel_InterpretCommand_CallsEvaluateOnce()
         {
             // --------
             // ASSEMBLE
             // --------
             var testInput = "y=2x+12";
-            var expectedResponse = "123";
             _viewModel.InputEquation = testInput;
-            _modelMock.Setup(i => i.Evaluate(testInput)).Returns(expectedResponse);
 
             // ---
             // ACT
@@ -37,7 +34,7 @@ namespace app.Test
             // ------
             // ASSERT
             // ------
-            //Assert.That(_viewModel.Response, Is.EqualTo(expectedResponse), "Actual response is not equal expected");
+            _modelMock.Verify(m => m.Evaluate(testInput), Times.Once);
         }
     }
 }

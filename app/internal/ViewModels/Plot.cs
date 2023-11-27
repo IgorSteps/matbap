@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.FSharp.Collections;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -19,8 +20,7 @@ namespace app
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
 
-        // @NOTE: Must be populated with coefficients in descending order of their corresponding powers of.
-        private List<double> _polynomialCoefficients;
+        private List<double[]> _coords;
         private double _xMinimum;
         private double _xMaximum;
         private double _xStep;
@@ -33,7 +33,7 @@ namespace app
             _equationEvaluator = p;
             _plotModel = new PlotModel{ Title="Your Plot"};
             _interpretCmd = new RelayCommand(Interpret);
-            _polynomialCoefficients = new List<double>();
+            _coords = new List<double[]>();
 
             // Set defaults.
             _xMinimum = -10;
@@ -53,17 +53,18 @@ namespace app
         public void UpdatePlot()
         {
             _plotModel.Series.Clear();
+            Plot();
             _plotModel.InvalidatePlot(true);
         }
 
-        private void PlotLine()
+        private void Plot()
         {
-            throw new NotImplementedException();
-        }
-
-        private void PlotPolynomial()
-        {
-            throw new NotImplementedException();
+            var lineSeries = new LineSeries();
+            foreach (double[] pair in _coords)
+            {
+                lineSeries.Points.Add(new DataPoint(pair[0], pair[1]));
+            }
+            _plotModel.Series.Add(lineSeries);
         }
 
         /// <summary>
@@ -91,18 +92,6 @@ namespace app
         {
             get => _inputEquation;
             set => SetProperty(ref _inputEquation, value);
-        }
-
-        public List<double> PolynomialCoefficients
-        {
-            get => _polynomialCoefficients;
-            set
-            {
-                if (SetProperty(ref _polynomialCoefficients, value))
-                {
-                    UpdatePlot();
-                }
-            }
         }
 
         public double XMinimum
