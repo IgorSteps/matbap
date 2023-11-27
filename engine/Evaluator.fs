@@ -26,20 +26,43 @@ namespace Engine
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
                            
+                           
+        // Private functions for plotting to avoid casting to string and adding variable names
+        let private plotParse(tokens: Tokeniser.Token list list) (symTable: Dictionary<string, Parser.NumType>) =
+            match Parser.parseEval tokens symTable with
+            | Error parseError                    -> Error parseError
+            | Ok result ->
+                match result with
+                | ((_, Parser.Int i), symTable)   -> Ok(float i, symTable)
+                | ((_, Parser.Float f), symTable) -> Ok(f, symTable)
+                
+        let plotEval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<float * Dictionary<string, Parser.NumType>,string>  =
+            match Tokeniser.tokenise exp with
+            | Error e   -> Error (getStrFromLexerError(e))
+            | Ok tokens -> match plotParse tokens symTable with
+                           | Ok(result, symTable) -> Ok(result, symTable)
+                           | Error e              -> Error e
+                           
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive
         // For now hooks into the evaluation engine so it's possible to do something such as "y=x=x+1" and it will crash,
-        // so in future it should check for cases such as this while parsing. 
-        let plotPoints (exp : string) (symTable: Dictionary<string, Parser.NumType>) =
+        // so in future it should check for cases such as this while parsing.
+        // Expression input in the form: y = <exp>
+        let plotPoints (min: float) (max: float) (step: float) (exp : string) (symTable: Dictionary<string, Parser.NumType>) =
             let mutable points = ResizeArray<float list>()
-            let min = 1
-            let max = 10
-            let step = 0.5
-            let mutable i = float min
-            while (i < max) do
-                let result = eval exp symTable
+            let trueStep = abs(step)
+            let mutable x = float min
+            let mutable error = None
+            match symTable.ContainsKey "x" with
+                | true  -> symTable["x"] <- Parser.Float x
+                | false -> symTable.Add("x", Parser.Float x)
+            while (x <= max) do
+                symTable["x"] <- Parser.Float x
+                let result = plotEval exp symTable
                 match result with
-                | Ok (string, symTable) -> points.Add([i; float string])
-                | Error e -> points.Add([])
-                printfn $"%f{i}"
-                i <- i + step
-            points.ToArray()
+                | Ok (y, _) -> points.Add([x; y])
+                | Error e        -> error <- Some e
+                                    x <- max
+                x <- x + trueStep
+            match error with
+            | None -> Ok (points.ToArray())
+            | Some e -> Error e
