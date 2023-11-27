@@ -160,7 +160,7 @@
                 match tList with
                 // Return number as a NumType
                 | Tokeniser.Identifier vName::tail  -> match symTable.ContainsKey vName with
-                                                       | true  -> (tail, (vName, symTable.[vName]))
+                                                       | true  -> (tail, ("", symTable.[vName]))
                                                        | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
