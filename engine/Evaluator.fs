@@ -33,7 +33,7 @@ namespace Engine
             | Error parseError                    -> Error parseError
             | Ok result -> // Should search for assignment token here. Need to add function to do that
                 if (List.contains Tokeniser.Equals tokens)  then
-                    Error "Can't use assignment within"
+                    Error "Can't use assignment in plotting mode"
                 else match result with
                      | ((_, Parser.Int i), symTable)   -> Ok(float i, symTable)
                      | ((_, Parser.Float f), symTable) -> Ok(f, symTable)
@@ -45,26 +45,37 @@ namespace Engine
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
                            
-        // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive
-        // For now hooks into the evaluation engine so it's possible to do something such as "y=x=x+1" and it will crash,
-        // so in future it should check for cases such as this while parsing.
+        // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
+        // and min/max are treated as "start point" and "end point"
         // Expression input in the form: y = <exp>
         let plotPoints (min: float) (max: float) (step: float) (exp : string) (symTable: Dictionary<string, Parser.NumType>) =
+            // Definitions
             let mutable points = ResizeArray<float list>()
-            let trueStep = abs(step)
             let mutable x = float min
-            let mutable error = None
+            let mutable gotError = None
+            let trueStep = abs(step)
+            
+            // Ensure symbol table contains x
             match symTable.ContainsKey "x" with
                 | true  -> symTable["x"] <- Parser.Float x
                 | false -> symTable.Add("x", Parser.Float x)
+                
+            // Calculation loop. While within range of max
             while (x <= max) do
+                // Set x and calculate
                 symTable["x"] <- Parser.Float x
                 let result = plotEval exp symTable
+                
                 match result with
                 | Ok (y, _) -> points.Add([x; y])
-                | Error e        -> error <- Some e
-                                    x <- max
+                // If we get an error, needs to be returned instead of the list of plots.
+                // gotError holds this and is checked once we leave the loop. X is set to max in order to break the loop
+                | Error e   -> gotError <- Some e
+                               x <- max
+                
+                // Increment x for loop
                 x <- x + trueStep
-            match error with
+                
+            match gotError with
             | None -> Ok (points.ToArray())
             | Some e -> Error e
