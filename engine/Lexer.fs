@@ -25,11 +25,12 @@
             | Sin
             | Cos
             | Tan
+            | Log
             | EOL
 
         // Map stores reserved keywords, used to replace string variables
         // with the corresponding enum type when encountered in the tokenizer function
-        let private keywords = Map.empty.Add("sin", Sin).Add("cos", Cos).Add("tan", Tan)
+        let private keywords = Map.empty.Add("sin", Sin).Add("cos", Cos).Add("tan", Tan).Add("log", Log)
 
         // Helpers.
         let private strToChar(str: string)   = [for c in str do yield c]
