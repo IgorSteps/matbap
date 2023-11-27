@@ -28,13 +28,15 @@ namespace Engine
                            
                            
         // Private functions for plotting to avoid casting to string and adding variable names
-        let private plotParse(tokens: Tokeniser.Token list list) (symTable: Dictionary<string, Parser.NumType>) =
+        let private plotParse(tokens: Tokeniser.Token list) (symTable: Dictionary<string, Parser.NumType>) =
             match Parser.parseEval tokens symTable with
             | Error parseError                    -> Error parseError
-            | Ok result ->
-                match result with
-                | ((_, Parser.Int i), symTable)   -> Ok(float i, symTable)
-                | ((_, Parser.Float f), symTable) -> Ok(f, symTable)
+            | Ok result -> // Should search for assignment token here. Need to add function to do that
+                if (List.contains Tokeniser.Equals tokens)  then
+                    Error "Can't use assignment within"
+                else match result with
+                     | ((_, Parser.Int i), symTable)   -> Ok(float i, symTable)
+                     | ((_, Parser.Float f), symTable) -> Ok(f, symTable)
                 
         let plotEval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<float * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
