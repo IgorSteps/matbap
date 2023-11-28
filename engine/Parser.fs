@@ -174,19 +174,17 @@
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
             
-            let varA (tList: Token list) : Token list * (string * NumType) = 
+            let varA tList = 
                 match tList with 
-                | Tokeniser.Identifier varName :: tail -> match tail with 
-                                                          | Tokeniser.Equals :: tail -> 
-                                                            let (tLst, (_, tval)) = grammarE tail
-                                                            (tLst, (varName, tval))
-                                                          | _ -> grammarE tList
+                | Tokeniser.Identifier varName :: Equals :: tail -> let (tLst, (_, tval)) = grammarE tail
+                                                                    (tLst, (varName, tval))
                 | _ -> grammarE tList 
 
             let grammarStatements tList =
                 let rec parseStatement tList =
                     let (remainingTokens, (varName, tval)) = varA tList
                     match varName with
+                    // When no assigment was done, the result will not be stored in the symtable
                     | "" -> ()
                     | _  -> match symTable.ContainsKey varName with
                             | true  -> symTable.[varName] <- tval
