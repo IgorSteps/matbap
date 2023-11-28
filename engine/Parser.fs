@@ -18,7 +18,7 @@
         // <num>       ::= <int> | <float> | <varVal>
 
         // <func-call> ::= <func-name>(<E>)
-        // <func-name> ::= sin | cos | tan | plot
+        // <func-name> ::= sin | cos | tan | log | plot
 
         // varVal is fetched from symbol table using varID
         exception ParseErrorException of string
@@ -27,8 +27,9 @@
             | Int of int
             | Float of float
 
-        let parseEval (tList : Token list list) (symTable : Dictionary<string, NumType>) =
+        let parseEval (tList : Token list) (symTable : Dictionary<string, NumType>) =
             // Recursive functions
+
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
             
@@ -154,6 +155,13 @@
                                                                      | Int x   -> (tail, (varName, Float(log x)))
                                             | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
                                                       "or end of expression"))
+                | Exp::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(exp x)))
+                                                                     | Int x   -> (tail, (varName, Float(exp x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
                 | _ -> grammarNum tList
                 
             and grammarNum tList : Token list * (string * NumType) =
@@ -165,8 +173,8 @@
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
-
-            let varA tList : Token list * (string * NumType) = 
+            
+            let varA (tList: Token list) : Token list * (string * NumType) = 
                 match tList with 
                 | Tokeniser.Identifier varName :: tail -> match tail with 
                                                           | Tokeniser.Equals :: tail -> 
@@ -174,26 +182,25 @@
                                                             (tLst, (varName, tval))
                                                           | _ -> grammarE tList
                 | _ -> grammarE tList 
-            
-            // Takes list of token lists and parses all values of the list with map, updating the dictionary each time
-            // Returns the result of the final line
-            let parseLines tList =
-                let parseLine tList =
-                    let (tList, (varName, tval)) = varA tList
-                    match List.isEmpty tList with
-                    | true -> match symTable.ContainsKey varName with
-                              | true  -> symTable.[varName] <- tval
-                              | false -> symTable.Add(varName, tval)
-                              ((varName, tval), symTable)
-                    | false  -> raise (ParseErrorException "Error while parsing: could not parse all of expression")
-                let results = List.map parseLine tList
-                List.last results
 
+            let grammarStatements tList =
+                let rec parseStatement tList =
+                    let (remainingTokens, (varName, tval)) = varA tList
+                    match varName with
+                    | "" -> ()
+                    | _  -> match symTable.ContainsKey varName with
+                            | true  -> symTable.[varName] <- tval
+                            | false -> symTable.Add(varName, tval)
+                    match remainingTokens with
+                    | EOL::tail -> parseStatement tail  // More statements to parse
+                    | _ -> ((varName, tval), symTable)  // End of statements
+            
+                parseStatement tList
             // Parsing function raises an exception, so catches it and returns result appropriately
             try
                                                                          
                 // For first call, assumes it starts with an varA, as it is the highest level of grammar
-                Ok(parseLines tList)
+                Ok(grammarStatements tList)
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
             with
