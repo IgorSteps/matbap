@@ -181,10 +181,9 @@ type EvaluatorTests () =
     member this._Test_Plot_Pass(testCase: PlotTestCase) =
         // Assemble
         let expected = testCase.Expected
-        let symTable = Dictionary<string, Parser.NumType>()
   
         // Act
-        let actual = Evaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp symTable
+        let actual = Evaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp
 
         // Assert
         match expected, actual with

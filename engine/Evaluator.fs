@@ -48,17 +48,16 @@ namespace Engine
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
         // and min/max are treated as "start point" and "end point"
         // Expression input in the form: y = <exp>
-        let plotPoints (min: float) (max: float) (step: float) (exp : string) (symTable: Dictionary<string, Parser.NumType>) : Result<float array array, string> =
+        let plotPoints (min: float) (max: float) (step: float) (exp : string) : Result<float array array, string> =
             // Definitions
             let mutable points = ResizeArray<float array>()
             let mutable x = float min
             let mutable gotError = None
             let trueStep = abs(step)
             
-            // Ensure symbol table contains x
-            match symTable.ContainsKey "x" with
-                | true  -> symTable["x"] <- Parser.Float x
-                | false -> symTable.Add("x", Parser.Float x)
+            // Create symbol table containing X
+            let symTable = Dictionary<string, Parser.NumType>()
+            symTable.Add("x", Parser.Float x)
                 
             // Calculation loop. While within range of max
             while (x <= max) do
