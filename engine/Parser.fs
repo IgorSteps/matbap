@@ -3,16 +3,23 @@
         open System.Collections.Generic
         open Tokeniser
         // Grammar:
-        // <varA> ::= <varID> = <E>
-        // <E>    ::= <T> <Eopt>
-        // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
-        // <T>    ::= <P> <Topt>
-        // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
-        // <P>    ::= <NR> <Popt>
-        // <Popt> ::= ^ <NR> <Popt> | <empty>
-        // <NR>   ::= <NRpt> | -<NRpt>
-        // <NRpt> ::= (E) | <num>
-        // <num>  ::= <int> | <float> | <varVal>
+        // <StatementList> ::= <Statement> | <Statement> <StatementList>
+        // <Statement> ::= <VarA> | <E> | <ForLoop>
+        // <ForLoop>   ::= "for" "(" <VarA> ";" <E> ";" <VarA> ")"  { <Statement> }
+        // <varA>      ::= <varID> = <E>
+        // <E>         ::= <T> <Eopt>
+        // <Eopt>      ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+        // <T>         ::= <P> <Topt>
+        // <Topt>      ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
+        // <P>         ::= <NR> <Popt>
+        // <Popt>      ::= ^ <NR> <Popt> | <empty>
+        // <NR>        ::= <NRpt> | -<NRpt>
+        // <NRpt>      ::= (<E>) | <num> | <func-call>
+        // <num>       ::= <int> | <float> | <varVal>
+
+        // <func-call> ::= <func-name>(<E>)
+        // <func-name> ::= sin | cos | tan | log | plot
+
         // varVal is fetched from symbol table using varID
         exception ParseErrorException of string
         // Define number type
@@ -20,8 +27,9 @@
             | Int of int
             | Float of float
 
-        let parseEval (tList : Token list list) (symTable : Dictionary<string, NumType>) =
+        let parseEval (tList : Token list) (symTable : Dictionary<string, NumType>) =
             // Recursive functions
+
             let rec grammarE tList =
                 (grammarT >> grammarEopt) tList
             
@@ -114,50 +122,82 @@
                                         | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
                                                       "or end of expression"))
                 // For negative numbers must return negative of the NumType
-                | Minus::tail ->    let numTail, (varName, num) = grammarNum tail
+                | Minus::tail    -> let numTail, (varName, num) = grammarNum tail
                                     match num with
                                     | Float x -> numTail, (varName, Float(-x))
-                                    | Int x -> numTail, (varName, Int(-x))
+                                    | Int   x -> numTail, (varName, Int(-x))
+                                    
+                | Sin::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(sin x)))
+                                                                     | Int x   -> (tail, (varName, Float(sin x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
+                | Cos::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(cos x)))
+                                                                     | Int x   -> (tail, (varName, Float(cos x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
+                | Tan::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(tan x)))
+                                                                     | Int x   -> (tail, (varName, Float(tan x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
+                | Log::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(log x)))
+                                                                     | Int x   -> (tail, (varName, Float(log x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
+                | Exp::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
+                                            match remainingTokens with 
+                                            | RightBracket::tail  -> match valueE with
+                                                                     | Float x -> (tail, (varName, Float(exp x)))
+                                                                     | Int x   -> (tail, (varName, Float(exp x)))
+                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
+                                                      "or end of expression"))
                 | _ -> grammarNum tList
                 
             and grammarNum tList : Token list * (string * NumType) =
                 match tList with
                 // Return number as a NumType
-                | Tokeniser.Identifier vName::tail  -> match symTable.ContainsKey vName with
-                                                       | true  -> (tail, (vName, symTable.[vName]))
-                                                       | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
+                | Identifier vName::tail  -> match symTable.ContainsKey vName with
+                                             | true  -> (tail, ("", symTable[vName]))
+                                             | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
-
-            let varA tList : Token list * (string * NumType) = 
+            let varA tList = 
                 match tList with 
-                | Tokeniser.Identifier varName :: tail -> match tail with 
-                                                          | Tokeniser.Equals :: tail -> 
-                                                            let (tLst, (_, tval)) = grammarE tail
-                                                            (tLst, (varName, tval))
-                                                          | _ -> grammarE tList
+                | Identifier varName :: Equals :: tail -> let tLst, (_, tVal) = grammarE tail
+                                                          (tLst, (varName, tVal))
                 | _ -> grammarE tList 
-            
-            // Takes list of token lists and parses all values of the list with map, updating the dictionary each time
-            // Returns the result of the final line
-            let parseLines tList =
-                let parseLine tList =
-                    let (tList, (varName, tVal)) = varA tList
-                    match List.isEmpty tList with
-                    | true -> match symTable.ContainsKey varName with
-                              | true  -> symTable.[varName] <- tVal
-                              | false -> symTable.Add(varName, tVal)
-                              ((varName, tVal), symTable)
-                    | false  -> raise (ParseErrorException "Error while parsing: could not parse all of expression")
-                let results = List.map parseLine tList
-                List.last results
 
+            let grammarStatements tList =
+                let rec parseStatement tList =
+                    let remainingTokens, (varName, tVal) = varA tList
+                    match varName with
+                    // When no assigment was done, the result will not be stored in the sym table
+                    | "" -> ()
+                    | _  -> match symTable.ContainsKey varName with
+                            | true  -> symTable[varName] <- tVal
+                            | false -> symTable.Add(varName, tVal)
+                    match remainingTokens with
+                    | EOL::tail -> parseStatement tail  // More statements to parse
+                    | _ -> ((varName, tVal), symTable)  // End of statements
+            
+                parseStatement tList
             // Parsing function raises an exception, so catches it and returns result appropriately
             try
                                                                          
                 // For first call, assumes it starts with an varA, as it is the highest level of grammar
-                Ok(parseLines tList)
+                Ok(grammarStatements tList)
                 // Only return second (parsing result) if the list is empty.
                 // If not empty then has not parsed whole expression. E.g. possible trailing right bracket
             with

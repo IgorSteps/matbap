@@ -7,7 +7,7 @@ namespace Engine
                 | Tokeniser.InvalidFloat str -> str
                 | Tokeniser.InvalidToken str -> str
 
-        let private parse(tokens: Tokeniser.Token list list) (symTable: Dictionary<string, Parser.NumType>) =
+        let private parse(tokens: Tokeniser.Token list) (symTable: Dictionary<string, Parser.NumType>) =
             match Parser.parseEval tokens symTable with
             | Error parseError                    -> Error parseError
             | Ok result ->

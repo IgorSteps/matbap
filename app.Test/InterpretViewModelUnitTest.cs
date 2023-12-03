@@ -138,7 +138,7 @@ namespace app.Test
             // ASSERT
             // ------
             // We check F# engine returns a string to make sure our GUI output is a clear string
-            Assert.That(viewModel.Response, Is.EqualTo("y = 2"), "Expression with new lines has returned wrong answer");
+            Assert.That(viewModel.Response, Is.EqualTo("2"), "Expression with new lines has returned wrong answer");
         }
 
     }
