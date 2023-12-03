@@ -70,7 +70,7 @@ namespace Engine
                 // If we get an error, needs to be returned instead of the list of plots.
                 // gotError holds this and is checked once we leave the loop. X is set to max in order to break the loop
                 // NOTE: if it's division by zero, skips and does not plot the point, to plot equations such as 1/x
-                | Error e   ->  if not (e = "Error while parsing: division by 0") then
+                | Error e   ->  if e <> "Error while parsing: division by 0" then
                                     gotError <- Some e
                                     x <- max
                 // Increment x for loop
