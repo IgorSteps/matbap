@@ -41,7 +41,7 @@ namespace Engine
         let private plotEval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<float * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
             | Error e   -> Error (getStrFromLexerError(e))
-            | Ok tokens -> match plotParse tokens symTable with // HACK: change when AP-76 is merged
+            | Ok tokens -> match plotParse tokens symTable with
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
                            
