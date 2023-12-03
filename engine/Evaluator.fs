@@ -31,7 +31,7 @@ namespace Engine
         let private plotParse(tokens: Tokeniser.Token list) (symTable: Dictionary<string, Parser.NumType>) =
             match Parser.parseEval tokens symTable with
             | Error parseError                    -> Error parseError
-            | Ok result -> // Should search for assignment token here. Need to add function to do that
+            | Ok result ->
                 if (List.contains Tokeniser.Equals tokens)  then
                     Error "Can't use assignment in plotting mode"
                 else match result with
