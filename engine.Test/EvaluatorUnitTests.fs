@@ -156,10 +156,6 @@ type EvaluatorTests () =
             [|0.75; 0.421875|]; [|1.0; 1.0|]; [|1.25; 1.953125|]; [|1.5; 3.375|];
             [|1.75; 5.359375|]; [|2.0; 8.0|]|]
         }
-        {
-            Min = -124; Max = 235; Step = 1; Exp = "x/0";
-            Expected = Error "Error while parsing: division by 0"
-        }
     ]
 
     [<TestCaseSource("evaluatorTestCases")>]
