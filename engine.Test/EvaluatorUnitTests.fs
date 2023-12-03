@@ -147,10 +147,8 @@ type EvaluatorTests () =
             [|1.0; 1.0|]; [|1.25; 0.4375|]; [|1.5; -0.25|]; [|1.75; -1.0625|]; [|2.0; -2.0|];
             [|2.25; -3.0625|]; [|2.5; -4.25|]; [|2.75; -5.5625|]; [|3.0; -7.0|]|]
         }
-        // As previously discussed, for example 1/x would cause division by zero to happen at x = 0.
-        // This behaviour will probably be addressed in future, so if this test is failing it can be removed.
         {
-            Min = -124; Max = 235; Step = 1; Exp = "1/x";
+            Min = -124; Max = 235; Step = 1; Exp = "x/0";
             Expected = Error "Error while parsing: division by 0"
         }
     ]
