@@ -25,11 +25,17 @@
             | Sin
             | Cos
             | Tan
+            | Log
+            | Exp
             | EOL
 
         // Map stores reserved keywords, used to replace string variables
         // with the corresponding enum type when encountered in the tokenizer function
-        let private keywords = Map.empty.Add("sin", Sin).Add("cos", Cos).Add("tan", Tan)
+        let private keywords = Map.empty.Add("sin", Sin)
+                                        .Add("cos", Cos)
+                                        .Add("tan", Tan)
+                                        .Add("log", Log)
+                                        .Add("exp", Exp)
 
         // Helpers.
         let private strToChar(str: string)   = [for c in str do yield c]
@@ -79,8 +85,8 @@
         let rec private matchTokens (chars: char list) (acc: Token list) =
                 match chars with
                 // A line is terminated once it either it reaches a ';' or all chars are consumed if it is the final line
-                | []          -> Ok(List.rev acc, [])
-                | ';' :: tail -> Ok(List.rev acc, tail)
+                | []          -> Ok(List.rev acc)
+                | ';' :: tail -> matchTokens tail (EOL::acc)
                 | '+' :: tail -> matchTokens tail (Add::acc)
                 | '-' :: tail -> matchTokens tail (Minus::acc)
                 | '*' :: tail -> matchTokens tail (Multiply::acc)
@@ -108,20 +114,6 @@
 
                 | head :: _ -> createErrorWithPosition (InvalidToken $"{head}", List.length acc + 1)
  
-        let tokenise(str : string): Result<Token list list, LexicalError> =
-            // Since multiple lines can be entered in one evaluation call, tokeniseLine calls matchtokens which returns
-            // A list of tokens terminating on a newline or empty list. This list of tokens represents one line
-            // Which gets appended to a list of lines.
-            let rec tokeniseLines line listOfLines = 
-                match matchTokens line [] with
-                | Ok(tokenLine, remainingTokens) -> if remainingTokens.IsEmpty then
-                                                        // Once all tokens are lexed, it appends the final line to the list
-                                                        // Ending the recursion and reversing the list 
-                                                        // As they get appended in reverse order.
-                                                        let lines = tokenLine::listOfLines
-                                                        Ok(List.rev lines)
-                                                    else
-                                                        let lines = tokenLine::listOfLines
-                                                        tokeniseLines remainingTokens lines
-                | Error err                 -> Error err
-            tokeniseLines (strToChar str) []
+        let tokenise(str : string): Result<Token list , LexicalError> =
+            matchTokens (strToChar str) []
+           
