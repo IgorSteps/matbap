@@ -13,10 +13,10 @@ namespace Engine
             | Ok result ->
                 match result with
                 // Parsing a line returns a varName if it was an assigment and "" if it was an expression. 
-                | (("", Parser.Int i), symTable)   -> Ok(string i, symTable)
-                | (("", Parser.Float f), symTable) -> Ok(string f, symTable)
-                | ((varName, Parser.Int i), symTable)    -> Ok((varName + " = " + string i), symTable)
-                | ((varName, Parser.Float f), symTable)  -> Ok((varName + " = " + string f), symTable)
+                | ("", Parser.Int i), symTable          -> Ok(string i, symTable)
+                | ("", Parser.Float f), symTable        -> Ok(string f, symTable)
+                | (varName, Parser.Int i), symTable     -> Ok((varName + " = " + string i), symTable)
+                | (varName, Parser.Float f), symTable   -> Ok((varName + " = " + string f), symTable)
 
         let eval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<string * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
@@ -29,19 +29,19 @@ namespace Engine
                            
         // Private functions for plotting to avoid casting to string and adding variable names
         let private plotParse(tokens: Tokeniser.Token list) (symTable: Dictionary<string, Parser.NumType>) =
-            match Parser.parseEval [tokens] symTable with // HACK: change when AP-76 is merged
+            match Parser.parseEval tokens symTable with
             | Error parseError                    -> Error parseError
             | Ok result -> // Should search for assignment token here. Need to add function to do that
                 if (List.contains Tokeniser.Equals tokens)  then
                     Error "Can't use assignment in plotting mode"
                 else match result with
-                     | ((_, Parser.Int i), symTable)   -> Ok(float i, symTable)
-                     | ((_, Parser.Float f), symTable) -> Ok(f, symTable)
+                     | (_, Parser.Int i), symTable      -> Ok(float i, symTable)
+                     | (_, Parser.Float f), symTable    -> Ok(f, symTable)
                 
         let private plotEval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<float * Dictionary<string, Parser.NumType>,string>  =
             match Tokeniser.tokenise exp with
             | Error e   -> Error (getStrFromLexerError(e))
-            | Ok tokens -> match plotParse tokens[0] symTable with // HACK: change when AP-76 is merged
+            | Ok tokens -> match plotParse tokens symTable with // HACK: change when AP-76 is merged
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
                            
