@@ -143,12 +143,12 @@
             // Returns the result of the final line
             let parseLines tList =
                 let parseLine tList =
-                    let (tList, (varName, tval)) = varA tList
+                    let (tList, (varName, tVal)) = varA tList
                     match List.isEmpty tList with
                     | true -> match symTable.ContainsKey varName with
-                              | true  -> symTable.[varName] <- tval
-                              | false -> symTable.Add(varName, tval)
-                              ((varName, tval), symTable)
+                              | true  -> symTable.[varName] <- tVal
+                              | false -> symTable.Add(varName, tVal)
+                              ((varName, tVal), symTable)
                     | false  -> raise (ParseErrorException "Error while parsing: could not parse all of expression")
                 let results = List.map parseLine tList
                 List.last results
