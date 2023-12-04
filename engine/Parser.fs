@@ -3,7 +3,7 @@
         open System.Collections.Generic
         open Tokeniser
         // Grammar:
-        // <StatementList> ::= <Statement> | <Statement> <StatementList>
+        // <StatementList> ::= <Statement>; | <Statement>; <StatementList>
         // <Statement> ::= <VarA> | <E> | <ForLoop>
         // <ForLoop>   ::= "for" "(" <VarA> ";" <E> ";" <VarA> ")"  { <Statement> }
         // <varA>      ::= <varID> = <E>
@@ -132,36 +132,31 @@
                                             | RightBracket::tail  -> match valueE with
                                                                      | Float x -> (tail, (varName, Float(sin x)))
                                                                      | Int x   -> (tail, (varName, Float(sin x)))
-                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
-                                                      "or end of expression"))
+                                            | _ -> raise (ParseErrorException ("Error while parsing sin function: Invalid expression"))
                 | Cos::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
                                             match remainingTokens with 
                                             | RightBracket::tail  -> match valueE with
                                                                      | Float x -> (tail, (varName, Float(cos x)))
                                                                      | Int x   -> (tail, (varName, Float(cos x)))
-                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
-                                                      "or end of expression"))
+                                            | _ -> raise (ParseErrorException ("Error while parsing cos function: Invalid expression"))
                 | Tan::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
                                             match remainingTokens with 
                                             | RightBracket::tail  -> match valueE with
                                                                      | Float x -> (tail, (varName, Float(tan x)))
                                                                      | Int x   -> (tail, (varName, Float(tan x)))
-                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
-                                                      "or end of expression"))
+                                            | _ -> raise (ParseErrorException ("Error while parsing tan function: Invalid expression"))
                 | Log::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
                                             match remainingTokens with 
                                             | RightBracket::tail  -> match valueE with
                                                                      | Float x -> (tail, (varName, Float(log x)))
                                                                      | Int x   -> (tail, (varName, Float(log x)))
-                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
-                                                      "or end of expression"))
+                                            | _ -> raise (ParseErrorException ("Error while parsing log function: Invalid expression"))
                 | Exp::LeftBracket::tail -> let remainingTokens, (varName, valueE) = grammarE tail
                                             match remainingTokens with 
                                             | RightBracket::tail  -> match valueE with
                                                                      | Float x -> (tail, (varName, Float(exp x)))
                                                                      | Int x   -> (tail, (varName, Float(exp x)))
-                                            | _ -> raise (ParseErrorException ("Error while parsing: Unexpected token " +
-                                                      "or end of expression"))
+                                            | _ -> raise (ParseErrorException ("Error while parsing exp function: Invalid expression"))
                 | _ -> grammarNum tList
                 
             and grammarNum tList : Token list * (string * NumType) =
@@ -190,10 +185,14 @@
                             | true  -> symTable.[varName] <- tval
                             | false -> symTable.Add(varName, tval)
                     match remainingTokens with
-                    | EOL::tail -> parseStatement tail  // More statements to parse
-                    | _ -> ((varName, tval), symTable)  // End of statements
-            
+                    | EOL::tail -> if tail.IsEmpty then
+                                     ((varName, tval), symTable) // End of statements
+                                   else
+                                      parseStatement tail        // More statements to parse
+                    | []        -> ((varName, tval), symTable)   // Optional allowance of final line not needing ';'
+                    | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
                 parseStatement tList
+
             // Parsing function raises an exception, so catches it and returns result appropriately
             try
                                                                          
