@@ -15,15 +15,15 @@ namespace app
         const double AxisMin = -10;
         const double AxisMax = 10; 
 
-        private readonly IPlotEquationEvaluator _equationEvaluator;`
+        private readonly IPlotEquationEvaluator _equationEvaluator;
 
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
 
-        private float[,] _points;
-        private float _xMinimum;
-        private float _xMaximum;
-        private float _xStep;
+        private double[][] _points;
+        private double _xMinimum;
+        private double _xMaximum;
+        private double _xStep;
 
         private string _inputEquation;
         
@@ -33,15 +33,18 @@ namespace app
             _equationEvaluator = p;
             _plotModel = new PlotModel{ Title="Your Plot"};
             _interpretCmd = new RelayCommand(Interpret);
-            
-
+            _points = new double[100][];
+            for (int i = 0; i < 100; i++)
+            {
+                _points[i] = new double[] { i, i }; // Example: y = x line
+            }
             // Set defaults.
             _xMinimum = -10;
             _xMaximum = 10;
-            _xStep = 0.1f;
+            _xStep = 0.1;
 
             SetUpAxis();
-            UpdatePlot();
+            
         }
 
         private void SetUpAxis()
@@ -61,14 +64,10 @@ namespace app
         {
             var lineSeries = new LineSeries();
 
-            int rows = _points.GetLength(0);
-            int cols = _points.GetLength(1);
-            for (int i = 0; i < rows; i++)
+            for (int i = 0; i < _points.Length; i++)
             {
-                for (int j = 0; j < cols; j++) 
-                {
-                    lineSeries.Points.Add(new DataPoint(i, j));
-                }
+                lineSeries.Points.Add(new DataPoint(_points[i][0], _points[i][1]));
+
             }
             _plotModel.Series.Add(lineSeries);
         }
@@ -81,6 +80,7 @@ namespace app
         private void Interpret()
         {
             _points = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            UpdatePlot();
         }
 
 
@@ -99,8 +99,7 @@ namespace app
             get => _inputEquation;
             set => SetProperty(ref _inputEquation, value);
         }
-
-        public float XMinimum
+        public double XMinimum
         {
             get => _xMinimum;
             set
@@ -112,7 +111,7 @@ namespace app
             }
         }
 
-        public float XMaximum
+        public double XMaximum
         {
             get => _xMaximum;
             set
@@ -124,7 +123,7 @@ namespace app
             }
         }
 
-        public float XStep
+        public double XStep
         {
             get => _xStep;
             set

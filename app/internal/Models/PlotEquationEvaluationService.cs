@@ -11,10 +11,10 @@ namespace app
 {
 
     public class PlotEquationEvaluationService: IPlotEquationEvaluator
-    {
-        public float[,] Evaluate(float min, float max, float step, string equation)
+    { 
+        public double[][] Evaluate(double min, double max, double step, string equation)
         {
-            var result = plotPoints(min, max, step, equation);
+            var result = Engine.Evaluator.plotPoints(min, max, step, equation);
             if (result.IsOk)
             {
                 return result.ResultValue;
@@ -24,14 +24,5 @@ namespace app
                 throw new InvalidOperationException($"Error: {result.ErrorValue}");
             }
         }
-
-        private FSharpResult<float[,], string> plotPoints(float min, float max, float step, string exp) {
-            return null;
-        }
     }
 }
-
-public interface IStub
-{
-    public FSharpResult<float [,], string> plotPoints(float min, float max, float step, string exp);
-}-

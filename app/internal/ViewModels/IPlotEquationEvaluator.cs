@@ -8,6 +8,6 @@ namespace app
 {
     public interface IPlotEquationEvaluator
     {
-        public float[,] Evaluate(float min, float max, float step, string equation);
+        public double[][] Evaluate(double min, double max, double step, string equation);
     }
 }
