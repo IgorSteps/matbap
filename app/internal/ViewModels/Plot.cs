@@ -27,7 +27,6 @@ namespace app
         private double _xStep;
 
         private string _inputEquation;
-        
 
         public PlotViewModel(IPlotEquationEvaluator p)
         {
@@ -37,9 +36,11 @@ namespace app
             _evaluatorError = "";
             
             _points = new double[100][];
+            // Default 'y = x' line
+            // so we don't hit null pointers.
             for (int i = 0; i < 100; i++)
             {
-                _points[i] = new double[] { i, i }; // Example: y = x line
+                _points[i] = new double[] { i, i };
             }
 
             // Set defaults.
@@ -48,7 +49,6 @@ namespace app
             _xStep = 0.1;
 
             SetUpAxis();
-            
         }
 
         private void SetUpAxis()
@@ -88,7 +88,7 @@ namespace app
 
         private void Interpret()
         {
-           var result = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            var result = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
             if (result.HasError)
             {
                 DisplayError(result.Error);
