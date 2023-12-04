@@ -129,37 +129,19 @@ namespace app
         public double XMinimum
         {
             get => _xMinimum;
-            set
-            {
-                if (SetProperty(ref _xMinimum, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xMinimum, value);
         }
 
         public double XMaximum
         {
             get => _xMaximum;
-            set
-            {
-                if (SetProperty(ref _xMaximum, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xMaximum, value);
         }
 
         public double XStep
         {
             get => _xStep;
-            set
-            {
-                if (SetProperty(ref _xStep, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xStep, value);
         }
 
     }
