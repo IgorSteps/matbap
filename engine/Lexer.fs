@@ -63,7 +63,7 @@
             match chars with
                                         // c*multi because 1.7 gets processed as 1.0 + 7.0*0.1
             | c::tail when isDigit c -> formFloat(tail, acc + (charToFloat c * multi), multi/10.0)
-            | '.'::tail              -> createInvalidFloatError "Can't have 2 decimal places in a float"
+            | '.'::_              -> createInvalidFloatError "Can't have 2 decimal places in a float"
             | _                      -> Ok(chars, FloatToken acc)
         
         let rec private formInt(chars: char list, acc: int) =
@@ -107,7 +107,7 @@
                     | Error err -> createErrorWithPosition (err, List.length acc + 1)
 
                 | head :: tail when isLetter head ->
-                    let (chars, identifier) = formIdentifier(tail, string head)
+                    let chars, identifier = formIdentifier(tail, string head)
                     match isKeyword identifier with
                     | true  -> matchTokens chars (keywords[identifier]::acc)
                     | false -> matchTokens chars (Identifier identifier::acc)

@@ -167,31 +167,30 @@
             and grammarNum tList : Token list * (string * NumType) =
                 match tList with
                 // Return number as a NumType
-                | Tokeniser.Identifier vName::tail  -> match symTable.ContainsKey vName with
-                                                       | true  -> (tail, ("", symTable.[vName]))
-                                                       | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
+                | Identifier vName::tail  -> match symTable.ContainsKey vName with
+                                             | true  -> (tail, ("", symTable[vName]))
+                                             | false -> raise (ParseErrorException "Error while parsing: Identifier not found")
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
-            
             let varA tList = 
                 match tList with 
-                | Tokeniser.Identifier varName :: Equals :: tail -> let (tLst, (_, tval)) = grammarE tail
-                                                                    (tLst, (varName, tval))
+                | Identifier varName :: Equals :: tail -> let tLst, (_, tVal) = grammarE tail
+                                                          (tLst, (varName, tVal))
                 | _ -> grammarE tList 
 
             let grammarStatements tList =
                 let rec parseStatement tList =
-                    let (remainingTokens, (varName, tval)) = varA tList
+                    let remainingTokens, (varName, tVal) = varA tList
                     match varName with
-                    // When no assigment was done, the result will not be stored in the symtable
+                    // When no assigment was done, the result will not be stored in the sym table
                     | "" -> ()
                     | _  -> match symTable.ContainsKey varName with
-                            | true  -> symTable.[varName] <- tval
-                            | false -> symTable.Add(varName, tval)
+                            | true  -> symTable[varName] <- tVal
+                            | false -> symTable.Add(varName, tVal)
                     match remainingTokens with
                     | EOL::tail -> parseStatement tail  // More statements to parse
-                    | _ -> ((varName, tval), symTable)  // End of statements
+                    | _ -> ((varName, tVal), symTable)  // End of statements
             
                 parseStatement tList
             // Parsing function raises an exception, so catches it and returns result appropriately
