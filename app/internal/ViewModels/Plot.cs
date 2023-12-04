@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.FSharp.Collections;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
@@ -12,7 +13,7 @@ namespace app
 {
     public class PlotViewModel : ObservableObject
     {
-        const double AxisMin = -10;
+        const double AxisMin = 0;
         const double AxisMax = 10; 
 
         private readonly IPlotEquationEvaluator _equationEvaluator;
@@ -79,7 +80,13 @@ namespace app
 
         private void Interpret()
         {
-            _points = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            (_points, string error) = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            if (error != "")
+            {
+                _plotModel.Title = "Error: " + error;
+                _plotModel.TextColor = OxyColor.FromRgb(255, 0, 0);
+            }
+
             UpdatePlot();
         }
 

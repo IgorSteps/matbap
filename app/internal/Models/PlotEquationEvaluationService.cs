@@ -12,16 +12,16 @@ namespace app
 
     public class PlotEquationEvaluationService: IPlotEquationEvaluator
     { 
-        public double[][] Evaluate(double min, double max, double step, string equation)
+        public (double[][], string) Evaluate(double min, double max, double step, string equation)
         {
             var result = Engine.Evaluator.plotPoints(min, max, step, equation);
             if (result.IsOk)
             {
-                return result.ResultValue;
+                return (result.ResultValue, "");
             }
             else
             {
-                throw new InvalidOperationException($"Error: {result.ErrorValue}");
+                return (Array.Empty<double[]>(), result.ErrorValue);
             }
         }
     }
