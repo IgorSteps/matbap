@@ -185,10 +185,10 @@
                             | false -> symTable.Add(varName, tVal)
                     match remainingTokens with
                     | EOL::tail -> if tail.IsEmpty then
-                                     ((varName, tval), symTable) // End of statements
+                                     ((varName, tVal), symTable) // End of statements
                                    else
                                       parseStatement tail        // More statements to parse
-                    | []        -> ((varName, tval), symTable)   // Optional allowance of final line not needing ';'
+                    | []        -> ((varName, tVal), symTable)   // Optional allowance of final line not needing ';'
                     | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
                 parseStatement tList
 
