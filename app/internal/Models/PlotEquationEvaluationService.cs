@@ -9,20 +9,24 @@ using System.Threading.Tasks;
 
 namespace app
 {
+    public struct EvaluationResult
+    {
+        public EvaluationResult(double[][] p, string err)
+        {
+            Points = p;
+            Error = err;
+        }
+        public double[][] Points { get; set; }
+        public string Error { get; set; }
+        public bool HasError => !string.IsNullOrEmpty(Error);
+    }
 
     public class PlotEquationEvaluationService: IPlotEquationEvaluator
     { 
-        public (double[][], string) Evaluate(double min, double max, double step, string equation)
+        public EvaluationResult Evaluate(double min, double max, double step, string equation)
         {
             var result = Engine.Evaluator.plotPoints(min, max, step, equation);
-            if (result.IsOk)
-            {
-                return (result.ResultValue, "");
-            }
-            else
-            {
-                return (Array.Empty<double[]>(), result.ErrorValue);
-            }
+            return new EvaluationResult(result.ResultValue, result.ErrorValue);
         }
     }
 }

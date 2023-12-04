@@ -10,6 +10,7 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -17,7 +18,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Grid>
                 <TextBox Grid.Row="0" Width="600" Text="{Binding InputEquation}" Margin="5" x:Name="EquationInputBox" FontSize="18"/>
-                <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter equation to plot here..." Padding="5,5,0,0" Margin="5" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
+                <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter equation to plot here(do not include 'y=')" Padding="5,5,0,0" Margin="5" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
                     <TextBlock.Style>
                         <Style TargetType="{x:Type TextBlock}">
                             <Setter Property="Visibility" Value="Collapsed"/>
@@ -33,11 +34,13 @@
             </Grid>
             <Button Grid.Row="0"  Width="150" Content="Plot" FontSize="20" FontWeight="Bold" Command="{Binding InterpretCmd}" Margin="5" Background="#FFE29E9E"/>
         </StackPanel>
-
-        <oxy:PlotView Grid.Row="1" Model="{Binding PlotModel}" />
         
+        <TextBlock Grid.Row="1" Width="760" Text="{Binding EvaluatorError}" Margin="5" FontSize="18" HorizontalAlignment="Left" Foreground="Red" />
+
+        <oxy:PlotView Grid.Row="2" Model="{Binding PlotModel}" x:Name="PlotArea" />
+
         <!-- Polynomial Coefficients controls -->
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
             <Label Content="X Min:" Margin="5"/>
             <TextBox Width="50" Margin="5" Text="{Binding XMinimum, UpdateSourceTrigger=PropertyChanged}"/>
             <Label Content="X Max:" Margin="5"/>

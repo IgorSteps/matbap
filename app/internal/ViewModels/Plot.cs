@@ -20,7 +20,7 @@ namespace app
 
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
-
+        private string _evaluatorError;
         private double[][] _points;
         private double _xMinimum;
         private double _xMaximum;
@@ -34,11 +34,14 @@ namespace app
             _equationEvaluator = p;
             _plotModel = new PlotModel { };
             _interpretCmd = new RelayCommand(Interpret);
+            _evaluatorError = "";
+            
             _points = new double[100][];
             for (int i = 0; i < 100; i++)
             {
                 _points[i] = new double[] { i, i }; // Example: y = x line
             }
+
             // Set defaults.
             _xMinimum = -10;
             _xMaximum = 10;
@@ -61,14 +64,18 @@ namespace app
             _plotModel.InvalidatePlot(true);
         }
 
+        public void UpdatePlotPoints(double[][] p)
+        {
+            _points = p;
+            UpdatePlot();
+        }
+
         private void Plot()
         {
             var lineSeries = new LineSeries();
 
             for (int i = 0; i < _points.Length; i++)
             {
-                //_points[100][0] = 0;
-                //_points[100][1] = 0;
                 lineSeries.Points.Add(new DataPoint(_points[i][0], _points[i][1]));
             }
             _plotModel.Series.Add(lineSeries);
@@ -81,20 +88,20 @@ namespace app
 
         private void Interpret()
         {
-            (_points, string error) = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
-            if (error != "")
+           var result = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            if (result.HasError)
             {
-                _plotModel.Title = "Error: " + error;
-                _plotModel.TitleColor = OxyColor.FromRgb(255, 0, 0);
-                _plotModel.TitleFontSize = 18;
-                _plotModel.TitleFontWeight = FontWeights.Bold;
-                _plotModel.InvalidatePlot(true);
+                DisplayError(result.Error);
                 return;
+            } else
+            {
+                UpdatePlotPoints(result.Points);
             }
+        }
 
-            _plotModel.Title = "y = " + InputEquation.ToString();
-            _plotModel.TitleColor = OxyColor.FromRgb(0, 0, 0);
-            UpdatePlot();
+        private void DisplayError(string error)
+        {
+            EvaluatorError = error;
         }
 
 
@@ -112,6 +119,12 @@ namespace app
         {
             get => _inputEquation;
             set => SetProperty(ref _inputEquation, value);
+        }
+
+        public string EvaluatorError
+        {
+            get => _evaluatorError;
+            set => SetProperty(ref _evaluatorError, value);
         }
         public double XMinimum
         {
