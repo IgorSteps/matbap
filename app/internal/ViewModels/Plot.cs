@@ -32,7 +32,7 @@ namespace app
         public PlotViewModel(IPlotEquationEvaluator p)
         {
             _equationEvaluator = p;
-            _plotModel = new PlotModel{ Title="Your Plot"};
+            _plotModel = new PlotModel { };
             _interpretCmd = new RelayCommand(Interpret);
             _points = new double[100][];
             for (int i = 0; i < 100; i++)
@@ -67,8 +67,9 @@ namespace app
 
             for (int i = 0; i < _points.Length; i++)
             {
+                //_points[100][0] = 0;
+                //_points[100][1] = 0;
                 lineSeries.Points.Add(new DataPoint(_points[i][0], _points[i][1]));
-
             }
             _plotModel.Series.Add(lineSeries);
         }
@@ -84,9 +85,15 @@ namespace app
             if (error != "")
             {
                 _plotModel.Title = "Error: " + error;
-                _plotModel.TextColor = OxyColor.FromRgb(255, 0, 0);
+                _plotModel.TitleColor = OxyColor.FromRgb(255, 0, 0);
+                _plotModel.TitleFontSize = 18;
+                _plotModel.TitleFontWeight = FontWeights.Bold;
+                _plotModel.InvalidatePlot(true);
+                return;
             }
 
+            _plotModel.Title = "y = " + InputEquation.ToString();
+            _plotModel.TitleColor = OxyColor.FromRgb(0, 0, 0);
             UpdatePlot();
         }
 
