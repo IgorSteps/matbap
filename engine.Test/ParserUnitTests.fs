@@ -283,6 +283,16 @@ type ParserTests () =
             Args = [Tokeniser.Int 2; Tokeniser.Modulus; Tokeniser.Float 3]
             Expected = Error "Error while parsing: modulo cannot be used with floats"
        }
+       {
+            // Checks that characters are not being ingored at the end of an expression
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 2; Tokeniser.EOL; Tokeniser.Int 4; Tokeniser.Identifier "x"]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
+       {
+            // Checks that characters are not being ingored at the end of an expression
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 2; Tokeniser.EOL; Tokeniser.Identifier "x"; Tokeniser.Int 6]
+            Expected = Error "Error while parsing: Unexpected token or end of expression"
+       }
     ]
 
     [<TestCaseSource("parserTestCases")>]
