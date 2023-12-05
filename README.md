@@ -12,7 +12,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Expressions
   - [x] Interger
   - [x] Float
-  - [ ] Functions
+  - [x] Functions
   - [ ] Rational
   - [ ] Complex
 - [ ] Assignment
@@ -25,20 +25,22 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
    - [ ] Derivatives
    - [ ] Root finding
    - [ ] Integration
-   - [ ] Maths and vector library
+   - [ ] Matrix and Vector library
 - [ ] Turn into a Compiler
 
 ### C# GUI
 - [x] Basic GUI
-- [ ] Basic Plotting
+- [x] Basic Plotting
   - [x] Lines
-  - [ ] Polynomials
+  - [x] Polynomials
 - [ ] Advanced Plotting
-  - [ ] Trig and logarithmic functions
+  - [x] Trig and logarithmic functions
   - [ ] GPU speed up
   - [x] Zoom in/out
   - [x] Translate the axis
   - [ ] Lines/polynomials extend indefinitely
+  - [ ] Plotting multiple plots
+  - [ ] Lines get translated to whatever scale the axis are
 
 
 ## Tests
