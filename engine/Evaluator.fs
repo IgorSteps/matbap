@@ -1,6 +1,8 @@
 namespace Engine
     module Evaluator =
         open System.Collections.Generic
+        
+        type SymbolTable = Dictionary<string, Parser.NumType>
 
         let private getStrFromLexerError(err : Tokeniser.LexicalError) =
             match err with
@@ -18,7 +20,7 @@ namespace Engine
                 | (varName, Parser.Int i), symTable     -> Ok((varName + " = " + string i), symTable)
                 | (varName, Parser.Float f), symTable   -> Ok((varName + " = " + string f), symTable)
 
-        let eval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<string * Dictionary<string, Parser.NumType>,string>  =
+        let eval(exp : string) (symTable: SymbolTable) : Result<string * SymbolTable, string>  =
             match Tokeniser.tokenise exp with
             // Must return a result to C# app as the return type is different whether it fails or succeeds.
             | Error e   -> Error (getStrFromLexerError(e))
@@ -28,7 +30,7 @@ namespace Engine
                            
                            
         // Private functions for plotting to avoid casting to string and adding variable names
-        let private plotParse(tokens: Tokeniser.Token list) (symTable: Dictionary<string, Parser.NumType>) =
+        let private plotParse(tokens: Tokeniser.Token list) (symTable: SymbolTable) =
             match Parser.parseEval tokens symTable with
             | Error parseError                    -> Error parseError
             | Ok result ->
@@ -38,7 +40,7 @@ namespace Engine
                      | (_, Parser.Int i), symTable      -> Ok(float i, symTable)
                      | (_, Parser.Float f), symTable    -> Ok(f, symTable)
                 
-        let private plotEval(exp : string) (symTable: Dictionary<string, Parser.NumType>): Result<float * Dictionary<string, Parser.NumType>,string>  =
+        let private plotEval(exp : string) (symTable: SymbolTable) : Result<float * SymbolTable, string>  =
             match Tokeniser.tokenise exp with
             | Error e   -> Error (getStrFromLexerError(e))
             | Ok tokens -> match plotParse tokens symTable with
@@ -56,7 +58,7 @@ namespace Engine
             let trueStep = abs(step)
             
             // Create symbol table containing X
-            let symTable = Dictionary<string, Parser.NumType>()
+            let symTable = SymbolTable()
             symTable.Add("x", Parser.Float x)
                 
             // Calculation loop. While within range of max

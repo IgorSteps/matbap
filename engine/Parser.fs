@@ -21,13 +21,15 @@
         // <func-name> ::= sin | cos | tan | log | plot
 
         // varVal is fetched from symbol table using varID
+        
+        // Type definitions
         exception ParseErrorException of string
-        // Define number type
         type NumType =
             | Int of int
             | Float of float
+        type SymbolTable = Dictionary<string, NumType>
 
-        let parseEval (tList : Token list) (symTable : Dictionary<string, NumType>) =
+        let parseEval (tList : Token list) (symTable : SymbolTable) =
             // Recursive functions
 
             let rec grammarE tList =
