@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.FSharp.Collections;
 using OxyPlot;
+using OxyPlot.Annotations;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
@@ -12,28 +13,35 @@ namespace app
 {
     public class PlotViewModel : ObservableObject
     {
-        const double AxisMin = -10;
+        const double AxisMin = 0;
         const double AxisMax = 10; 
 
         private readonly IPlotEquationEvaluator _equationEvaluator;
 
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
-
-        private List<double[]> _coords;
+        private string _evaluatorError;
+        private double[][] _points;
         private double _xMinimum;
         private double _xMaximum;
         private double _xStep;
 
         private string _inputEquation;
-        
 
         public PlotViewModel(IPlotEquationEvaluator p)
         {
             _equationEvaluator = p;
-            _plotModel = new PlotModel{ Title="Your Plot"};
+            _plotModel = new PlotModel { };
             _interpretCmd = new RelayCommand(Interpret);
-            _coords = new List<double[]>();
+            _evaluatorError = "";
+            
+            _points = new double[100][];
+            // Default 'y = x' line
+            // so we don't hit null pointers.
+            for (int i = 0; i < 100; i++)
+            {
+                _points[i] = new double[] { i, i };
+            }
 
             // Set defaults.
             _xMinimum = -10;
@@ -41,7 +49,6 @@ namespace app
             _xStep = 0.1;
 
             SetUpAxis();
-            UpdatePlot();
         }
 
         private void SetUpAxis()
@@ -57,12 +64,19 @@ namespace app
             _plotModel.InvalidatePlot(true);
         }
 
+        public void UpdatePlotPoints(double[][] p)
+        {
+            _points = p;
+            UpdatePlot();
+        }
+
         private void Plot()
         {
             var lineSeries = new LineSeries();
-            foreach (double[] pair in _coords)
+
+            for (int i = 0; i < _points.Length; i++)
             {
-                lineSeries.Points.Add(new DataPoint(pair[0], pair[1]));
+                lineSeries.Points.Add(new DataPoint(_points[i][0], _points[i][1]));
             }
             _plotModel.Series.Add(lineSeries);
         }
@@ -74,7 +88,20 @@ namespace app
 
         private void Interpret()
         {
-            _equationEvaluator.Evaluate(InputEquation);
+            var result = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
+            if (result.HasError)
+            {
+                DisplayError(result.Error);
+                return;
+            } else
+            {
+                UpdatePlotPoints(result.Points);
+            }
+        }
+
+        private void DisplayError(string error)
+        {
+            EvaluatorError = error;
         }
 
 
@@ -94,40 +121,27 @@ namespace app
             set => SetProperty(ref _inputEquation, value);
         }
 
+        public string EvaluatorError
+        {
+            get => _evaluatorError;
+            set => SetProperty(ref _evaluatorError, value);
+        }
         public double XMinimum
         {
             get => _xMinimum;
-            set
-            {
-                if (SetProperty(ref _xMinimum, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xMinimum, value);
         }
 
         public double XMaximum
         {
             get => _xMaximum;
-            set
-            {
-                if (SetProperty(ref _xMaximum, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xMaximum, value);
         }
 
         public double XStep
         {
             get => _xStep;
-            set
-            {
-                if (SetProperty(ref _xStep, value))
-                {
-                    UpdatePlot();
-                }
-            }
+            set => SetProperty(ref _xStep, value);
         }
 
     }
