@@ -1,27 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.FSharp.Collections;
 using OxyPlot;
-using OxyPlot.Annotations;
-using OxyPlot.Axes;
 using OxyPlot.Series;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 
 namespace app
 {
     public class PlotViewModel : ObservableObject
     {
         const double AxisMin = 0;
-        const double AxisMax = 10; 
+        const double AxisMax = 10;
 
         private readonly IPlotEquationEvaluator _equationEvaluator;
 
         private PlotModel _plotModel;
         private RelayCommand _interpretCmd;
         private string _evaluatorError;
-        private double[][] _points;
+        private EvaluationResult _evaluationResult;
         private double _xMinimum;
         private double _xMaximum;
         private double _xStep;
@@ -31,17 +26,9 @@ namespace app
         public PlotViewModel(IPlotEquationEvaluator p)
         {
             _equationEvaluator = p;
-            _plotModel = new PlotModel { };
+            _plotModel = new PlotModel();
             _interpretCmd = new RelayCommand(Interpret);
             _evaluatorError = "";
-            
-            _points = new double[100][];
-            // Default 'y = x' line
-            // so we don't hit null pointers.
-            for (int i = 0; i < 100; i++)
-            {
-                _points[i] = new double[] { i, i };
-            }
 
             // Set defaults.
             _xMinimum = -10;
@@ -49,53 +36,40 @@ namespace app
             _xStep = 0.1;
 
             SetUpAxis();
+            UpdatePlot();
         }
 
         private void SetUpAxis()
         {
-            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Minimum = AxisMin, Maximum = AxisMax });
-            _plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = AxisMin, Maximum = AxisMax });
+            _plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Bottom, Minimum = AxisMin, Maximum = AxisMax });
+            _plotModel.Axes.Add(new OxyPlot.Axes.LinearAxis { Position = OxyPlot.Axes.AxisPosition.Left, Minimum = AxisMin, Maximum = AxisMax });
         }
 
         public void UpdatePlot()
         {
-            _plotModel.Series.Clear();
-            Plot();
-            _plotModel.InvalidatePlot(true);
-        }
-
-        public void UpdatePlotPoints(double[][] p)
-        {
-            _points = p;
-            UpdatePlot();
-        }
-
-        private void Plot()
-        {
-            var lineSeries = new LineSeries();
-
-            for (int i = 0; i < _points.Length; i++)
+            if (_evaluationResult != null && !_evaluationResult.HasError)
             {
-                lineSeries.Points.Add(new DataPoint(_points[i][0], _points[i][1]));
+                _plotModel.Series.Clear();
+                Plot(_evaluationResult);
+                _plotModel.InvalidatePlot(true);
             }
-            _plotModel.Series.Add(lineSeries);
         }
 
-        /// <summary>
-        ///  InterpretCmd binds to a button in the plot view, executes the Interpret() when clicked.
-        /// </summary>
         public RelayCommand InterpretCmd => _interpretCmd;
 
-        private void Interpret()
+        public void Interpret()
         {
-            var result = _equationEvaluator.Evaluate(XMinimum,XMaximum, XStep, InputEquation);
-            if (result.HasError)
+            var result = _equationEvaluator.Evaluate(XMinimum, XMaximum, XStep, InputEquation);
+            _evaluationResult = result;
+
+            if (_evaluationResult.HasError)
             {
-                DisplayError(result.Error);
+                DisplayError(_evaluationResult.Error);
                 return;
-            } else
+            }
+            else
             {
-                UpdatePlotPoints(result.Points);
+                UpdatePlot();
             }
         }
 
@@ -104,10 +78,32 @@ namespace app
             EvaluatorError = error;
         }
 
+        private void Plot(EvaluationResult result)
+        {
+            if (result.PositiveSegment != null)
+            {
+                var positiveLineSeries = new LineSeries();
 
-        // ------------------------------------------------------------------------------------------------------
-        // -------------------------------------- Getters & Setters below. --------------------------------------
-        // ------------------------------------------------------------------------------------------------------
+                foreach (var point in result.PositiveSegment)
+                {
+                    positiveLineSeries.Points.Add(new DataPoint(point[0], point[1]));
+                }
+
+                _plotModel.Series.Add(positiveLineSeries);
+            }
+
+            if (result.NegativeSegment != null)
+            {
+                var negativeLineSeries = new LineSeries();
+
+                foreach (var point in result.NegativeSegment)
+                {
+                    negativeLineSeries.Points.Add(new DataPoint(point[0], point[1]));
+                }
+
+                _plotModel.Series.Add(negativeLineSeries);
+            }
+        }
 
         public PlotModel PlotModel
         {
@@ -126,6 +122,7 @@ namespace app
             get => _evaluatorError;
             set => SetProperty(ref _evaluatorError, value);
         }
+
         public double XMinimum
         {
             get => _xMinimum;
@@ -143,6 +140,5 @@ namespace app
             get => _xStep;
             set => SetProperty(ref _xStep, value);
         }
-
     }
-} 
+}
