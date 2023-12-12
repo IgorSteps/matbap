@@ -5,7 +5,7 @@
         // Grammar:
         // <StatementList> ::= <Statement>; | <Statement>; <StatementList>
         // <Statement> ::= <VarA> | <E> | <ForLoop>
-        // <ForLoop>   ::= "for" "(" <VarA> ";" <E> ";" <VarA> ")"  { <Statement> }
+        // <ForLoop>   ::= "for" "(" <int> to <int>  ")"  { <Statement> }
         // <varA>      ::= <varID> = <E>
         // <E>         ::= <T> <Eopt>
         // <Eopt>      ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
@@ -170,29 +170,61 @@
                 | Tokeniser.Float x::tail           -> (tail, ("", Float(x)))
                 | Tokeniser.Int   x::tail           -> (tail, ("", Int(x)))
                 | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
+
             let varA tList = 
                 match tList with 
                 | Identifier varName :: Equals :: tail -> let tLst, (_, tVal) = grammarE tail
-                                                          (tLst, (varName, tVal))
+                                                          (  tLst, (varName, tVal))
                 | _ -> grammarE tList 
 
+            let parseStatement tList =
+                let remainingTokens, (varName, tVal) = varA tList
+                match varName with
+                // When no assigment was done, the result will not be stored in the sym table
+                | "" -> ()
+                | _  -> match symTable.ContainsKey varName with
+                        | true  -> symTable[varName] <- tVal
+                        | false -> symTable.Add(varName, tVal)
+                remainingTokens, (varName, tVal)
+            
+            let rec forloopRecursion tList acc ub = 
+                match acc with
+                | _ when acc >= ub -> parseStatement tList
+                | _                -> let _ = parseStatement tList
+                                      forloopRecursion tList (acc+1) ub
+                        
             let grammarStatements tList =
-                let rec parseStatement tList =
-                    let remainingTokens, (varName, tVal) = varA tList
-                    match varName with
-                    // When no assigment was done, the result will not be stored in the sym table
-                    | "" -> ()
-                    | _  -> match symTable.ContainsKey varName with
-                            | true  -> symTable[varName] <- tVal
-                            | false -> symTable.Add(varName, tVal)
-                    match remainingTokens with
-                    | EOL::tail -> if tail.IsEmpty then
-                                     ((varName, tVal), symTable) // End of statements
-                                   else
-                                      parseStatement tail        // More statements to parse
-                    | []        -> ((varName, tVal), symTable)   // Optional allowance of final line not needing ';'
-                    | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
-                parseStatement tList
+                let rec parseStatements tList =
+                    match tList with
+                    | For :: LeftBracket :: Tokeniser.Int lb :: To :: Tokeniser.Int ub :: RightBracket :: LeftBlock :: tail ->
+                       
+                       let (remainingTokens, (varName, tVal)) = forloopRecursion tail lb ub
+                       match remainingTokens with
+                       | EOL::tail -> match tail with
+                                      | RightBlock :: tail -> match tail with
+                                                              | EOL :: tail -> if tail.IsEmpty then
+                                                                                 (varName, tVal)
+                                                                               else
+                                                                                 parseStatements tail
+                                                              |[]         -> (varName, tVal)
+                                                              | _ -> raise (ParseErrorException ("Error while parsing:" + 
+                                                                            "Unexpected token or end of expression"))
+                                      | _   -> raise (ParseErrorException ("Error while parsing for loop:" +
+                                                                        "missing closing bracket"))
+                       |[]         -> (varName, tVal)   // Optional allowance of final line not needing ';'
+                       | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
+                            
+                    | _ -> 
+                       let remainingTokens, (varName, tVal) = parseStatement tList
+                       match remainingTokens with
+                       | EOL::tail -> match tail with
+                                      | []                 -> (varName, tVal) // End of Statements
+                                      | _                  -> parseStatements tail // More statements to parse
+                       |[]         -> (varName, tVal)   // Optional allowance of final line not needing ';'
+                       | _ -> raise (ParseErrorException "Error while parsing: Unexpected token or end of expression")
+                    
+                let (varName, tVal) = parseStatements tList
+                ((varName, tVal), symTable)
 
             // Parsing function raises an exception, so catches it and returns result appropriately
             try

@@ -19,6 +19,8 @@
             | Divide
             | LeftBracket
             | RightBracket
+            | LeftBlock
+            | RightBlock
             | Modulus
             | Power
             | Equals
@@ -27,6 +29,8 @@
             | Tan
             | Log
             | Exp
+            | For
+            | To
             | EOL
 
         // Map stores reserved keywords, used to replace string variables
@@ -36,6 +40,8 @@
                                         .Add("tan", Tan)
                                         .Add("log", Log)
                                         .Add("exp", Exp)
+                                        .Add("for", For)
+                                        .Add("to", To)
 
         // Helpers.
         let private strToChar(str: string)   = [for c in str do yield c]
@@ -93,6 +99,8 @@
                 | '/' :: tail -> matchTokens tail (Divide::acc)
                 | '(' :: tail -> matchTokens tail (LeftBracket::acc)
                 | ')' :: tail -> matchTokens tail (RightBracket::acc)
+                | '{' :: tail -> matchTokens tail (LeftBlock::acc)
+                | '}' :: tail -> matchTokens tail (RightBlock::acc)
                 | '%' :: tail -> matchTokens tail (Modulus::acc)
                 | '^' :: tail -> matchTokens tail (Power::acc)
                 | '=' :: tail -> matchTokens tail (Equals::acc)
