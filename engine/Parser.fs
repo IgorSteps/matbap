@@ -174,7 +174,7 @@
             let varA tList = 
                 match tList with 
                 | Identifier varName :: Equals :: tail -> let tLst, (_, tVal) = grammarE tail
-                                                          (  tLst, (varName, tVal))
+                                                          (tLst, (varName, tVal))
                 | _ -> grammarE tList 
 
             let parseStatement tList =
