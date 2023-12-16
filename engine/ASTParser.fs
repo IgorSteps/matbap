@@ -2,9 +2,13 @@
     // Grammar:
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
-    // <T>    ::= <NR> <Topt>
-    // <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
-    // <NR>   ::= <int> | <float> | (E)
+    // <T>    ::= <P> <Topt>
+    // <Topt> ::= * <P> <Topt> | / <P> <Topt>
+    //          | % <P> <Topt> | <empty>
+    // <P>    ::= <NR> <Popt>
+    // <Popt> ::= ^ <NR> <Popt> | <empty>
+    // <NR>   ::= <num> | (E)
+    // <num>  ::= <int> | <float>
     module ASTParser =
         open Types
         open Tokeniser
@@ -21,13 +25,29 @@
                 | Error err                                     -> Error err
             | _                           -> Error "Expected number or '('"
 
-        /// Parses the Term <T>, which is a Number or Parenthesis Expression followed by optional * or / operations
-        and parseTerm(tokens : Token list) : Result<(Node * Token list), string> =
+        /// Parses the power <P>.
+        and parsePower(tokens : Token list) : Result<(Node * Token list), string> =
             match parseNumber tokens with
+            | Ok result -> parsePowerOperator result
+            | Error err -> Error err
+
+        /// Parses the Power operation (^) <Popt>.
+        and parsePowerOperator(term, tokens : Token list) : Result<(Node * Token list), string> =
+                    match tokens with
+                    | Power :: remainingTokens ->
+                        match parseNumber remainingTokens with
+                        | Ok (nextTerm, remainingTokens) -> parsePowerOperator (BinaryOperation ("^", term, nextTerm), remainingTokens)
+                        | Error err -> Error err
+                    | _ -> Ok (term, tokens)
+        
+
+        /// Parses the Term <T>, which is a Number or Parenthesis Expression followed by optional arithemtic operations.
+        and parseTerm(tokens : Token list) : Result<(Node * Token list), string> =
+            match parsePower tokens with
             | Ok result  -> parseTermOperators result
             | Error err  -> Error err
 
-        /// Parses the multiplication and division operators in a term <Topt>.
+        /// Parses the operators in a term <Topt>.
         and parseTermOperators(term, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
             | Multiply :: remainingTokens ->
@@ -38,6 +58,10 @@
                 match parseNumber remainingTokens with
                 | Ok (nextTerm, remainingTokens)  -> parseTermOperators (BinaryOperation ("/", term, nextTerm), remainingTokens)
                 | Error err                 -> Error err
+            | Modulus :: remainingTokens ->
+                match parsePower remainingTokens with
+                | Ok (nextTerm, remainingTokens) -> parseTermOperators (BinaryOperation ("%", term, nextTerm), remainingTokens)
+                | Error err -> Error err
             | _ -> Ok (term, tokens)
 
         /// Parses an Expression <E>, which can include + or - operators.
