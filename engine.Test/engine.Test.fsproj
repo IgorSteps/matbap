@@ -11,6 +11,7 @@
     <Compile Include="TokeniserUnitTests.fs" />
     <Compile Include="ParserUnitTests.fs" />
     <Compile Include="EvaluatorUnitTests.fs" />
+    <Compile Include="ASTParserUnitTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

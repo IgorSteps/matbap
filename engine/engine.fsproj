@@ -5,9 +5,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Logger.fs" />
+    <Compile Include="Types.fs" />
     <Compile Include="Lexer.fs" />
     <Compile Include="Parser.fs" />
     <Compile Include="Evaluator.fs" />
+    <Compile Include="ASTParser.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.0.1">
