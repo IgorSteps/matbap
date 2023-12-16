@@ -12,10 +12,10 @@
         /// Parses a Number or a Parenthesis expression (<NR>).
         let rec parseNumber(tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | Tokeniser.Int     x :: tail -> Ok (Number (NumType.Int    x), tail)
-            | Tokeniser.Float   x :: tail -> Ok (Number (NumType.Float  x), tail)
-            | LeftBracket         :: tail ->
-                match parseExpression tail with
+            | Tokeniser.Int     intNumber   :: remainingTokens -> Ok (Number (NumType.Int    intNumber), remainingTokens)
+            | Tokeniser.Float   floatNumber :: remainingTokens -> Ok (Number (NumType.Float  floatNumber), remainingTokens)
+            | LeftBracket         :: remainingTokens ->
+                match parseExpression remainingTokens with
                 | Ok (expr, RightBracket :: remainingTokens)    -> Ok (ParenthesisExpression expr, remainingTokens)
                 | Ok (_)                                        -> Error "Missing closing bracket"
                 | Error err                                     -> Error err
@@ -25,20 +25,20 @@
         and parseTerm(tokens : Token list) : Result<(Node * Token list), string> =
             match parseNumber tokens with
             | Ok result  -> parseTermOperators result
-            | Error err     -> Error err
+            | Error err  -> Error err
 
         /// Parses the multiplication and division operators in a term <Topt>.
-        and parseTermOperators(expr, tokens : Token list) : Result<(Node * Token list), string> =
+        and parseTermOperators(term, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | Multiply :: tail ->
-                match parseNumber tail with
-                | Ok (nr, remainingTokens)  -> parseTermOperators (BinaryOperation ("*", expr, nr), remainingTokens)
+            | Multiply :: remainingTokens ->
+                match parseNumber remainingTokens with
+                | Ok (nextTerm, remainingTokens)  -> parseTermOperators (BinaryOperation ("*", term, nextTerm), remainingTokens)
                 | Error err                 -> Error err
-            | Divide :: tail ->
-                match parseNumber tail with
-                | Ok (nr, remainingTokens)  -> parseTermOperators (BinaryOperation ("/", expr, nr), remainingTokens)
+            | Divide :: remainingTokens ->
+                match parseNumber remainingTokens with
+                | Ok (nextTerm, remainingTokens)  -> parseTermOperators (BinaryOperation ("/", term, nextTerm), remainingTokens)
                 | Error err                 -> Error err
-            | _ -> Ok (expr, tokens)
+            | _ -> Ok (term, tokens)
 
         /// Parses an Expression <E>, which can include + or - operators.
         and parseExpression(tokens : Token list) : Result<(Node * Token list), string> =
@@ -49,12 +49,12 @@
         /// Parses the addition and subtraction operators in an expression <Eopt>.
         and parseExpressionOperators(expr, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | Add :: tail ->
-                match parseTerm tail with
+            | Add :: remainingTokens ->
+                match parseTerm remainingTokens with
                 | Ok (t, remainingTokens)   -> parseExpressionOperators (BinaryOperation ("+", expr, t), remainingTokens)
                 | Error err                 -> Error err
-            | Minus :: tail ->
-                match parseTerm tail with
+            | Minus :: remainingTokens ->
+                match parseTerm remainingTokens with
                 | Ok (t, remainingTokens)   -> parseExpressionOperators (BinaryOperation ("-", expr, t), remainingTokens)
                 | Error err                 -> Error err
             | _ -> Ok (expr, tokens)
