@@ -33,12 +33,16 @@
 
         /// Parses the Power operation (^) <Popt>.
         and parsePowerOperator(term, tokens : Token list) : Result<(Node * Token list), string> =
-                    match tokens with
-                    | Power :: remainingTokens ->
-                        match parseNumber remainingTokens with
-                        | Ok (nextTerm, remainingTokens) -> parsePowerOperator (BinaryOperation ("^", term, nextTerm), remainingTokens)
-                        | Error err -> Error err
-                    | _ -> Ok (term, tokens)
+            match tokens with
+            | Power :: remainingTokens ->
+                match parseNumber remainingTokens with
+                | Ok (rightTerm, tokensAfterRightTerm) ->
+                    match parsePowerOperator(rightTerm, tokensAfterRightTerm) with
+                    | Ok (poweredRightTerm, remainingTokensAfterPower) -> 
+                        Ok (BinaryOperation ("^", term, poweredRightTerm), remainingTokensAfterPower)
+                    | Error err -> Error err
+                | Error err -> Error err
+            | _ -> Ok (term, tokens)
         
 
         /// Parses the Term <T>, which is a Number or Parenthesis Expression followed by optional arithemtic operations.
