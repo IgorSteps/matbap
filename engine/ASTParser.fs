@@ -31,7 +31,22 @@
             | Ok result -> parsePowerOperator result
             | Error err -> Error err
 
-        /// Parses the Power operation (^) <Popt>.
+        /// Parses power operations in an expression, handling right-associativity.
+        /// This function takes a term and a list of tokens and checks for a power operator.
+        /// If a power operator is found, it recursively parses the right-hand side (RHS) term of the operator,
+        /// ensuring that power operations are evaluated from right to left (right-associative).
+        /// For example, in an expression "a ^ b ^ c", it interprets as "a ^ (b ^ c)".
+        /// 
+        /// Parameters:
+        ///   term: The left-hand side (LHS) term of the power operation.
+        ///   tokens: The remaining list of tokens to be parsed.
+        /// 
+        /// The function first parses the immediate RHS of the power operator.
+        /// If further power operators are found on the RHS, it recursively calls itself,
+        /// ensuring right-associative evaluation, before combining the LHS term with the powered RHS term.
+        /// 
+        /// Returns: A Result containing either the parsed power expression (as a BinaryOperation node) 
+        /// and the remaining unparsed tokens, or an error message if parsing fails.
         and parsePowerOperator(term, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
             | Power :: remainingTokens ->
@@ -55,11 +70,11 @@
         and parseTermOperators(term, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
             | Multiply :: remainingTokens ->
-                match parseNumber remainingTokens with
+                match parsePower remainingTokens with
                 | Ok (nextTerm, remainingTokens)  -> parseTermOperators (BinaryOperation ("*", term, nextTerm), remainingTokens)
                 | Error err                 -> Error err
             | Divide :: remainingTokens ->
-                match parseNumber remainingTokens with
+                match parsePower remainingTokens with
                 | Ok (nextTerm, remainingTokens)  -> parseTermOperators (BinaryOperation ("/", term, nextTerm), remainingTokens)
                 | Error err                 -> Error err
             | Modulus :: remainingTokens ->
