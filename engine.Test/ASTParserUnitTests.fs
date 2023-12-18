@@ -219,7 +219,6 @@ type ASTParserTests() =
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
-        // Errors.
         {
             Name = "Testing error: Missing a number or a bracket: 1+."
             Args = [Tokeniser.Int 1; Tokeniser.Add]
