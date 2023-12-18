@@ -12,6 +12,11 @@ type ASTParserTestCase = {
     Expected: Node
 }
 
+type ASTParserErrorTestCase = {
+    Name: string
+    Args: Tokeniser.Token list;
+    Expected: string
+}
 
 [<TestFixture>]
 type ASTParserTests() =
@@ -211,27 +216,29 @@ type ASTParserTests() =
                             )
                         )
         }
-        // Errors.
-        //{
-        //    Name = "Testing error: Missing a number or a bracket: 1+."
-        //    Args = [Tokeniser.Int 1; Tokeniser.Add]
-        //    Expected = "Expected number or '('"
-        //}
-        //{
-        //    Name = "Testing error: Missing a number or a bracket: +1."
-        //    Args = [Tokeniser.Add; Tokeniser.Int 1]
-        //    Expected = "Expected number or '('"
-        //}
-        //{
-        //    Name = "Testing error: Missing a closing bracket: (1+1."
-        //    Args = [Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Add; Tokeniser.Int 1]
-        //    Expected = "Missing closing bracket"
-        //}
+    ]
 
+    static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
+        // Errors.
+        {
+            Name = "Testing error: Missing a number or a bracket: 1+."
+            Args = [Tokeniser.Int 1; Tokeniser.Add]
+            Expected = "Expected number or '('"
+        }
+        {
+            Name = "Testing error: Missing a number or a bracket: +1."
+            Args = [Tokeniser.Add; Tokeniser.Int 1]
+            Expected = "Expected number or '('"
+        }
+        {
+            Name = "Testing error: Missing a closing bracket: (1+1."
+            Args = [Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Add; Tokeniser.Int 1]
+            Expected = "Missing closing bracket"
+        }
     ]
 
     [<TestCaseSource("AstParserTestCases")>]
-    // Unit test AST Parser.
+    /// Unit test AST Parser for happy paths.
     member this.Test_ASTParser_HappyPaths(tc: ASTParserTestCase) =
         // --------
         // ASSEMBLE
@@ -250,5 +257,27 @@ type ASTParserTests() =
         // ------
         match actual with
                | Ok ast -> Assert.AreEqual(expected, ast)
-               | Error err -> Assert.Fail("Parsing failed with error: " + err)
-        //Assert.That(actual, Is.EqualTo(expected))
+               | Error err -> Assert.Fail("Parsing failed with unexpected error: " + err)
+
+
+    [<TestCaseSource("AstParserErrorTestCases")>]
+    /// Unit test AST Parser for unhappy paths.
+    member this.Test_ASTParser_UnhappyPaths(tc: ASTParserErrorTestCase) =
+        // --------
+        // ASSEMBLE
+        // --------
+        let args = tc.Args
+        let expected = tc.Expected
+
+
+        // ---
+        // ACT
+        // ---
+        let actual = parse args
+
+        // ------
+        // ASSERT
+        // ------
+        match actual with
+               | Ok _ -> Assert.Fail("Unexpected pass, error tests must return errors")
+               | Error err -> Assert.AreEqual(expected, err)
