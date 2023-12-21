@@ -10,12 +10,20 @@
 \newcommand{\la}{\leftarrow}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{hyperref}
 \topmargin = 0pt
 \voffset = -80pt
 \oddsidemargin = 15pt
 \textwidth = 425pt
 \textheight = 750pt
-
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
 \begin{document}
 
 \begin{titlepage}
@@ -93,9 +101,9 @@ You should add additional references to the corresponding bib file (References.b
 
 \chapter{Development History}\label{Chap:DevHist}
 
-Describe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
+linksDescribe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
 
-\section{Sprint 1: Basic expressions and GUI}
+\section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
 \subsection{Grammar in BNF}
 \begin{verbatim}
 <E>    ::= <T> <Eopt>
@@ -119,21 +127,20 @@ We used WPF with C\# to develop a basic GUI - see Figure \ref{gui01}.
 \subsection{Testing}
 A subset of Table \ref{Table2} in Appendix \ref{app:test} could be referred to from here.
 
-\section{Sprint 2: Adding unary minus, powers and mod}
-
-\subsection{BNF}
+\section{Sprint 2: \href{https://liamfarese.atlassian.net/browse/AP-30}{As a user I want to have a basic GUI}}
 
 \subsection{Updated GUI}
 
-\section{Sprint 3: ...}
+\subsection{Testing}
 
-\section{Sprint n: Your penultimate version}
+\section{Sprint 3: \href{https://liamfarese.atlassian.net/browse/AP-42}{As a user I want to be able to assign variables}}
+\section{Sprint 4: \href{https://liamfarese.atlassian.net/browse/AP-50}{As a user I want to be able to plot lines and polynomials}}
+\section{Sprint 5: As a developer I would like to have an AST Parser}
+\section{Sprint 6: As a user I would like to run for-loops}
+\section{Sprint 7: As a user I want to visualise an AST}
+\section{Sprint n: And whatever we complete before we submit this}
 
-Make sure that the total number of sprints n(+1) does not become too unwieldy. A rule of thumb would expect it to be somewhere between 6 and 12.
 
-\subsection{BNF}
-
-\subsection{}
 
 \chapter{Final deliverable}\label{Impl}
 
@@ -143,27 +150,7 @@ In this chapter you cover the final or ``ultimate'' version of your project. It 
 
 \section{Final GUI}
 
-See Figure \ref{gui02}.
-
-\begin{figure}[htb]
-%\begin{center}
-\includegraphics[width=0.9 \columnwidth]{GUI_02.png}
-\caption{A potentially final GUI!}
-\label{gui02}
-%\end{center}
-\end{figure}
-
 \section{Code architecture}
-
-Fig.\ \ref{class} shows a UML class diagram (class, sequence and state diagrams are the most frequently used UML diagrams). Illustrating your code architecture - that should be of the MVC family and, considering it is developed in C\# with WPF more specifcally the MVVM pattern - is very important.
-
-\begin{figure}[htb]
-%\begin{center}
-\includegraphics[width=1.0 \columnwidth]{class.png}
-\caption{A UML class diagram to be replaced with yours!}
-\label{class}
-%\end{center}
-\end{figure}
 
 \section{Algorithms}
 
