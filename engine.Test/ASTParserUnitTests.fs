@@ -272,12 +272,12 @@ type ASTParserTests() =
         {
             Name = "Testing error: Missing a number or a bracket: 1+."
             Args = [Tokeniser.Int 1; Tokeniser.Add]
-            Expected = "Expected number or '('"
+            Expected = "Expected number, '(' or '-'."
         }
         {
             Name = "Testing error: Missing a number or a bracket: +1."
             Args = [Tokeniser.Add; Tokeniser.Int 1]
-            Expected = "Expected number or '('"
+            Expected = "Expected number, '(' or '-'."
         }
         {
             Name = "Testing error: Missing a closing bracket: (1+1."

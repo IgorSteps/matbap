@@ -17,16 +17,20 @@
             match tokens with
             | Int     intNumber   :: remainingTokens -> Ok (Number(NumType.Int(intNumber)), remainingTokens)
             | Float   floatNumber :: remainingTokens -> Ok (Number(NumType.Float(floatNumber)), remainingTokens)
-            | Minus               :: remainingTokens ->
-                match parseNumber(remainingTokens) with
+            | Minus               :: remainingTokens -> parseUnaryMinusOperation(remainingTokens)
+            | LeftBracket         :: remainingTokens -> parseBracketedExpression(remainingTokens)
+            | _                                      -> Error "Expected number, '(' or '-'."
+
+        and parseUnaryMinusOperation(tokens : Token list) : Result<(Node * Token list), string> =
+              match parseNumber(tokens) with
                 | Ok (number, remainingTokens)  -> Ok (UnaryMinusOperation("-", number), remainingTokens)
                 | Error err -> Error err
-            | LeftBracket         :: remainingTokens ->
-                match parseExpression(remainingTokens) with
+
+        and parseBracketedExpression(tokens : Token list) : Result<(Node * Token list), string> =
+             match parseExpression(tokens) with
                 | Ok (expr, RightBracket :: remainingTokens)    -> Ok (ParenthesisExpression(expr), remainingTokens)
                 | Ok _                                          -> Error "Missing closing bracket"
                 | Error err                                     -> Error err
-            | _                                                 -> Error "Expected number, '(' or '-'."
 
         /// Parses the power <P>.
         and parsePower(tokens : Token list) : Result<(Node * Token list), string> =
