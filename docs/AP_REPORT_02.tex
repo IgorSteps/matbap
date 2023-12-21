@@ -36,7 +36,7 @@
 \vspace{1.5cm}
 \\{\LARGE MATBAP: Maths Interpreter software} % You can add to this title of modify it if you wish
 \vspace{1.0cm}
-\\{\Large Group members: \\ Igor Stepanenko, Lyra, Liam Farese\ }
+\\{\Large Group members: \\ Igor Stepanenko, Lyra Dalton, Liam Farese\ }
 \vspace{10.0cm}
 \\{\large School of Computing Sciences, University of East Anglia}
 \\ \rule{12cm}{0.5mm}
@@ -57,39 +57,24 @@ Please replace this section with your own abstract. An abstract is a brief summa
 \chapter{Introduction}
 \label{chap:intro}
 
-The introduction should be brief and comprise the following:
-
 \section{Project statement}
-A (brief) statement including the nature of the project, i.e.\ what you will do, how you will accomplish it and what the final deliverable will be.
+The aim of the project is to develop a maths interpreter software called Matbap to solve and plot mathematical equations. The project will be using F\# for the Lexer and Parser that will tokenise and parse mathematical expressions, building an abstract syntax tree. C\# for the Graphical User Interface for user input and visualising equations. MVVM pattern to architect a solution that will integrate F\# and C\# components ensuring low coupling. The final deliverable will be a fully functional Maths Interpreter desktop app capable of solving and plotting mathematical expressions.
 
 \section{Aims and objectives}
+The main aim is to develop Matbap, a maths interpreter software for solving and plotting mathematical expressions. Main objectives include:
+\begin{enumerate}
+    \item Create Lexer and Parser in F\# to process mathematical expressions
+    \item Develop a GUI in C\# for interaction
+    \item Integrate F\# and C\# components
+    \item Implement a system to plot equations
+\end{enumerate}
 
-Clearly specify the main aim and objective(s) and subsequent tasks of your project. You can use a MoSCoW to further elaborate on each individual task. If you do so, use a table with three columns (e.g.\ Table \ref{Table1}), the first one having the four categories; the second column a brief description of the task and the third column further elaboration or comments on the task. Note that a MoSCoW is normally for functional requirements only. You should treat non-functional requirements in a separate MoSCoW.
 
-\begin{table}[h]
-\caption{MoSCoW}
-\begin{center}
-\begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
-Priority & Task & Comments \\ \hline \hline
-\multirow{3}{1in}{Must}
-& Task M1 & Comment M1 \\ \cline{2-3}
-& Task M2 & Comment M2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Should}
-& Task S1 & Comment S1 \\ \cline{2-3}
-& Task S2 & Comment S2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Could}
-& Task C1 & Comment C1 \\ \cline{2-3}
-& Task C2 & Comment C2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Should not}
-& Task SN1 & Comment SN1 \\ \cline{2-3}
-& ... & ... \\ \hline
-\end{tabular}
-\label{Table1}
-\end{center}
-\end{table}
+It is further elaborated in this MoSCoW table \ref{appendix:moscow} 
+
+
+
+
 
 
 \chapter{Background}
@@ -232,6 +217,34 @@ $x = 3; (2*x)-x\verb|^|2*(5\%2)$ & -3 & & &  \\ \hline
 \section{Plot testing}
 
 \chapter{Other stuff}
-\label{app:other}
+\section{MoSCoW table}
+\label{appendix:moscow}
+\begin{table}[h]
+\caption{MoSCoW}
+\begin{center}
+\begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
+Priority & Task & Comments \\ \hline \hline
+\multirow{3}{1in}{Must}
+& Solve arithmetic expressions & Comment M1 \\ \cline{2-3}
+& Have basic GUI & Comment M2 \\ \cline{2-3}
+& Have variable assignment & Comment M2 \\ \cline{2-3}
+& Have basic plotting & Comment M2 \\ \hline \hline
+\multirow{3}{1in}{Should}
+& AST Parser & Comment S1 \\ \cline{2-3}
+& Functions & Comment S2 \\ \cline{2-3}
+& Multiple plots & ... \\ \hline \hline
+\multirow{3}{1in}{Could}
+& For loops & Comment C1 \\ \cline{2-3}
+& Condition & Comment C1 \\ \cline{2-3}
+& Rational numbers & Comment C2 \\ \cline{2-3}
+& Complex numbers & Comment C2 \\ \cline{2-3}
+& Rational equations plotting & Comment C2 \\ \hline \hline
+\multirow{3}{1in}{Will not}
+& Compiler & Comment SN1 \\ \cline{2-3}
+& Static type & Comment SN1 \\ \hline
+\end{tabular}
+\label{Table1}
+\end{center}
+\end{table}
 \end{document}
 
