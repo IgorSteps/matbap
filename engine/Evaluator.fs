@@ -46,13 +46,17 @@ namespace Engine
             | Ok tokens -> match plotParse tokens symTable with
                            | Ok(result, symTable) -> Ok(result, symTable)
                            | Error e              -> Error e
-                           
+
+        type EvaluationSegment =
+            | SingleSegment of float array array
+            | MultipleSegments of float array array list
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
         // and min/max are treated as "start point" and "end point"
         // Expression input in the form: y = <exp>
-        let plotPoints (min: float) (max: float) (step: float) (exp : string) : Result<float array array, string> =
+        let plotPoints (min: float) (max: float) (step: float) (exp : string) : Result<EvaluationSegment, string> =
             // Definitions
-            let mutable points = ResizeArray<float array>()
+            let mutable positiveSegment = ResizeArray<float array>()
+            let mutable negativeSegment = ResizeArray<float array>()
             let mutable x = float min
             let mutable gotError = None
             let trueStep = abs(step)
@@ -68,7 +72,12 @@ namespace Engine
                 let result = plotEval exp symTable
                 
                 match result with
-                | Ok (y, _) -> points.Add([|x; y|])
+                | Ok (y, _) when not (abs(x) < 1e-6) ->
+                    if x > 0.0 then
+                        positiveSegment.Add([|x; y|])
+                    else
+                        negativeSegment.Add([|x; y|])
+                | Ok _ -> () // Exclude division by zero points
                 // If we get an error, needs to be returned instead of the list of plots.
                 // gotError holds this and is checked once we leave the loop. X is set to max in order to break the loop
                 // NOTE: if it's division by zero, skips and does not plot the point, to plot equations such as 1/x
@@ -78,6 +87,11 @@ namespace Engine
                 // Increment x for loop
                 x <- x + trueStep
                 
-            match gotError with
-            | None -> Ok (points.ToArray())
-            | Some e -> Error e
+            if positiveSegment.Count > 0 && negativeSegment.Count > 0 then
+                Ok (MultipleSegments [positiveSegment.ToArray(); negativeSegment.ToArray()])
+            elif positiveSegment.Count > 0 then
+                Ok (SingleSegment (positiveSegment.ToArray()))
+            elif negativeSegment.Count > 0 then
+                Ok (SingleSegment (negativeSegment.ToArray()))
+            else
+                Error "No valid segments found"
