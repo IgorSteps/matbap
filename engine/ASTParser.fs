@@ -12,17 +12,21 @@
         open Types
         open Tokeniser
 
-        /// Parses a Number or a Parenthesis expression (<NR>).
+        /// Parses a Number or a Parenthesis expression with/without Unary minus (<NR>).
         let rec parseNumber(tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
             | Int     intNumber   :: remainingTokens -> Ok (Number(NumType.Int(intNumber)), remainingTokens)
             | Float   floatNumber :: remainingTokens -> Ok (Number(NumType.Float(floatNumber)), remainingTokens)
+            | Minus               :: remainingTokens ->
+                match parseNumber(remainingTokens) with
+                | Ok (number, remainingTokens)  -> Ok (UnaryMinusOperation("-", number), remainingTokens)
+                | Error err -> Error err
             | LeftBracket         :: remainingTokens ->
                 match parseExpression(remainingTokens) with
                 | Ok (expr, RightBracket :: remainingTokens)    -> Ok (ParenthesisExpression(expr), remainingTokens)
                 | Ok _                                          -> Error "Missing closing bracket"
                 | Error err                                     -> Error err
-            | _                                      -> Error "Expected number or '('"
+            | _                                                 -> Error "Expected number, '(' or '-'."
 
         /// Parses the power <P>.
         and parsePower(tokens : Token list) : Result<(Node * Token list), string> =

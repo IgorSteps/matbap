@@ -216,6 +216,56 @@ type ASTParserTests() =
                             )
                         )
         }
+        // Unary minus.
+        {
+            Name = "Testing unary minus: -1"
+            Args = [Tokeniser.Minus; Tokeniser.Int(1);]
+            Expected = UnaryMinusOperation("-", Number(NumType.Int(1)))
+        }
+        {
+            Name = "Testing unary minus expression with unary minus: -(-1)"
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Minus; Tokeniser.Int(1); Tokeniser.RightBracket]
+            Expected = UnaryMinusOperation(
+                            "-",
+                            ParenthesisExpression(  
+                                UnaryMinusOperation(
+                                    "-",
+                                    Number(NumType.Int(1))
+                                )
+                            )
+                       )
+        }
+        {
+            Name = "Testing unary minus expression with unary minus: -(-(1 + 1))"
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int(1); Tokeniser.Add; Tokeniser.Int(1);Tokeniser.RightBracket; Tokeniser.RightBracket]
+            Expected = UnaryMinusOperation(
+                            "-",
+                            ParenthesisExpression(  
+                                UnaryMinusOperation(
+                                    "-",
+                                    ParenthesisExpression(
+                                        BinaryOperation(
+                                            "+",
+                                            Number(NumType.Int(1)),
+                                            Number(NumType.Int(1))
+                                        )
+                                    )
+                                )
+                            )
+                       )
+        }
+        {
+            Name = "Testinh unary minus in a power: 1^-1"
+            Args = [Tokeniser.Int(1); Tokeniser.Power; Tokeniser.Minus; Tokeniser.Int(1)]
+            Expected = BinaryOperation(
+                            "^",
+                            Number(NumType.Int(1)),
+                            UnaryMinusOperation(
+                                "-",
+                                Number(NumType.Int(1))
+                            )
+                        )
+        }
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
