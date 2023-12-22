@@ -62,14 +62,14 @@ The aim of the project is to develop a maths interpreter software called Matbap 
 
 \section{Aims and objectives}
 The main aim is to develop Matbap, a maths interpreter software for solving and plotting mathematical expressions. Main objectives include:
-\begin{enumerate}
+\begin{itemize}
     \item Create Lexer and Parser in F\# to process mathematical expressions
     \item Develop a GUI in C\# for interaction
     \item Integrate F\# and C\# components
     \item Implement a system to plot equations
-\end{enumerate}
+\end{itemize}
 
-
+\noindent % Start a new paragraph without indentation
 It is further elaborated in this MoSCoW table \ref{appendix:moscow} 
 
 
@@ -225,23 +225,24 @@ $x = 3; (2*x)-x\verb|^|2*(5\%2)$ & -3 & & &  \\ \hline
 \begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
 Priority & Task & Comments \\ \hline \hline
 \multirow{3}{1in}{Must}
-& Solve arithmetic expressions & Comment M1 \\ \cline{2-3}
-& Have basic GUI & Comment M2 \\ \cline{2-3}
-& Have variable assignment & Comment M2 \\ \cline{2-3}
-& Have basic plotting & Comment M2 \\ \hline \hline
+& Solve arithmetic expressions & Works with ints and floats, processing is left-associative, BODMAS/BIDMAS rules apply \\ \cline{2-3}
+& Have basic GUI & Input textbox, output textbox and help functionality \\ \cline{2-3}
+& Have variable assignment & Assignment token, Grammar change, Stored in a symbol table \\ \cline{2-3}
+& Be tested & Unit and functionally tested \\ \cline{2-3}
+& Have basic plotting & Plotting area in GUI window to visualise mathematical functions: lines and polynomials \\ \hline \hline
 \multirow{3}{1in}{Should}
-& AST Parser & Comment S1 \\ \cline{2-3}
-& Functions & Comment S2 \\ \cline{2-3}
-& Multiple plots & ... \\ \hline \hline
+& AST Parser & Parser constructs an Abstract Syntax Tree \\ \cline{2-3}
+& Functions & Works with built-in functions such as cos, sin, tan, exp, log  \\ \cline{2-3}
+& Multiple plots & User can plot multiple equations and clear the plotting area \\ \hline \hline
 \multirow{3}{1in}{Could}
-& For loops & Comment C1 \\ \cline{2-3}
-& Condition & Comment C1 \\ \cline{2-3}
-& Rational numbers & Comment C2 \\ \cline{2-3}
-& Complex numbers & Comment C2 \\ \cline{2-3}
-& Rational equations plotting & Comment C2 \\ \hline \hline
+& For loops & \\ \cline{2-3}
+& Conditionals & If statements \\ \cline{2-3}
+& Rational numbers & \\ \cline{2-3}
+& Complex numbers & \\ \cline{2-3}
+& Rational equations plotting & Plot equations like 1/x that produce more than 1 line \\ \hline \hline
 \multirow{3}{1in}{Will not}
-& Compiler & Comment SN1 \\ \cline{2-3}
-& Static type & Comment SN1 \\ \hline
+& Compiler & Too much work to implement a compiler in a given timeframe \\ \cline{2-3}
+& Static typing & Making our language statically typed requires a very strong typing system in place which is too hard to implement in a give timeframe \\ \hline
 \end{tabular}
 \label{Table1}
 \end{center}
