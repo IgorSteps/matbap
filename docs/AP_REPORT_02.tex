@@ -58,19 +58,21 @@ Please replace this section with your own abstract. An abstract is a brief summa
 \label{chap:intro}
 
 \section{Project statement}
-The aim of the project is to develop a maths interpreter software called Matbap to solve and plot mathematical equations. The project will be using F\# for the Lexer and Parser that will tokenise and parse mathematical expressions, building an abstract syntax tree. C\# for the Graphical User Interface for user input and visualising equations. MVVM pattern to architect a solution that will integrate F\# and C\# components ensuring low coupling. The final deliverable will be a fully functional Maths Interpreter desktop app capable of solving and plotting mathematical expressions.
+This project will be a Maths Interpreter software with extensions aiming
+towards a Turing complete language. It will be used to evaluate expressions, define
+variables and functions, and plot functions of two variables. The software
+will allow the user to enter expressions and equations using a custom language which is processed by a lexer, parser and evaluator. Plots of mathematical equations will be interactive. Additional functionality might include root finding, differentiation and integration. The software will be developed keeping in mind software engineering principles such as low coupling and high cohesion achieved through Model-View-ViewModel and Inversion of Control pattern. 
 
 \section{Aims and objectives}
 The main aim is to develop Matbap, a maths interpreter software for solving and plotting mathematical expressions. Main objectives include:
 \begin{itemize}
-    \item Create Lexer and Parser in F\# to process mathematical expressions
-    \item Develop a GUI in C\# for interaction
-    \item Integrate F\# and C\# components
-    \item Implement a system to plot equations
+    \item Create Lexer, Parser and Evaluator in F\# to process mathematical expressions and equations to plot.
+    \item Develop a Graphical User Interface (GUI) in C\# for user interaction.
+    \item Integrate F\# and C\# components keeping in mind low coupling.
 \end{itemize}
 
 \noindent % Start a new paragraph without indentation
-It is further elaborated in this MoSCoW table \ref{appendix:moscow} 
+They are broken further into subtasks in this MoSCoW table \ref{appendix:moscow} 
 
 
 
