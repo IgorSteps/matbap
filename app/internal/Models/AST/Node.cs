@@ -60,6 +60,8 @@ namespace app
         {
             return _value.ToString();
         }
+
+        public T Value => _value;
     }
 
     public class BinaryOperationNode : ASTNode
@@ -80,6 +82,9 @@ namespace app
         {
             return $"({_left.ToString()} {_operator} {_right.ToString()})";
         }
+
+        public ASTNode Left => _left;
+        public ASTNode Right => _right;
     }
 
     public class ParenthesisExpressionNode : ASTNode

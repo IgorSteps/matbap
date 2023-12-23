@@ -7,7 +7,7 @@ namespace app
     /// <summary>
     /// Convert F# AST Node to C# AST Node.
     /// </summary>
-    public class ASTConvertionService
+    public class ASTConversionService
     {
         /// <summary>
         /// Match against F# node types to constuct C# node types for an AST.
@@ -20,15 +20,12 @@ namespace app
             return fSharpNode switch
             {
                 FSharpASTNode.Number num => ConvertFSharpNumber(num.Item),
-                FSharpASTNode.BinaryOperation node => new BinaryOperationNode(
-                                                            node.Item1,
-                                                            Convert(node.Item2),
-                                                            Convert(node.Item3)
-                                                        ),
+                FSharpASTNode.BinaryOperation node => new BinaryOperationNode(node.Item1, Convert(node.Item2), Convert(node.Item3)),
                 FSharpASTNode.ParenthesisExpression node => new ParenthesisExpressionNode(Convert(node.Item)),
                 _ => throw new InvalidOperationException("Unknown C# node type in F# AST."),
             };
         }
+
         private static ASTNode ConvertFSharpNumber(FSharpNumType numType)
         {
             return numType switch
