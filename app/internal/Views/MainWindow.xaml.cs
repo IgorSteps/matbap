@@ -25,6 +25,10 @@ namespace app
         {
             InitializeComponent();
             DataContext = App.Current.Services.GetService<InterpretationViewModel>();
+
+            // @TODO: Remove me for better implementation(a toggle)!!!!!!!
+            ASTWindow astW = new ASTWindow();
+            astW.Show();
         }
         private void OpenTokenHelpClick(object sender, RoutedEventArgs e)
         {

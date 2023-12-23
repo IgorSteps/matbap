@@ -30,9 +30,9 @@ namespace app
         {
             return numType switch
             {
-                FSharpNumType.Int intVal => new NumberNode<int>(intVal.Item),
+                FSharpNumType.Int intVal => new IntNumberNode(intVal.Item),
                 // F#'s float is a System.Double, hence C# type is a double.
-                FSharpNumType.Float floatVal => new NumberNode<double>(floatVal.Item),
+                FSharpNumType.Float floatVal => new FloatNumberNode(floatVal.Item),
                 _ => throw new InvalidOperationException("Unknown number type in F# NumType."),
             };
         }
