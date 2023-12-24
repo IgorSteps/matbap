@@ -15,6 +15,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Functions
   - [ ] Rational
   - [ ] Complex
+  - [ ] Parse Tree
 - [ ] Assignment
   - [x] Dynamic typing
   - [ ] Static typing
@@ -35,12 +36,11 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Polynomials
 - [ ] Advanced Plotting
   - [x] Trig and logarithmic functions
-  - [ ] GPU speed up
+  - [x] Visualise Parse Tree
   - [x] Zoom in/out
   - [x] Translate the axis
-  - [ ] Lines/polynomials extend indefinitely
   - [ ] Plotting multiple plots
-  - [ ] Lines get translated to whatever scale the axis are
+  - [ ] Rational equations
 
 
 ## Tests
