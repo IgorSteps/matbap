@@ -41,11 +41,13 @@ namespace app
             // Models/Services.
             services.AddSingleton<IInterpretModel, InterpretationModel>();
             services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
+            services.AddSingleton<IASTConverter, ASTConversionService>();
 
             // Viewmodels.
             services.AddTransient<InterpretationViewModel>();
             services.AddTransient<TokenHelpViewModel>();
             services.AddTransient<PlotViewModel>();
+            services.AddTransient<ASTViewModel>();
 
             return services.BuildServiceProvider();
         }
