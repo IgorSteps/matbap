@@ -1,0 +1,18 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace app
+{
+    public class HelpContentModel
+    {
+        public string HelpText { get; set; }
+
+        public HelpContentModel(string helpText)
+        {
+            HelpText = helpText;
+        }
+    }
+}

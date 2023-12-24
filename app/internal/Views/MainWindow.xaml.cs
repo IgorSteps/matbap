@@ -26,11 +26,7 @@ namespace app
             InitializeComponent();
             DataContext = App.Current.Services.GetService<InterpretationViewModel>();
         }
-        private void OpenTokenHelpClick(object sender, RoutedEventArgs e)
-        {
-            HelpWindow tokenHelpWindow = new HelpWindow();
-            tokenHelpWindow.Show();
-        }
+     
 
         private void OpenASTVisualisationClick(object sender, RoutedEventArgs e)
         {
