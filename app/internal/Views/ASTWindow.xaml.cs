@@ -22,6 +22,6 @@ namespace app
 
             gViewer.Graph = viewModel.Graph;
         }
-       
+
     }
 }

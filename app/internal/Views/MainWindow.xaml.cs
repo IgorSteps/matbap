@@ -32,10 +32,10 @@ namespace app
             tokenHelpWindow.Show();
         }
 
-        private void OpenPlotClick(object sender, RoutedEventArgs e)
+        private void OpenASTVisualisationClick(object sender, RoutedEventArgs e)
         {
-            PlotWindow plotWindow = new PlotWindow();
-            plotWindow.Show();
+            ASTWindow astWindow = new ASTWindow();
+            astWindow.Show();
         }
     }
 
