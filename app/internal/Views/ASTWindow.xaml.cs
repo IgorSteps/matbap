@@ -18,7 +18,7 @@ namespace app
         {
             InitializeComponent();
             var viewModel = App.Current.Services.GetService<ASTViewModel>();
-            this.DataContext = viewModel;
+            DataContext = viewModel;
 
             gViewer.Graph = viewModel.Graph;
         }

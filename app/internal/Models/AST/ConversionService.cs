@@ -7,7 +7,7 @@ namespace app
     /// <summary>
     /// Convert F# AST Node to C# AST Node.
     /// </summary>
-    public class ASTConversionService
+    public class ASTConversionService : IASTConverter
     {
         /// <summary>
         /// Match against F# node types to constuct C# node types for an AST.
@@ -30,9 +30,9 @@ namespace app
         {
             return numType switch
             {
-                FSharpNumType.Int intVal => new IntNumberNode(intVal.Item),
+                FSharpNumType.Int intVal => new NumberNode<int>(intVal.Item),
                 // F#'s float is a System.Double, hence C# type is a double.
-                FSharpNumType.Float floatVal => new FloatNumberNode(floatVal.Item),
+                FSharpNumType.Float floatVal => new NumberNode<double>(floatVal.Item),
                 _ => throw new InvalidOperationException("Unknown number type in F# NumType."),
             };
         }

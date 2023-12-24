@@ -64,18 +64,6 @@ namespace app
         public T Value => _value;
     }
 
-    // @TODO: needed for making WPF Xaml work, see if still needed at the end...
-    public class IntNumberNode : NumberNode<int>
-    {
-        public IntNumberNode(int value) : base(value) { }
-    }
-
-    public class FloatNumberNode : NumberNode<double>
-    {
-        public FloatNumberNode(double value) : base(value) { }
-    }
-
-
     public class BinaryOperationNode : ASTNode
     {
         private readonly string _operator;

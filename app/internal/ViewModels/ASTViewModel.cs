@@ -1,11 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Msagl.Drawing;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Printing;
-using System.Text;
-using System.Threading.Tasks;
 using FSharpASTNode = Engine.Types.Node;
 
 namespace app
@@ -14,42 +8,57 @@ namespace app
     {
         private ASTNode _rootNode;
         private Graph _graph;
-        public ASTViewModel()
+        private IASTConverter _converter;
+
+        public ASTViewModel(IASTConverter converter)
         {
+            // @TODO: Remove me once actual implementation is there.
             var input = "1 + 2 * 3 / (4 - 5) ^ 6 % 7";
             var tokens = Engine.Tokeniser.tokenise(input);
             var ast = Engine.ASTParser.parse(tokens.ResultValue);
-            // Initialize your F# AST here or receive it as a parameter
+            
+            // Initialize F# AST.
             FSharpASTNode fSharpAST = ast.ResultValue;
 
-            // Convert F# AST to C# AST
-            var converter = new ASTConversionService();
-            RootNode = converter.Convert(fSharpAST);
-            Graph = ConvertAstToGraph(RootNode);
+            // Convert F# AST to C# AST.
+            _converter = converter;
+            RootNode = _converter.Convert(fSharpAST);
+
+            // Setup the graph.
+            _graph = ConvertAstToGraph(RootNode);
         }
-        private Graph ConvertAstToGraph(ASTNode node)
+
+        private Graph ConvertAstToGraph(ASTNode root)
         {
             var graph = new Graph();
-            AddAstNodeToGraph(graph, null, node);
+
+            AddAstNodeToGraph(graph, null, root);
+
             return graph;
         }
 
         private void AddAstNodeToGraph(Graph graph, Node parentGraphNode, ASTNode astNode)
         {
             var graphNode = graph.AddNode(astNode.ToString());
-            graphNode.Attr.Shape = Shape.Box; // Customize node appearance
+            graphNode.Attr.Shape = Shape.Box;
 
             if (parentGraphNode != null)
+            {
                 graph.AddEdge(parentGraphNode.Id, graphNode.Id);
+            }
 
             foreach (var child in astNode.Children)
+            { 
                 AddAstNodeToGraph(graph, graphNode, child);
+            }
         }
+
         public Graph Graph
         {
             get => _graph;
             private set => SetProperty(ref _graph, value);
         }
+
         public ASTNode RootNode
         {
             get => _rootNode;
