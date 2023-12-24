@@ -50,7 +50,7 @@ namespace app.Test
             // ASSERT
             // ------
             Assert.That(operNode.NodeType, Is.EqualTo(ASTNodeType.BinaryOperation));
-            Assert.That(operNode.ToString(), Is.EqualTo("(1 + 1)"));
+            Assert.That(operNode.ToString(), Is.EqualTo("1 + 1"));
             Assert.That(testLeftNode.Parent, Is.SameAs(operNode));
             Assert.That(testLeftNode.Parent, Is.SameAs(operNode));
         }
@@ -83,7 +83,7 @@ namespace app.Test
             // --------
             // ASSEMBLE
             // --------
-            var expected = "((1 + 1))";
+            var expected = "(1 + 1)";
             var leftTestNode = new NumberNode<int>(1);
             var rightTestNode = new NumberNode<int>(1);
             var binaryTestNode = new BinaryOperationNode("+", leftTestNode, rightTestNode);

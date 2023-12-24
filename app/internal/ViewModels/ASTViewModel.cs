@@ -6,6 +6,7 @@ namespace app
 {
     public class ASTViewModel : ObservableObject
     {
+        private FSharpASTNode _fSharpAST;
         private ASTNode _rootNode;
         private Graph _graph;
         private IASTConverter _converter;
@@ -13,16 +14,17 @@ namespace app
         public ASTViewModel(IASTConverter converter)
         {
             // @TODO: Remove me once actual implementation is there.
+            // Sample parseing to get an AST back.
             var input = "1 + 2 * 3 / (4 - 5) ^ 6 % 7";
             var tokens = Engine.Tokeniser.tokenise(input);
             var ast = Engine.ASTParser.parse(tokens.ResultValue);
-            
+
             // Initialize F# AST.
-            FSharpASTNode fSharpAST = ast.ResultValue;
+            _fSharpAST = ast.ResultValue;
 
             // Convert F# AST to C# AST.
             _converter = converter;
-            RootNode = _converter.Convert(fSharpAST);
+            RootNode = _converter.Convert(_fSharpAST);
 
             // Setup the graph.
             _graph = ConvertAstToGraph(RootNode);

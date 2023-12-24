@@ -49,7 +49,7 @@ namespace app.Test
             // --------
             // ASSEMBLE
             // --------
-            var expected = "(1 + 1)";
+            var expected = "1 + 1";
             var testInput = 1;
             var leftTestNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(testInput));
             var rightTestNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(testInput));
