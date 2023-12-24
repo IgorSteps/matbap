@@ -29,6 +29,17 @@ namespace app
             // Setup the graph.
             _graph = ConvertAstToGraph(RootNode);
         }
+        public Graph Graph
+        {
+            get => _graph;
+            private set => SetProperty(ref _graph, value);
+        }
+
+        public ASTNode RootNode
+        {
+            get => _rootNode;
+            set => SetProperty(ref _rootNode, value);
+        }
 
         private Graph ConvertAstToGraph(ASTNode root)
         {
@@ -53,18 +64,6 @@ namespace app
             { 
                 AddAstNodeToGraph(graph, graphNode, child);
             }
-        }
-
-        public Graph Graph
-        {
-            get => _graph;
-            private set => SetProperty(ref _graph, value);
-        }
-
-        public ASTNode RootNode
-        {
-            get => _rootNode;
-            set => SetProperty(ref _rootNode, value);
         }
     }
 }
