@@ -14,15 +14,15 @@ namespace app
         public HelpContentModel()
         {
             ExpressionsHelpText =
-                "Supported tokens are +, -, *, /, ), (, ^, =, sin, cos, tan, log, variable names like 'x' and 'y'\n" +
-                "You can assign variables like so x=5\n" +
-                "You can have multiple lines, just put a semicolon ';' on the end of your lines";
+                "1) Supported tokens are +, -, *, /, ), (, ^, =, sin, cos, tan, log, variable names like 'x' and 'y'\n" +
+                "2) You can assign variables like so x=5\n" +
+                "3) You can have multiple lines, just put a semicolon ';' on the end of your lines";
 
             PlotHelpText =
-                "Able to plot linear and polynomial equations\n" +
-                "You can plot multiple graphs, just enter new equation and click Plot\n" +
-                "Click clear to clear plotting area\n" +
-                "Don't include 'y = ' part, otherwise we will error";
+                "1) Able to plot linear and polynomial equations\n" +
+                "2) You can plot multiple graphs, just enter new equation and click Plot\n" +
+                "3) Click clear to clear plotting area\n" +
+                "4) Don't include 'y = ' part, otherwise we will error";
         }
     }
 }

@@ -114,7 +114,7 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Grid.Row="0" Text="Enter maths function to plot:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                <TextBlock Grid.Column="0" Text="Enter maths function to plot:" Margin="10" FontSize="16" FontWeight="Bold"/>
                 <Button Grid.Column="1"
                     DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
                     Content="?"
