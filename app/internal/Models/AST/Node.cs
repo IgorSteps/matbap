@@ -92,7 +92,7 @@ namespace app
 
         public override string ToString()
         {
-            return $"({_left.ToString()} {_operator} {_right.ToString()})";
+            return $"{_left.ToString()} {_operator} {_right.ToString()}";
         }
 
         public string Operator => _operator;

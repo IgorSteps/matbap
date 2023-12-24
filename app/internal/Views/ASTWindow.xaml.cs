@@ -1,17 +1,11 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GraphX.Controls;
+using GraphX.Logic.Models;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Msagl.Drawing;
+
+using QuickGraph;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+
 
 namespace app
 {
@@ -23,7 +17,11 @@ namespace app
         public ASTWindow()
         {
             InitializeComponent();
-            DataContext = App.Current.Services.GetService<ASTViewModel>();
+            var viewModel = App.Current.Services.GetService<ASTViewModel>();
+            this.DataContext = viewModel;
+
+            gViewer.Graph = viewModel.Graph;
         }
+       
     }
 }
