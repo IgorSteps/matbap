@@ -50,7 +50,7 @@
                         Padding="10,0,10,0"
                      >
                     <Button.ToolTip>
-                        <ToolTip Content="{Binding ExpressionsHelpText}" />
+                        <ToolTip Content="{Binding HelpTexts.ExpressionsHelpText}" />
                     </Button.ToolTip>
                 </Button>
             </Grid>
@@ -125,7 +125,7 @@
                     Padding="10,0,10,0"
                  >
                     <Button.ToolTip>
-                        <ToolTip Content="{Binding PlotHelpText}" />
+                        <ToolTip Content="{Binding HelpTexts.PlotHelpText}" />
                     </Button.ToolTip>
                 </Button>
             </Grid>

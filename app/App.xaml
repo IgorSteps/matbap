@@ -5,17 +5,8 @@
              StartupUri="/internal/Views/MainWindow.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            <local:ViewModelLocator x:Key="ViewModelLocator"/>
             
-            <DataTemplate x:Key="HelpButtonTemplate" DataType="{x:Type local:HelpViewModel}">
-                <Button Content="?" FontSize="10" Margin="5,0,0,0" VerticalAlignment="Center"
-                    Command="{Binding ShowHelpCommand}"
-                    CommandParameter="{Binding HelpText}">
-                    <Button.ToolTip>
-                        <ToolTip Content="{Binding HelpText}" />
-                    </Button.ToolTip>
-                </Button>
-            </DataTemplate>
+            <local:ViewModelLocator x:Key="ViewModelLocator"/>
             
         </ResourceDictionary>
     </Application.Resources>
