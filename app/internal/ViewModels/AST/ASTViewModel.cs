@@ -61,7 +61,7 @@ namespace app
             }
 
             foreach (var child in astNode.Children)
-            { 
+            {
                 AddAstNodeToGraph(graph, graphNode, child);
             }
         }

@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:app"
         mc:Ignorable="d"
         Title="Matbap" Height="600" Width="1200">
     <Grid>
@@ -17,7 +18,8 @@
             DataContext="{Binding InterpretationViewModel, Source={StaticResource ViewModelLocator}}"
             Grid.Column="0"
             Margin="10"
-            Background="#FFF0F8FF">
+            Background="#FFF0F8FF"
+            >
             
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -29,7 +31,30 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="Enter maths expression to evaluate:" Margin="10" FontSize="16" FontWeight="Bold"/>
+            
+            
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Enter maths expression to evaluate:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                <Button Grid.Column="1"
+                        DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
+                        Content="?"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Background="#FFC7C7C7"
+                        BorderThickness="1"
+                        Padding="10,0,10,0"
+                     >
+                    <Button.ToolTip>
+                        <ToolTip Content="{Binding HelpTexts.ExpressionsHelpText}" />
+                    </Button.ToolTip>
+                </Button>
+            </Grid>
+
             <TextBox Grid.Row="1" 
                      Text="{Binding Expression}"
                      Margin="10"
@@ -46,16 +71,18 @@
                 <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Response}" FontSize="18" />
             </Border>
 
-            <Button 
-                Grid.Row="4"
-                Content="Evaluate expression"
-                Command="{Binding InterpretCmd}"
-                Margin="10"
-                FontSize="20"
-                FontWeight="Bold"
-                Background="#FFC7C7C7"
-                BorderThickness="2"/>
+           
+                <Button 
+                    Grid.Row="4"
+                    Content="Evaluate expression"
+                    Command="{Binding InterpretCmd}"
+                    Margin="10"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
 
+    
             <TextBlock Grid.Row="5" Text="Options:" Margin="10" FontSize="16" FontWeight="Bold"/>
             <Button 
                 Grid.Row="6"
@@ -81,8 +108,27 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            
-            <TextBlock Grid.Row="0" Text="Enter maths function to plot:" Margin="10" FontSize="16" FontWeight="Bold"/>
+
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Enter maths function to plot:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                <Button Grid.Column="1"
+                    DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
+                    Content="?"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#FFC7C7C7"
+                    BorderThickness="1"
+                    Padding="10,0,10,0"
+                 >
+                    <Button.ToolTip>
+                        <ToolTip Content="{Binding HelpTexts.PlotHelpText}" />
+                    </Button.ToolTip>
+                </Button>
+            </Grid>
 
             <StackPanel Grid.Row="1" Orientation="Horizontal">
                 <TextBox 
