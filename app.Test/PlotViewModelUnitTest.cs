@@ -40,7 +40,7 @@ namespace app.Test
             // ---
             // ACT
             // ---
-            _viewModel.InterpretCmd.Execute(null);
+            _viewModel.PlotCmd.Execute(null);
 
             // ------
             // ASSERT
@@ -73,7 +73,7 @@ namespace app.Test
             // ---
             // ACT
             // ---
-            _viewModel.InterpretCmd.Execute(null);
+            _viewModel.PlotCmd.Execute(null);
 
             // ------
             // ASSERT

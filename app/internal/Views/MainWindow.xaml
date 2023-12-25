@@ -142,7 +142,7 @@
                 <Button 
                     Width="150"
                     Content="Plot"
-                    Command="{Binding InterpretCmd}"
+                    Command="{Binding PlotCmd}"
                     FontSize="20"
                     FontWeight="Bold"
                     Margin="10"
@@ -170,7 +170,7 @@
                 HorizontalAlignment="Left"
                 Foreground="Red" />
 
-            <oxy:PlotView Grid.Row="4" Model="{Binding PlotModel}" x:Name="PlotArea" />
+            <oxy:PlotView Grid.Row="4" Model="{Binding OxyPlotModel}" x:Name="PlotArea" />
 
         </Grid>
 
