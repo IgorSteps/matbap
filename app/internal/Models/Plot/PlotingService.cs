@@ -1,8 +1,6 @@
-﻿using Microsoft.Msagl.Core.Geometry.Curves;
-using OxyPlot;
+﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using System.Collections.Generic;
 
 namespace app
 {
@@ -35,6 +33,8 @@ namespace app
             SetupAxis();
         }
 
+        public PlotModel OxyPlotModel => _oxyPlotModel;
+
         public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
         {
             var result = _equationEvaluator.Evaluate(xmin, xmax, xstep, function);
@@ -53,7 +53,7 @@ namespace app
         }
 
         /// <summary>
-        /// Clears all plots from the OxyPlot PlotModel and from plots Dictionary.
+        /// Clears all plots from the OxyPlot PlotModel and from _equationColours collection.
         /// </summary>
         public void ClearPlots()
         {
