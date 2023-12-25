@@ -1,16 +1,30 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OxyPlot;
-
+using OxyPlot.Series;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Windows.Media;
 
 namespace app
 {
+    public struct EquationColourPair
+    {
+        public string Equation { get; set; }
+        public string Colour { get; set; }
+        public EquationColourPair(string equation, string colour)
+        {
+            Equation = equation;
+            Colour = colour;
+        }
+    }
     public class PlotViewModel : ObservableObject
     {
         private readonly IPlotter _plotter;
         private PlotModel _oxyPlotModel;
         private readonly RelayCommand _plotCmd, _clearCmd;
 
+        private ObservableCollection<EquationColourPair> _equationColours;
         private string _inputEquation;
         private string _evaluatorError;
 
@@ -24,6 +38,7 @@ namespace app
             _plotCmd = new RelayCommand(Plot);
             _clearCmd = new RelayCommand(Clear);
             _evaluatorError = "";
+            _equationColours = new ObservableCollection<EquationColourPair>();
 
             // Set defaults.
             _inputEquation = "";
@@ -31,6 +46,12 @@ namespace app
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
+        }
+
+        public ObservableCollection<EquationColourPair> EquationColors
+        {
+            get => _equationColours;
+            set => SetProperty(ref _equationColours, value);
         }
 
         public PlotModel OxyPlotModel
@@ -90,12 +111,36 @@ namespace app
             {
                 EvaluatorError = "";
                 OxyPlotModel = plotResult.OxyPlotModel;
+                OxyPlotModel.InvalidatePlot(true);
+
+                UpdateSeriesColors();
             }
+        }
+
+        private void UpdateSeriesColors()
+        {
+            _equationColours.Clear();
+            foreach (var series in OxyPlotModel.Series)
+            {
+                if (series is LineSeries lineSeries)
+                {
+                    string colour = ColourToHexString(lineSeries.ActualColor);
+                    var pair = new EquationColourPair(lineSeries.Title, colour);
+                    _equationColours.Add(pair);
+                }
+            }
+        }
+
+        private string ColourToHexString(OxyColor c)
+        {
+            return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
         }
 
         private void Clear()
         {
             _plotter.ClearPlots();
+            _equationColours.Clear();
+           
         }
     }
 } 

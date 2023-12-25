@@ -180,9 +180,22 @@
                 FontSize="18"
                 HorizontalAlignment="Left"
                 Foreground="Red" />
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                
+                <oxy:PlotView Grid.Column="0" Model="{Binding OxyPlotModel}" x:Name="PlotArea" />
 
-            <oxy:PlotView Grid.Row="4" Model="{Binding OxyPlotModel}" x:Name="PlotArea" />
-
+                <ListView Grid.Column="1" ItemsSource="{Binding EquationColors}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Equation}" Foreground="{Binding Colour}" />
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
         </Grid>
 
     </Grid>

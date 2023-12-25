@@ -1,11 +1,8 @@
-﻿using OxyPlot;
+﻿using Microsoft.Msagl.Core.Geometry.Curves;
+using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace app
 {
@@ -20,7 +17,6 @@ namespace app
             OxyPlotModel = oxyPlotModel;
             Error = error;
         }
-
     }
 
     public class PlotingService : IPlotter
@@ -29,13 +25,11 @@ namespace app
         const double AxisMax = 10;
 
         private readonly IPlotEquationEvaluator _equationEvaluator;
-        private Dictionary<string, LineSeries> Plots { get; set; }
         private PlotModel _oxyPlotModel;
 
         public PlotingService(IPlotEquationEvaluator equationEvaluator)
         {
             _equationEvaluator = equationEvaluator;
-            Plots = new Dictionary<string, LineSeries>();
             _oxyPlotModel = new PlotModel();
 
             SetupAxis();
@@ -50,8 +44,8 @@ namespace app
             }
 
             LineSeries newSeries = AddNewLineSeries(result.Points);
-            Plots[function] = newSeries;
-
+            newSeries = CustomiseLineSeries(newSeries, function);
+            
             _oxyPlotModel.Series.Add(newSeries);
             _oxyPlotModel.InvalidatePlot(true);
 
@@ -63,9 +57,15 @@ namespace app
         /// </summary>
         public void ClearPlots()
         {
-            Plots.Clear();
             _oxyPlotModel.Series.Clear();
             _oxyPlotModel.InvalidatePlot(true);
+        }
+
+        private LineSeries CustomiseLineSeries(LineSeries lineSeries, string function)
+        {
+            lineSeries.Title = "y=" + function;
+
+            return lineSeries;
         }
 
         private LineSeries AddNewLineSeries(double[][] points)
@@ -85,5 +85,7 @@ namespace app
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = AxisMin, Maximum = AxisMax });
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = AxisMin, Maximum = AxisMax });
         }
+
+        
     }
 }
