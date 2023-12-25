@@ -28,16 +28,14 @@ namespace app
         const double AxisMin = 0;
         const double AxisMax = 10;
 
-        /// <summary>
-        /// Represents an OxyPlot plot.
-        /// </summary>
-        private PlotModel _oxyPlotModel;
         private readonly IPlotEquationEvaluator _equationEvaluator;
-
+        private Dictionary<string, LineSeries> Plots { get; set; }
+        private PlotModel _oxyPlotModel;
 
         public PlotingService(IPlotEquationEvaluator equationEvaluator)
         {
             _equationEvaluator = equationEvaluator;
+            Plots = new Dictionary<string, LineSeries>();
             _oxyPlotModel = new PlotModel();
 
             SetupAxis();
@@ -51,13 +49,27 @@ namespace app
                 return new PlotResult(null, result.Error);
             }
 
+            LineSeries newSeries = AddNewLineSeries(result.Points);
+            Plots[function] = newSeries;
 
-            return new PlotResult(UpdatePlotModelWithPoints(result.Points), null);
+            _oxyPlotModel.Series.Add(newSeries);
+            _oxyPlotModel.InvalidatePlot(true);
+
+            return new PlotResult(_oxyPlotModel, null);
         }
 
-        private PlotModel UpdatePlotModelWithPoints(double[][] points)
+        /// <summary>
+        /// Clears all plots from the OxyPlot PlotModel and from plots Dictionary.
+        /// </summary>
+        public void ClearPlots()
         {
+            Plots.Clear();
             _oxyPlotModel.Series.Clear();
+            _oxyPlotModel.InvalidatePlot(true);
+        }
+
+        private LineSeries AddNewLineSeries(double[][] points)
+        {
             var lineSeries = new LineSeries();
 
             foreach (var point in points)
@@ -65,12 +77,7 @@ namespace app
                 lineSeries.Points.Add(new DataPoint(point[0], point[1]));
             }
 
-            _oxyPlotModel.Series.Add(lineSeries);
-
-            // Refresh the plot with new data.
-            _oxyPlotModel.InvalidatePlot(true);
-
-            return _oxyPlotModel;
+            return lineSeries;
         }
 
         private void SetupAxis()

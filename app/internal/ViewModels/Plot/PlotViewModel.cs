@@ -10,6 +10,7 @@ namespace app
         private readonly IPlotter _plotter;
         private PlotModel _oxyPlotModel;
         private readonly RelayCommand _plotCmd;
+       
 
         private string _inputEquation;
         private string _evaluatorError;
@@ -21,11 +22,12 @@ namespace app
         public PlotViewModel(IPlotter plotter)
         {
             _plotter = plotter;
-
             _plotCmd = new RelayCommand(Plot);
             _evaluatorError = "";
-            
+
             // Set defaults.
+            _inputEquation = "";
+            _oxyPlotModel = new PlotModel();
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
@@ -39,7 +41,7 @@ namespace app
 
         public string InputEquation
         {
-            get => _inputEquation;
+            get => _inputEquation; 
             set => SetProperty(ref _inputEquation, value);
         }
 
