@@ -9,8 +9,7 @@ namespace app
     {
         private readonly IPlotter _plotter;
         private PlotModel _oxyPlotModel;
-        private readonly RelayCommand _plotCmd;
-       
+        private readonly RelayCommand _plotCmd, _clearCmd;
 
         private string _inputEquation;
         private string _evaluatorError;
@@ -23,6 +22,7 @@ namespace app
         {
             _plotter = plotter;
             _plotCmd = new RelayCommand(Plot);
+            _clearCmd = new RelayCommand(Clear);
             _evaluatorError = "";
 
             // Set defaults.
@@ -74,6 +74,11 @@ namespace app
         /// </summary>
         public RelayCommand PlotCmd => _plotCmd;
 
+        // <summary>
+        ///  ClearCmd binds to a button in the plot view, executes the Clear() when clicked.
+        /// </summary>
+        public RelayCommand ClearCmd => _clearCmd;
+
         private void Plot()
         {
             var plotResult = _plotter.CreatePlot(InputEquation, XMinimum, XMaximum, XStep);
@@ -86,6 +91,11 @@ namespace app
                 EvaluatorError = "";
                 OxyPlotModel = plotResult.OxyPlotModel;
             }
+        }
+
+        private void Clear()
+        {
+            _plotter.ClearPlots();
         }
     }
 } 
