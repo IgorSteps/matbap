@@ -1,5 +1,4 @@
 ﻿using Moq;
-using OxyPlot.Series;
 
 namespace app.Test
 {
@@ -100,7 +99,7 @@ namespace app.Test
             // --------
             // ASSERT
             // --------
-            Assert.AreEqual(0, _plottingService.OxyPlotModel.Series.Count);
+            Assert.That(_plottingService.OxyPlotModel.Series.Count, Is.EqualTo(0));
         }
     }
 }
