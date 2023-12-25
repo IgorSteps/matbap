@@ -38,10 +38,10 @@ namespace app
                 return new PlotResult(null, result.Error);
             }
 
-            LineSeries newSeries = AddNewLineSeries(result.Points);
-            newSeries = CustomiseLineSeries(newSeries, function);
+            LineSeries newSeries = NewLineSeries(result.Points);
+            LineSeries customisedNewLineSeries = CustomiseLineSeries(newSeries, function);
             
-            _oxyPlotModel.Series.Add(newSeries);
+            _oxyPlotModel.Series.Add(customisedNewLineSeries);
             SetupAxis(xmin, xmax);
 
             _oxyPlotModel.InvalidatePlot(true);
@@ -65,7 +65,7 @@ namespace app
             return lineSeries;
         }
 
-        private LineSeries AddNewLineSeries(double[][] points)
+        private LineSeries NewLineSeries(double[][] points)
         {
             var lineSeries = new LineSeries();
 
@@ -82,7 +82,5 @@ namespace app
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = min, Maximum = max });
         }
-
-
     }
 }
