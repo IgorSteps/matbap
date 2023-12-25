@@ -19,9 +19,6 @@ namespace app
 
     public class PlotingService : IPlotter
     {
-        const double AxisMin = 0;
-        const double AxisMax = 10;
-
         private readonly IPlotEquationEvaluator _equationEvaluator;
         private PlotModel _oxyPlotModel;
 
@@ -29,8 +26,6 @@ namespace app
         {
             _equationEvaluator = equationEvaluator;
             _oxyPlotModel = new PlotModel();
-
-            SetupAxis();
         }
 
         public PlotModel OxyPlotModel => _oxyPlotModel;
@@ -47,6 +42,8 @@ namespace app
             newSeries = CustomiseLineSeries(newSeries, function);
             
             _oxyPlotModel.Series.Add(newSeries);
+            SetupAxis(xmin, xmax);
+
             _oxyPlotModel.InvalidatePlot(true);
 
             return new PlotResult(_oxyPlotModel, null);
@@ -80,12 +77,12 @@ namespace app
             return lineSeries;
         }
 
-        private void SetupAxis()
+        private void SetupAxis(double min, double max)
         {
-            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = AxisMin, Maximum = AxisMax });
-            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = AxisMin, Maximum = AxisMax });
+            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
+            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = min, Maximum = max });
         }
 
-        
+
     }
 }
