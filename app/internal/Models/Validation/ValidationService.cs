@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace app
 {
-    public class ValidationService
+    public class ValidationService : IValidator
     {
         public ValidationService() { }
         public string ValidatePlotInput(double xmin, double xmax, double xstep)
@@ -27,7 +27,7 @@ namespace app
         {
             if (x == 0)
             {
-                return "X can't be 0";
+                return "Tangent X can't be 0";
             }
 
             return null;

@@ -2,18 +2,20 @@
 using NUnit.Framework.Constraints;
 using OxyPlot.Series;
 
-namespace app.Test
+namespace app.Test.Unit
 {
     public class PlottingServiceTest
     {
         private app.PlottingService _plottingService;
         private Mock<IPlotEquationEvaluator> _evaluatorMock;
+        private Mock<IValidator> _validatorMock;
 
         [SetUp]
         public void Setup()
         {
             _evaluatorMock = new Mock<IPlotEquationEvaluator>();
-            _plottingService = new PlottingService(_evaluatorMock.Object);
+            _validatorMock = new Mock<IValidator>();
+            _plottingService = new PlottingService(_evaluatorMock.Object, _validatorMock.Object);
         }
 
         [Test]
@@ -30,6 +32,8 @@ namespace app.Test
             };
             double testValue = 1;
             var testEvaluatorResult = new EvaluationResult(testPoints, null);
+            string validtorError = null;
+            _validatorMock.Setup(v => v.ValidatePlotInput(testValue, testValue, testValue)).Returns(validtorError);
             _evaluatorMock.
                 Setup(e => e.Evaluate(testValue, testValue, testValue, testInput)).
                 Returns(testEvaluatorResult);
@@ -44,6 +48,36 @@ namespace app.Test
             // --------
             Assert.IsFalse(result.HasError);
             Assert.That(result.OxyPlotModel.Series.Count, Is.EqualTo(1));
+        }
+
+        [Test]
+        public void Test_PlottingService_CreatePort_ValidatorError()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string testInput = "1+1";
+            double[][] testPoints = new double[][]
+            {
+                new double[] { 0, 0 },
+                new double[] { 1, 1 }
+            };
+            double xmin = 10, xmax = 1, xstep = 0.1;
+            string validtorError = "test error";
+            _validatorMock.Setup(v => v.ValidatePlotInput(xmin, xmax, xstep)).Returns(validtorError);
+            
+
+            // --------
+            // ACT
+            // --------
+            var result = _plottingService.CreatePlot(testInput, xmin, xmax, xstep);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsTrue(result.HasError, "There should be an error");
+            Assert.IsNull(result.OxyPlotModel, "Plot Model must be null");
+            Assert.That(result.Error, Is.EqualTo(validtorError), "Errors must be the same");
         }
 
         [Test]
@@ -103,9 +137,34 @@ namespace app.Test
             // --------
             Assert.That(_plottingService.OxyPlotModel.Series.Count, Is.EqualTo(0));
         }
+        [Test]
+        public void Test_PlottingService_AddTangent_ValidatorError()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string testFunction = "x";
+            double x = 10;
+            double xmin = 0, xmax = 10, xstep = 0.1;
+
+            string validtorError = "test error";
+            _validatorMock.Setup(v => v.ValidateAddTangentInput(x)).Returns(validtorError);
+
+            // --------
+            // ACT
+            // --------
+            var result = _plottingService.AddTangent(x, testFunction, xmin, xmax, xstep);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsTrue(result.HasError, "Must return an error");
+            Assert.IsNull(result.OxyPlotModel, "Plot Model should be null");
+            Assert.That(result.Error, Is.EqualTo(validtorError), "Errors must be the same");
+        }
 
         [Test]
-        public void Test_PlottingService_AddTangent_Error()
+        public void Test_PlottingService_AddTangent_EvaluatorError()
         {
             // --------
             // ASSEMBLE

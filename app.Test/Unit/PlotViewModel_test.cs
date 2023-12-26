@@ -2,7 +2,7 @@
 using OxyPlot;
 using OxyPlot.Series;
 
-namespace app.Test
+namespace app.Test.Unit
 {
     public class PlotViewModelUnitTest
     {

@@ -22,20 +22,20 @@ namespace app
     {
         private readonly IPlotEquationEvaluator _equationEvaluator;
         private PlotModel _oxyPlotModel;
-        private ValidationService _validationService;
+        private readonly IValidator _validator;
 
-        public PlottingService(IPlotEquationEvaluator equationEvaluator)
+        public PlottingService(IPlotEquationEvaluator equationEvaluator, IValidator validator)
         {
             _equationEvaluator = equationEvaluator;
             _oxyPlotModel = new PlotModel();
-            _validationService = new ValidationService();
+            _validator = validator;
         }
 
         public PlotModel OxyPlotModel => _oxyPlotModel;
 
         public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
         {
-            string err = _validationService.ValidatePlotInput(xmin, xmax, xstep);
+            string err = _validator.ValidatePlotInput(xmin, xmax, xstep);
             if (err != null)
             {
                 return new PlotResult(null, err);
@@ -59,13 +59,13 @@ namespace app
         /// </summary>
         public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
         {
-            string err = _validationService.ValidatePlotInput(xmin, xmax, xstep);
+            string err = _validator.ValidatePlotInput(xmin, xmax, xstep);
             if (err != null)
             {
                 return new PlotResult(null, err);
             }
 
-            err = _validationService.ValidateAddTangentInput(x);
+            err = _validator.ValidateAddTangentInput(x);
             if (err != null)
             {
                 return new PlotResult(null, err);

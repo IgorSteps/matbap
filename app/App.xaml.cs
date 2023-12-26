@@ -38,8 +38,9 @@ namespace app
             services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
             services.AddSingleton<IASTConverter, ASTConversionService>();
             services.AddSingleton<IPlotter, PlottingService>();
+            services.AddSingleton<IValidator, ValidationService>();
 
-            // Viewmodels.
+            // ViewModels.
             services.AddTransient<InterpretationViewModel>();
             services.AddTransient<HelpViewModel>();
             services.AddTransient<PlotViewModel>();
