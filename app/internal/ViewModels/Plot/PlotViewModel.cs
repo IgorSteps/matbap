@@ -18,6 +18,7 @@ namespace app
             Colour = colour;
         }
     }
+
     public class PlotViewModel : ObservableObject
     {
         private readonly IPlotter _plotter;
@@ -106,38 +107,8 @@ namespace app
 
         private void Plot()
         {
-            var plotResult = _plotter.CreatePlot(InputEquation, XMinimum, XMaximum, XStep);
-            if (plotResult.HasError)
-            {
-                EvaluatorError = plotResult.Error;
-            }
-            else
-            {
-                EvaluatorError = "";
-                OxyPlotModel = plotResult.OxyPlotModel;
-                OxyPlotModel.InvalidatePlot(true);
-
-                UpdateSeriesColors();
-            }
-        }
-
-        private void UpdateSeriesColors()
-        {
-            _equationColours.Clear();
-            foreach (var series in OxyPlotModel.Series)
-            {
-                if (series is LineSeries lineSeries)
-                {
-                    string colour = ColourToHexString(lineSeries.ActualColor);
-                    var pair = new EquationColourPair(lineSeries.Title, colour);
-                    _equationColours.Add(pair);
-                }
-            }
-        }
-
-        private string ColourToHexString(OxyColor c)
-        {
-            return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+            var result = _plotter.CreatePlot(InputEquation, XMinimum, XMaximum, XStep);
+            PlotResult(result);
         }
 
         /// <summary>
@@ -148,18 +119,7 @@ namespace app
         private void AddTangent()
         {
             var result = _plotter.AddTangent(TangentX, InputEquation, XMinimum, XMaximum, XStep);
-            if (result.HasError)
-            {
-                EvaluatorError = result.Error;
-            } 
-            else
-            {
-                EvaluatorError = "";
-                OxyPlotModel = result.OxyPlotModel;
-                OxyPlotModel.InvalidatePlot(true);
-
-                UpdateSeriesColors();
-            }
+            PlotResult(result);
         }     
 
         /// <summary>
@@ -171,7 +131,53 @@ namespace app
         {
             _plotter.ClearPlots();
             _equationColours.Clear();
-           
+        }
+
+        private void PlotResult(PlotResult result)
+        {
+            if (result.HasError)
+            {
+                EvaluatorError = result.Error;
+            }
+            else
+            {
+                ClearError();
+                OxyPlotModel = result.OxyPlotModel;
+                OxyPlotModel.InvalidatePlot(true);
+
+                UpdateSeriesColours();
+            }
+        }
+
+        /// <summary>
+        /// Set error to empty string.
+        /// </summary>
+        private void ClearError()
+        {
+            EvaluatorError = "";
+        }
+
+        /// <summary>
+        /// Update list of Pairs of equations and their colours to display
+        /// alongside plotting area.
+        /// </summary>
+        private void UpdateSeriesColours()
+        {
+            _equationColours.Clear();
+            foreach (var series in OxyPlotModel.Series)
+            {
+                if (series is LineSeries lineSeries)
+                {
+                    string colour = ColourToHex(lineSeries.ActualColor);
+                    var pair = new EquationColourPair(lineSeries.Title, colour);
+                    _equationColours.Add(pair);
+                }
+            }
+        }
+
+        private string ColourToHex(OxyColor c)
+        {
+            return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
         }
     }
 } 

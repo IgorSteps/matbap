@@ -111,6 +111,46 @@ namespace app.Test
             Assert.IsEmpty(_viewModel.EquationColors, "EquationColours should've been cleared");
             Assert.IsNull(_viewModel.OxyPlotModel, "OxyPlotModel should've been cleared");
         }
+
+        public void Test_PlotViewModel_AddtangentCmd_AddsTangent()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string testFunctionInput = "x+1";
+            double testInput = 1;
+
+            // Setting properties on ViewModel as they are the ones passed to
+            // AddTangent. Without that, mock setup will fail.
+            _viewModel.XMinimum = testInput;
+            _viewModel.XMaximum = testInput;
+            _viewModel.XStep = testInput;
+            _viewModel.InputEquation = testFunctionInput;
+
+            // Need to give PlotModel a line series so that it triggers UpdateSeriesColors
+            // update of equationColours.
+            var testLineSeries = new LineSeries();
+            testLineSeries.Title = "Tangent Boo";
+            var plotModel = new PlotModel();
+            plotModel.Series.Add(testLineSeries);
+
+            var testResult = new PlotResult(plotModel, null);
+            _plotterMock.
+                Setup(p => p.AddTangent(testInput, testFunctionInput, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep)).
+                Returns(testResult);
+
+            // --------
+            // ACT
+            // --------
+            _viewModel.AddTangentCmd.Execute(null);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsEmpty(_viewModel.EvaluatorError, "There mustn't be an error");
+            Assert.That(_viewModel.OxyPlotModel, Is.EqualTo(plotModel), "Plot models should be equal");
+            Assert.IsNotEmpty(_viewModel.EquationColors, "EquationColours can't be empty");
+        }
     }
 }
 
