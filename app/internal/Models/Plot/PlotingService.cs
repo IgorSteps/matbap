@@ -49,6 +49,37 @@ namespace app
             return new PlotResult(_oxyPlotModel, null);
         }
 
+        // @PSEUDO:
+        public void AddTangent(double x)
+        {
+            // Calculate the y-value of the function at x.
+            double yPointOfTangent = ;
+            // Calculate the derivative - tangent slope at x.
+            double slope = ;
+
+            // Calculate y-intercept of the tangent line:
+            // y = mx + c => c = y - mx
+            double yIntercept = yPointOfTangent - slope * x;
+
+            // Create the tangent line series/
+            var tangentLineSeries = new LineSeries
+            {
+                Title = $"Tangent at x={x}",
+                Color = OxyColors.Red, 
+                LineStyle = LineStyle.Dash
+            };
+
+            // Draw the tangent line across the entire plot range.
+            for (double x = min; x <= max; x += xstep)
+            {
+                double y = slope * x + yIntercept;
+                tangentLineSeries.Points.Add(new DataPoint(x, y));
+            }
+
+            _oxyPlotModel.Series.Add(tangentLineSeries);
+            _oxyPlotModel.InvalidatePlot(true);
+        }
+
         /// <summary>
         /// Clears all plots from the OxyPlot PlotModel and from _equationColours collection.
         /// </summary>
