@@ -1,4 +1,6 @@
-﻿namespace app.Test.Unit
+﻿using System.Xaml.Schema;
+
+namespace app.Test.Unit
 {
     public class ValidationService_test
     {
@@ -45,19 +47,19 @@
         }
 
         [Test]
-        public void Test_ValidationService_ValidateAddTangentInput_X()
+        [TestCase(0, 1, 10, 0.1, "Tangent X can't be zero")]
+        public void Test_ValidationService_ValidateAddTangentInput(double x, double xmin, double xmax, double xstep, string error)
         {
             // --------
             // ASSEMBLE
             // --------
-            double x= 0;
             ValidationService validationService = new ValidationService();
-            string expectedErr = "Tangent X can't be 0";
+            string expectedErr = error;
 
             // ----
             // ACT
             // ----
-            string err = validationService.ValidateAddTangentInput(x);
+            string err = validationService.ValidateAddTangentInput(x, xmin, xmax, xstep);
 
             // --------
             // ASSERT
