@@ -38,17 +38,20 @@
             | Ok result -> parsePowerOperator(result)
             | Error err -> Error err
 
-        /// Parses power operator <Popt> in an expression, handling right-associativity.
-        and parsePowerOperator(term, tokens : Token list) : Result<(Node * Token list), string> =
+        /// Parses power operator <Popt> in an expression, handling right-associativity by
+        /// first parsing tokens right after power operator(immediateRhsTerm), where if it
+        /// finds more power operators on the right hand side, it will recursevily call
+        /// itself to ensure right-associativity.
+        and parsePowerOperator(lhsTerm, tokens : Token list) : Result<(Node * Token list), string> =
             match tokens with
             | Power :: remainingTokens ->
                 match parseNumber(remainingTokens) with
-                | Ok (rightTerm, tokensAfterRightTerm) ->
-                    match parsePowerOperator(rightTerm, tokensAfterRightTerm) with
-                    | Ok (poweredRightTerm, remainingTokensAfterPower) -> Ok (BinaryOperation("^", term, poweredRightTerm), remainingTokensAfterPower)
+                | Ok (immediateRhsTerm, tokensAfterImmediateRhs) ->
+                    match parsePowerOperator(immediateRhsTerm, tokensAfterImmediateRhs) with
+                    | Ok (poweredRhsTerm, remainingTokensAfterAllPowerOperations) -> Ok (BinaryOperation("^", lhsTerm, poweredRhsTerm), remainingTokensAfterAllPowerOperations)
                     | Error err -> Error err
                 | Error err -> Error err
-            | _ -> Ok (term, tokens)
+            | _ -> Ok (lhsTerm, tokens)
         
 
         /// Parses the Term <T>, which is a Number or Parenthesis Expression followed by optional arithemtic operations.
