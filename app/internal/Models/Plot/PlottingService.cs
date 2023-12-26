@@ -22,17 +22,25 @@ namespace app
     {
         private readonly IPlotEquationEvaluator _equationEvaluator;
         private PlotModel _oxyPlotModel;
+        private ValidationService _validationService;
 
         public PlottingService(IPlotEquationEvaluator equationEvaluator)
         {
             _equationEvaluator = equationEvaluator;
             _oxyPlotModel = new PlotModel();
+            _validationService = new ValidationService();
         }
 
         public PlotModel OxyPlotModel => _oxyPlotModel;
 
         public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
         {
+            string err = _validationService.ValidatePlotInput(xmin, xmax, xstep);
+            if (err != null)
+            {
+                return new PlotResult(null, err);
+            }
+
             var result = EvaluateFunction(function, xmin, xmax, xstep);
             if (result.HasError)
             {
@@ -51,6 +59,18 @@ namespace app
         /// </summary>
         public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
         {
+            string err = _validationService.ValidatePlotInput(xmin, xmax, xstep);
+            if (err != null)
+            {
+                return new PlotResult(null, err);
+            }
+
+            err = _validationService.ValidateAddTangentInput(x);
+            if (err != null)
+            {
+                return new PlotResult(null, err);
+            }
+
             // Hacky way of doing it for now, Evaluate() will return only 1 point
             // if xmin = xmax and xstep > 0.
             var result = EvaluateFunction(function, x, x, x);
