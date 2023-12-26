@@ -22,7 +22,7 @@ namespace app
     {
         private readonly IPlotter _plotter;
         private PlotModel _oxyPlotModel;
-        private readonly RelayCommand _plotCmd, _clearCmd;
+        private readonly RelayCommand _plotCmd, _clearCmd, _addTangentCmd;
 
         private ObservableCollection<EquationColourPair> _equationColours;
         private string _inputEquation;
@@ -32,11 +32,14 @@ namespace app
         private double _xMaximum;
         private double _xStep;
 
+        private double _tangentX;
+
         public PlotViewModel(IPlotter plotter)
         {
             _plotter = plotter;
             _plotCmd = new RelayCommand(Plot);
             _clearCmd = new RelayCommand(Clear);
+            _addTangentCmd = new RelayCommand(AddTangent);
             _evaluatorError = "";
             _equationColours = new ObservableCollection<EquationColourPair>();
 
@@ -54,10 +57,16 @@ namespace app
             set => SetProperty(ref _equationColours, value);
         }
 
+        public double TangentX
+        {
+            get => _tangentX;
+            set => SetProperty(ref _tangentX, value);
+        }
+
         public PlotModel OxyPlotModel
         {
             get => _oxyPlotModel;
-            private set => SetProperty(ref _oxyPlotModel, value);
+            set => SetProperty(ref _oxyPlotModel, value);
         }
 
         public string InputEquation
@@ -87,7 +96,6 @@ namespace app
         public double XStep
         {
             get => _xStep;
-            // @TODO: Test it isn't 0.
             set => SetProperty(ref _xStep, value);
         }
 
@@ -95,11 +103,6 @@ namespace app
         ///  PlotCmd binds to a button in the plot view, executes the Plot() when clicked.
         /// </summary>
         public RelayCommand PlotCmd => _plotCmd;
-
-        // <summary>
-        ///  ClearCmd binds to a button in the plot view, executes the Clear() when clicked.
-        /// </summary>
-        public RelayCommand ClearCmd => _clearCmd;
 
         private void Plot()
         {
@@ -136,6 +139,33 @@ namespace app
         {
             return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
         }
+
+        /// <summary>
+        ///  AddTangentCmd binds to a button in the plot view, executes the AddTangnet() when clicked.
+        /// </summary>
+        public RelayCommand AddTangentCmd => _addTangentCmd;
+
+        private void AddTangent()
+        {
+            var result = _plotter.AddTangent(TangentX, InputEquation, XMinimum, XMaximum, XStep);
+            if (result.HasError)
+            {
+                EvaluatorError = result.Error;
+            } 
+            else
+            {
+                EvaluatorError = "";
+                OxyPlotModel = result.OxyPlotModel;
+                OxyPlotModel.InvalidatePlot(true);
+
+                UpdateSeriesColors();
+            }
+        }     
+
+        /// <summary>
+        ///  ClearCmd binds to a button in the plot view, executes the Clear() when clicked.
+        /// </summary>
+        public RelayCommand ClearCmd => _clearCmd;
 
         private void Clear()
         {
