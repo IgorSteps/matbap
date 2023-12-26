@@ -54,14 +54,21 @@ namespace app
         public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
         {
             // Calculate the y-value of the function at x.
-            var pointOfTangent = _equationEvaluator.Evaluate(x, x, 0.1, function);
-            var y = pointOfTangent.Points[0][0];
+            // Hacky way of doing it for now, Evaluate() will return only 1 point if xmin = xmax and xstep > 0.
+            var result = _equationEvaluator.Evaluate(x, x, x, function);
+            if (result.HasError)
+            {
+                return new PlotResult(null, result.Error);
+            }
+
+            // Evaluator returns [x,y].
+            var yTangentPoint = result.Points[0][1];
             // Calculate the derivative - tangent slope at x.
             double slope = _equationEvaluator.TakeDerivative(x, function);
 
             // Calculate y-intercept of the tangent line:
             // y = mx + c => c = y - mx
-            double yIntercept = y - slope * x;
+            double yTangentIntercept = yTangentPoint - slope * x;
 
             // Create the tangent line series.
             var tangentLineSeries = new LineSeries
@@ -72,10 +79,10 @@ namespace app
             };
 
             // Draw the tangent line across the entire plot range.
-            for (double i = xmin; i <= xmin; i += xstep)
+            for (double i = xmin; i <= xmax; i += xstep)
             {
-                double j = slope * i + yIntercept;
-                tangentLineSeries.Points.Add(new DataPoint(i, j));
+                double y = slope * i + yTangentIntercept;
+                tangentLineSeries.Points.Add(new DataPoint(i, y));
             }
 
             _oxyPlotModel.Series.Add(tangentLineSeries);

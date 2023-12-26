@@ -87,6 +87,7 @@ namespace app
         public double XStep
         {
             get => _xStep;
+            // @TODO: Test it isn't 0.
             set => SetProperty(ref _xStep, value);
         }
 

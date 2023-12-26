@@ -11,14 +11,15 @@ namespace app
 {
     public struct EvaluationResult
     {
+        public double[][] Points { get; set; }
+        public string Error { get; set; }
+        public readonly bool HasError => !string.IsNullOrEmpty(Error);
+
         public EvaluationResult(double[][] p, string err)
         {
             Points = p;
             Error = err;
         }
-        public double[][] Points { get; set; }
-        public string Error { get; set; }
-        public bool HasError => !string.IsNullOrEmpty(Error);
     }
 
     public class PlotEquationEvaluationService: IPlotEquationEvaluator
