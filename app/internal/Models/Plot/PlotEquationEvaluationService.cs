@@ -28,5 +28,10 @@ namespace app
             var result = Engine.Evaluator.plotPoints(min, max, step, equation);
             return new EvaluationResult(result.ResultValue, result.ErrorValue);
         }
+
+        public double TakeDerivative(double x, string function) 
+        {
+            throw new NotImplementedException();
+        }
     }
 }
