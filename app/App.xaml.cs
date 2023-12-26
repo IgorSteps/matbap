@@ -37,7 +37,7 @@ namespace app
             services.AddSingleton<IInterpretModel, InterpretationModel>();
             services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
             services.AddSingleton<IASTConverter, ASTConversionService>();
-            services.AddSingleton<IPlotter, PlotingService>();
+            services.AddSingleton<IPlotter, PlottingService>();
 
             // Viewmodels.
             services.AddTransient<InterpretationViewModel>();

@@ -6,14 +6,14 @@ namespace app.Test
 {
     public class PlottingServiceTest
     {
-        private app.PlotingService _plottingService;
+        private app.PlottingService _plottingService;
         private Mock<IPlotEquationEvaluator> _evaluatorMock;
 
         [SetUp]
         public void Setup()
         {
             _evaluatorMock = new Mock<IPlotEquationEvaluator>();
-            _plottingService = new PlotingService(_evaluatorMock.Object);
+            _plottingService = new PlottingService(_evaluatorMock.Object);
         }
 
         [Test]

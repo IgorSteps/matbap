@@ -1,6 +1,7 @@
 ﻿using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
+using System.DirectoryServices.ActiveDirectory;
 
 namespace app
 {
@@ -17,12 +18,12 @@ namespace app
         }
     }
 
-    public class PlotingService : IPlotter
+    public class PlottingService : IPlotter
     {
         private readonly IPlotEquationEvaluator _equationEvaluator;
         private PlotModel _oxyPlotModel;
 
-        public PlotingService(IPlotEquationEvaluator equationEvaluator)
+        public PlottingService(IPlotEquationEvaluator equationEvaluator)
         {
             _equationEvaluator = equationEvaluator;
             _oxyPlotModel = new PlotModel();
@@ -30,63 +31,63 @@ namespace app
 
         public PlotModel OxyPlotModel => _oxyPlotModel;
 
-        public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
+        private EvaluationResult EvaluateFunction(string function, double xmin, double xmax, double xstep)
         {
             var result = _equationEvaluator.Evaluate(xmin, xmax, xstep, function);
             if (result.HasError)
             {
-                return new PlotResult(null, result.Error);
+                return new EvaluationResult(null, result.Error);
             }
-
-            LineSeries newSeries = NewLineSeries(result.Points);
-            LineSeries customisedNewLineSeries = CustomiseLineSeries(newSeries, function);
-            
-            _oxyPlotModel.Series.Add(customisedNewLineSeries);
-            SetupAxis(xmin, xmax);
-
-            _oxyPlotModel.InvalidatePlot(true);
-
-            return new PlotResult(_oxyPlotModel, null);
+            else
+            {
+                return new EvaluationResult(result.Points, null);
+            }
         }
 
-        // Add Tangent at point X for a Function.
-        // Draw in range xmin - xmax with step xstep.
-        public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
+        public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
         {
-            // Calculate the y-value of the function at x.
-            // Hacky way of doing it for now, Evaluate() will return only 1 point if xmin = xmax and xstep > 0.
-            var result = _equationEvaluator.Evaluate(x, x, x, function);
+            var result = EvaluateFunction(function, xmin, xmax, xstep);
             if (result.HasError)
             {
                 return new PlotResult(null, result.Error);
             }
 
-            // Evaluator returns [x,y].
-            var yTangentPoint = result.Points[0][1];
-            // Calculate the derivative - tangent slope at x.
-            double slope = _equationEvaluator.TakeDerivative(x, function);
+            LineSeries newSeries = CreateLineSeries(result.Points, "y = "+function, LineStyle.Solid);
+            AddSeries(newSeries);
+            SetupAxis(xmin, xmax);
 
-            // Calculate y-intercept of the tangent line:
-            // y = mx + c => c = y - mx
-            double yTangentIntercept = yTangentPoint - slope * x;
+            return new PlotResult(_oxyPlotModel, null);
+        }
 
-            // Create the tangent line series.
-            var tangentLineSeries = new LineSeries
+        /// <summary>
+        /// Add Tangent at point x for a function.
+        /// </summary>
+        public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
+        {
+            // Hacky way of doing it for now, Evaluate() will return only 1 point
+            // if xmin = xmax and xstep > 0.
+            var result = EvaluateFunction(function, x, x, x);
+            if (result.HasError)
             {
-                Title = $"Tangent at x={x}",
-                Color = OxyColors.Red, 
-                LineStyle = LineStyle.Dash
-            };
-
-            // Draw the tangent line across the entire plot range.
-            for (double i = xmin; i <= xmax; i += xstep)
-            {
-                double y = slope * i + yTangentIntercept;
-                tangentLineSeries.Points.Add(new DataPoint(i, y));
+                return new PlotResult(null, result.Error);
             }
 
-            _oxyPlotModel.Series.Add(tangentLineSeries);
-            _oxyPlotModel.InvalidatePlot(true);
+            // Calculate y-intercept for tangent,
+            double y = result.Points[0][1];
+            double slope = _equationEvaluator.TakeDerivative(x, function);
+            double yIntercept = y - slope * x;
+
+            // Build the string of the tangent function to pass to evaluator.
+            string tangentFunction = $"{slope} * x + {yIntercept}";
+            var tangentEvalResult = EvaluateFunction(tangentFunction, xmin, xmax, xstep);
+            if (tangentEvalResult.HasError)
+            {
+                return new PlotResult(null, tangentEvalResult.Error);
+            }
+
+            LineSeries tangentLineSeries = CreateLineSeries(tangentEvalResult.Points, "Tangent at x = " + x, LineStyle.Dash);
+            AddSeries(tangentLineSeries);
+            SetupAxis(xmin, xmax);
 
             return new PlotResult(_oxyPlotModel, null);
         }
@@ -96,31 +97,29 @@ namespace app
         /// </summary>
         public void ClearPlots()
         {
+            _oxyPlotModel.Axes.Clear();
             _oxyPlotModel.Series.Clear();
             _oxyPlotModel.InvalidatePlot(true);
         }
 
-        private LineSeries CustomiseLineSeries(LineSeries lineSeries, string function)
+        private LineSeries CreateLineSeries(double[][] points, string title, LineStyle lineStyle)
         {
-            lineSeries.Title = "y=" + function;
-
-            return lineSeries;
-        }
-
-        private LineSeries NewLineSeries(double[][] points)
-        {
-            var lineSeries = new LineSeries();
-
+            var lineSeries = new LineSeries { Title = title, LineStyle = lineStyle };
             foreach (var point in points)
             {
                 lineSeries.Points.Add(new DataPoint(point[0], point[1]));
             }
-
             return lineSeries;
+        }
+
+        private void AddSeries(Series series)
+        {
+            _oxyPlotModel.Series.Add(series);
         }
 
         private void SetupAxis(double min, double max)
         {
+            _oxyPlotModel.Axes.Clear();
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
             _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = min, Maximum = max });
         }

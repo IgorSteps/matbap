@@ -11,6 +11,9 @@ namespace app
 {
     public struct EvaluationResult
     {
+        /// <summary>
+        /// Returns points in [x,y] format.
+        /// </summary>
         public double[][] Points { get; set; }
         public string Error { get; set; }
         public readonly bool HasError => !string.IsNullOrEmpty(Error);
@@ -30,9 +33,14 @@ namespace app
             return new EvaluationResult(result.ResultValue, result.ErrorValue);
         }
 
+        // @TODO: Switch with implementation in F#.
         public double TakeDerivative(double x, string function) 
         {
-            throw new NotImplementedException();
+            double h = 1e-5; // A small number for the central difference calculation
+            double yPlus = Evaluate(x + h, x + h, 1, function).Points[0][1];
+            double yMinus = Evaluate(x - h, x - h, 1, function).Points[0][1];
+
+            return (yPlus - yMinus) / (2 * h);
         }
     }
 }
