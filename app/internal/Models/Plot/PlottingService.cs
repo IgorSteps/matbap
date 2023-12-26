@@ -31,19 +31,6 @@ namespace app
 
         public PlotModel OxyPlotModel => _oxyPlotModel;
 
-        private EvaluationResult EvaluateFunction(string function, double xmin, double xmax, double xstep)
-        {
-            var result = _equationEvaluator.Evaluate(xmin, xmax, xstep, function);
-            if (result.HasError)
-            {
-                return new EvaluationResult(null, result.Error);
-            }
-            else
-            {
-                return new EvaluationResult(result.Points, null);
-            }
-        }
-
         public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
         {
             var result = EvaluateFunction(function, xmin, xmax, xstep);
@@ -100,6 +87,19 @@ namespace app
             _oxyPlotModel.Axes.Clear();
             _oxyPlotModel.Series.Clear();
             _oxyPlotModel.InvalidatePlot(true);
+        }
+
+        private EvaluationResult EvaluateFunction(string function, double xmin, double xmax, double xstep)
+        {
+            var result = _equationEvaluator.Evaluate(xmin, xmax, xstep, function);
+            if (result.HasError)
+            {
+                return new EvaluationResult(null, result.Error);
+            }
+            else
+            {
+                return new EvaluationResult(result.Points, null);
+            }
         }
 
         private LineSeries CreateLineSeries(double[][] points, string title, LineStyle lineStyle)

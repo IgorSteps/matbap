@@ -105,40 +105,6 @@ namespace app.Test
         }
 
         [Test]
-        public void Test_PlottingService_AddTangent_LineSeriesAdded()
-        {
-            // --------
-            // ASSEMBLE
-            // --------
-            string testFunction = "x";
-            double testXPoint = 10;
-            double testYValue = 10;
-
-            // For xmin, xmax, xstep.
-            double testValue = 10;
-            double[][] testReturnedPoint = new double[][]
-            {
-                new double[] { testYValue, testXPoint },   
-            };
-
-            var testEvaluationResult = new EvaluationResult(testReturnedPoint, null);
-            double testDerivativeResult = 2;
-            _evaluatorMock.Setup(e => e.Evaluate(testValue, testValue, testValue, testFunction)).Returns(testEvaluationResult);
-            _evaluatorMock.Setup(e => e.TakeDerivative(testXPoint, testFunction)).Returns(testDerivativeResult);
-
-            // --------
-            // ACT
-            // --------
-            var result = _plottingService.AddTangent(testXPoint, testFunction, testValue, testValue, testValue);
-
-            // --------
-            // ASSERT
-            // --------
-            Assert.IsFalse(result.HasError, "Shouldn't return an error");
-            Assert.That(result.OxyPlotModel.Series.Count, Is.EqualTo(1), "There should be a tangent line series in the plot model");
-        }
-
-        [Test]
         public void Test_PlottingService_AddTangent_Error()
         {
             // --------
@@ -176,16 +142,18 @@ namespace app.Test
             double expectedY = x * x; // y = x^2
             double expectedSlope = x * x;
             double xmin = 0, xmax = 10, xstep = 0.1;
-
+            double expectedYIntercept = expectedY - expectedSlope * x;
             double[][] testReturnedPoint = new double[][]
             {
                 // Evaluator returns [x,y].
                 new double[] { x, expectedY },
             };
             var expectedEvaluationResult = new EvaluationResult(testReturnedPoint, null);
+            string expectedTangentEquation = $"{expectedSlope} * x + {expectedYIntercept}";
 
             _evaluatorMock.Setup(e => e.Evaluate(x, x, x, testFunction)).Returns(expectedEvaluationResult);
             _evaluatorMock.Setup(e => e.TakeDerivative(x, testFunction)).Returns(expectedSlope);
+            _evaluatorMock.Setup(e => e.Evaluate(xmin, xmax, xstep, expectedTangentEquation)).Returns(expectedEvaluationResult);
 
             // --------
             // ACT
@@ -199,7 +167,7 @@ namespace app.Test
             Assert.That(result.OxyPlotModel.Series.Count, Is.EqualTo(1), "There should be a tangent line series in the plot model");
 
             var tangentLineSeries = (LineSeries)result.OxyPlotModel.Series.Last();
-            Assert.That(tangentLineSeries.Title, Is.EqualTo($"Tangent at x={x}"), "Series titlea don't match");
+            Assert.That(tangentLineSeries.Title, Is.EqualTo($"Tangent at x = {x}"), "Series titlea don't match");
 
             // Tolerance for floating point comparison.
             double tolerance = 0.001;
