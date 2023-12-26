@@ -23,11 +23,19 @@ namespace app
             return null;
         }
 
-        public string ValidateAddTangentInput(double x)
+        public string ValidateAddTangentInput(double x, double xmin, double xmax, double xstep)
         {
             if (x == 0)
             {
-                return "Tangent X can't be 0";
+                return "Tangent's X can't be 0";
+            }
+            if (x < xmin || x>xmax) 
+            {
+                return "Tangent's X must be in the range [XMin, XMax]";
+            }
+            if (xstep == 0)
+            {
+                return "XStep can't be 0";
             }
 
             return null;

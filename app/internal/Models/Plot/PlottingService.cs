@@ -59,13 +59,7 @@ namespace app
         /// </summary>
         public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
         {
-            string err = _validator.ValidatePlotInput(xmin, xmax, xstep);
-            if (err != null)
-            {
-                return new PlotResult(null, err);
-            }
-
-            err = _validator.ValidateAddTangentInput(x);
+            string err = _validator.ValidateAddTangentInput(x, xmin, xmax, xstep);
             if (err != null)
             {
                 return new PlotResult(null, err);
