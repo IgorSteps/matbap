@@ -136,6 +136,7 @@ namespace app.Test.Unit
             // --------
             Assert.That(_plottingService.OxyPlotModel.Series.Count, Is.EqualTo(0));
         }
+
         [Test]
         public void Test_PlottingService_AddTangent_ValidatorError()
         {
@@ -147,7 +148,7 @@ namespace app.Test.Unit
             double xmin = 0, xmax = 10, xstep = 0.1;
 
             string validtorError = "test error";
-            _validatorMock.Setup(v => v.ValidateAddTangentInput(x)).Returns(validtorError);
+            _validatorMock.Setup(v => v.ValidateAddTangentInput(x, xmin, xmax, xstep)).Returns(validtorError);
 
             // --------
             // ACT

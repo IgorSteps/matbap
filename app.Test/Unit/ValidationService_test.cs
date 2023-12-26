@@ -4,6 +4,11 @@ namespace app.Test.Unit
 {
     public class ValidationService_test
     {
+        const string tangentXZeroMsg = "Tangent's X can't be 0";
+        const string xMinGreaterXMax = "XMin can't be greater than XMax";
+        const string tangentXRangeMsg = "Tangent's X must be in the range [XMin, XMax]";
+        const string xStepZeroMsg = "XStep can't be 0";
+
         [Test]
         public void Test_ValidationService_ValidatePlotInput_XMin()
         {
@@ -47,7 +52,10 @@ namespace app.Test.Unit
         }
 
         [Test]
-        [TestCase(0, 1, 10, 0.1, "Tangent X can't be zero")]
+        [TestCase(0, 1, 10, 0.1, tangentXZeroMsg)]
+        [TestCase(2, 10, 0, 0.1, xMinGreaterXMax)]
+        [TestCase(200, 1, 10, 0.1, tangentXRangeMsg)]
+        [TestCase(2, 1, 10, 0, xStepZeroMsg)]
         public void Test_ValidationService_ValidateAddTangentInput(double x, double xmin, double xmax, double xstep, string error)
         {
             // --------

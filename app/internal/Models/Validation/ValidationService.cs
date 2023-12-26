@@ -8,16 +8,21 @@ namespace app
 {
     public class ValidationService : IValidator
     {
+        const string tangentXZeroMsg = "Tangent's X can't be 0";
+        const string xMinGreaterXMax = "XMin can't be greater than XMax";
+        const string tangentXRangeMsg = "Tangent's X must be in the range [XMin, XMax]";
+        const string xStepZeroMsg = "XStep can't be 0";
+
         public ValidationService() { }
         public string ValidatePlotInput(double xmin, double xmax, double xstep)
         {
             if (xmin > xmax)
             {
-                return "XMin can't be greater than XMax";
+                return xMinGreaterXMax;
             }
             if (xstep == 0)
             {
-                return "XStep can't be 0";
+                return xStepZeroMsg;
             }
 
             return null;
@@ -27,16 +32,21 @@ namespace app
         {
             if (x == 0)
             {
-                return "Tangent's X can't be 0";
+                return tangentXZeroMsg;
             }
-            if (x < xmin || x>xmax) 
+            if (xmin > xmax)
             {
-                return "Tangent's X must be in the range [XMin, XMax]";
+                return xMinGreaterXMax;
+            }
+            if (x < xmin || x > xmax) 
+            {
+                return tangentXRangeMsg;
             }
             if (xstep == 0)
             {
-                return "XStep can't be 0";
+                return xStepZeroMsg;
             }
+            
 
             return null;
         }
