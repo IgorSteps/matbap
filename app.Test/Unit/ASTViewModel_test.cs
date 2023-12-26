@@ -1,11 +1,10 @@
 ﻿using Microsoft.Msagl.Drawing;
 using Moq;
-using System.Windows.Forms.VisualStyles;
 using FSharpASTNode = Engine.Types.Node;
 
-namespace app.Test
+namespace app.Test.Unit
 {
-    public class ASTViewModelUnitTest
+    public class ASTViewModel_test
     {
         private Mock<IASTConverter> _mockConverter;
         private ASTViewModel _viewModel;
@@ -40,7 +39,7 @@ namespace app.Test
 
             var rootNode = graph.FindNode(rootAstNode.Value.ToString());
             Assert.That(rootNode, Is.Not.Null, "Root node can't be null");
-            
+
             // Check nodes.
             var leftNode = graph.FindNode(leftChild.Value.ToString());
             var rightNode = graph.FindNode(rightChild.Value.ToString());
@@ -64,5 +63,5 @@ namespace app.Test
             return false;
         }
     }
-   
+
 }

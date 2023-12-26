@@ -4,7 +4,7 @@ using OxyPlot.Series;
 
 namespace app.Test.Unit
 {
-    public class PlotViewModelUnitTest
+    public class PlotViewModel_test
     {
         private PlotViewModel _viewModel;
         private Mock<IPlotter> _plotterMock;

@@ -1,7 +1,6 @@
-﻿
-namespace app.Test.Unit
+﻿namespace app.Test.Unit
 {
-    public class ValidationServiceTest
+    public class ValidationService_test
     {
         [Test]
         public void Test_ValidationService_ValidatePlotInput_XMin()

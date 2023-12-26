@@ -1,5 +1,4 @@
 ﻿using Moq;
-using NUnit.Framework.Constraints;
 using OxyPlot.Series;
 
 namespace app.Test.Unit
