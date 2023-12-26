@@ -9,7 +9,7 @@ namespace app
     {
         public PlotModel OxyPlotModel { get; set; }
         public string Error { get; set; }
-        public bool HasError => !string.IsNullOrEmpty(Error);
+        public readonly bool HasError => !string.IsNullOrEmpty(Error);
 
         public PlotResult(PlotModel oxyPlotModel, string error)
         {
@@ -18,22 +18,24 @@ namespace app
         }
     }
 
+    /// <summary>
+    /// PlottingService provides functionality for creating and manipulating plot data.
+    /// </summary>
     public class PlottingService : IPlotter
     {
         private readonly IPlotEquationEvaluator _equationEvaluator;
-        private PlotModel _oxyPlotModel;
         private readonly IValidator _validator;
 
         public PlottingService(IPlotEquationEvaluator equationEvaluator, IValidator validator)
         {
             _equationEvaluator = equationEvaluator;
-            _oxyPlotModel = new PlotModel();
-            _validator = validator;
+           _validator = validator;
         }
 
-        public PlotModel OxyPlotModel => _oxyPlotModel;
-
-        public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep)
+        /// <summary>
+        /// Creates a plot on the given PlotModel based on the given function, range and step.
+        /// </summary>
+        public PlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep)
         {
             string err = _validator.ValidatePlotInput(xmin, xmax, xstep);
             if (err != null)
@@ -48,16 +50,16 @@ namespace app
             }
 
             LineSeries newSeries = CreateLineSeries(result.Points, "y = "+function, LineStyle.Solid);
-            AddSeries(newSeries);
-            SetupAxis(xmin, xmax);
+            AddSeriesToPlotModel(plotModel, newSeries);
+            SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
-            return new PlotResult(_oxyPlotModel, null);
+            return new PlotResult(plotModel, null);
         }
 
         /// <summary>
         /// Add Tangent at point x for a function.
         /// </summary>
-        public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep)
+        public PlotResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep)
         {
             string err = _validator.ValidateAddTangentInput(x, xmin, xmax, xstep);
             if (err != null)
@@ -87,20 +89,18 @@ namespace app
             }
 
             LineSeries tangentLineSeries = CreateLineSeries(tangentEvalResult.Points, "Tangent at x = " + x, LineStyle.Dash);
-            AddSeries(tangentLineSeries);
-            SetupAxis(xmin, xmax);
+            AddSeriesToPlotModel(plotModel, tangentLineSeries);
+            SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
-            return new PlotResult(_oxyPlotModel, null);
+            return new PlotResult(plotModel, null);
         }
 
         /// <summary>
-        /// Clears all plots from the OxyPlot PlotModel and from _equationColours collection.
+        /// Clears series data from PlotModel.
         /// </summary>
-        public void ClearPlots()
+        public void ClearPlotModel(PlotModel plotModel)
         {
-            _oxyPlotModel.Axes.Clear();
-            _oxyPlotModel.Series.Clear();
-            _oxyPlotModel.InvalidatePlot(true);
+            plotModel.Series.Clear();
         }
 
         private EvaluationResult EvaluateFunction(string function, double xmin, double xmax, double xstep)
@@ -126,16 +126,16 @@ namespace app
             return lineSeries;
         }
 
-        private void AddSeries(Series series)
+        private void AddSeriesToPlotModel(PlotModel plotModel, Series series)
         {
-            _oxyPlotModel.Series.Add(series);
+            plotModel.Series.Add(series);
         }
 
-        private void SetupAxis(double min, double max)
+        private void SetupAxisOnPlotModel(PlotModel plotModel, double min, double max)
         {
-            _oxyPlotModel.Axes.Clear();
-            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
-            _oxyPlotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = min, Maximum = max });
+            plotModel.Axes.Clear();
+            plotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
+            plotModel.Axes.Add(new LinearAxis{ Position = AxisPosition.Left, Minimum = min, Maximum = max });
         }
     }
 }

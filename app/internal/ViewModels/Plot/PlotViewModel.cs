@@ -8,31 +8,24 @@ using System.Windows.Media;
 
 namespace app
 {
-    public struct EquationColourPair
-    {
-        public string Equation { get; set; }
-        public string Colour { get; set; }
-        public EquationColourPair(string equation, string colour)
-        {
-            Equation = equation;
-            Colour = colour;
-        }
-    }
+   
 
     public class PlotViewModel : ObservableObject
     {
         private readonly IPlotter _plotter;
-        private PlotModel _oxyPlotModel;
+
         private readonly RelayCommand _plotCmd, _clearCmd, _addTangentCmd;
 
-        private ObservableCollection<EquationColourPair> _equationColours;
+        private PlotModel _oxyPlotModel;
+        private ObservableCollection<Plot> _plots;
+        private Plot _selectedPlot;
+
         private string _inputEquation;
         private string _evaluatorError;
 
         private double _xMinimum;
         private double _xMaximum;
         private double _xStep;
-
         private double _tangentX;
 
         public PlotViewModel(IPlotter plotter)
@@ -41,21 +34,27 @@ namespace app
             _plotCmd = new RelayCommand(Plot);
             _clearCmd = new RelayCommand(Clear);
             _addTangentCmd = new RelayCommand(AddTangent);
-            _evaluatorError = "";
-            _equationColours = new ObservableCollection<EquationColourPair>();
+            _plots = new ObservableCollection<Plot>();
+            _oxyPlotModel = new PlotModel();
 
             // Set defaults.
+            _evaluatorError = "";
             _inputEquation = "";
-            _oxyPlotModel = new PlotModel();
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
         }
 
-        public ObservableCollection<EquationColourPair> EquationColors
+        public ObservableCollection<Plot> Plots
         {
-            get => _equationColours;
-            set => SetProperty(ref _equationColours, value);
+            get => _plots;
+            set => SetProperty(ref _plots, value);
+        }
+
+        public Plot SelectedPlot
+        {
+            get => _selectedPlot;
+            set => SetProperty(ref _selectedPlot, value);
         }
 
         public double TangentX
@@ -76,7 +75,7 @@ namespace app
             set => SetProperty(ref _inputEquation, value);
         }
 
-        public string EvaluatorError
+        public string Error
         {
             get => _evaluatorError;
             set => SetProperty(ref _evaluatorError, value);
@@ -107,19 +106,34 @@ namespace app
 
         private void Plot()
         {
-            var result = _plotter.CreatePlot(InputEquation, XMinimum, XMaximum, XStep);
-            PlotResult(result);
+            Plot newPlot = new Plot(InputEquation, _xMinimum, _xMaximum, _xStep, _plotter);
+            string err = newPlot.Intilise(_oxyPlotModel);
+            if (err != null)
+            {
+                Error = err;
+                return;
+            }
+            
+            Plots.Add(newPlot);
+            SelectedPlot = newPlot;   
+            RefreshPlottingArea(); 
         }
 
         /// <summary>
-        ///  AddTangentCmd binds to a button in the plot view, executes the AddTangnet() when clicked.
+        ///  AddTangentCmd binds to a button in the plot view, executes the AddTanget() when clicked.
         /// </summary>
         public RelayCommand AddTangentCmd => _addTangentCmd;
 
         private void AddTangent()
         {
-            var result = _plotter.AddTangent(TangentX, InputEquation, XMinimum, XMaximum, XStep);
-            PlotResult(result);
+            string err = SelectedPlot.AddTangent(_oxyPlotModel, TangentX);
+            if (err != null)
+            {
+                Error = err; 
+                return;
+            }
+
+            RefreshPlottingArea();
         }     
 
         /// <summary>
@@ -127,26 +141,15 @@ namespace app
         /// </summary>
         public RelayCommand ClearCmd => _clearCmd;
 
+        /// <summary>
+        /// Clear all plotting data.
+        /// Clear _plots, _oxyPlotModel.
+        /// </summary>
         private void Clear()
         {
-            _plotter.ClearPlots();
-            _equationColours.Clear();
-        }
-
-        private void PlotResult(PlotResult result)
-        {
-            if (result.HasError)
-            {
-                EvaluatorError = result.Error;
-            }
-            else
-            {
-                ClearError();
-                OxyPlotModel = result.OxyPlotModel;
-                OxyPlotModel.InvalidatePlot(true);
-
-                UpdateSeriesColours();
-            }
+            _plotter.ClearPlotModel(_oxyPlotModel);
+            _plots.Clear();
+            RefreshPlottingArea() ;
         }
 
         /// <summary>
@@ -154,30 +157,13 @@ namespace app
         /// </summary>
         private void ClearError()
         {
-            EvaluatorError = "";
+            Error = "";
         }
-
-        /// <summary>
-        /// Update list of Pairs of equations and their colours to display
-        /// alongside plotting area.
-        /// </summary>
-        private void UpdateSeriesColours()
+ 
+        private void RefreshPlottingArea()
         {
-            _equationColours.Clear();
-            foreach (var series in OxyPlotModel.Series)
-            {
-                if (series is LineSeries lineSeries)
-                {
-                    string colour = ColourToHex(lineSeries.ActualColor);
-                    var pair = new EquationColourPair(lineSeries.Title, colour);
-                    _equationColours.Add(pair);
-                }
-            }
-        }
-
-        private string ColourToHex(OxyColor c)
-        {
-            return $"#{c.R:X2}{c.G:X2}{c.B:X2}";
+            OxyPlotModel.InvalidatePlot(true);
+            ClearError();
         }
     }
 } 

@@ -50,7 +50,7 @@ namespace app.Test.Unit
             // --------
             // ASSERT
             // --------
-            Assert.IsEmpty(_viewModel.EvaluatorError, "There mustn't be an error");
+            Assert.IsEmpty(_viewModel.Error, "There mustn't be an error");
             Assert.That(_viewModel.OxyPlotModel, Is.EqualTo(plotModel), "Plot models should be equal");
             Assert.IsNotEmpty(_viewModel.EquationColors, "EquationColours can't be empty");
         }
@@ -89,7 +89,7 @@ namespace app.Test.Unit
             // --------
             // ASSERT
             // --------
-            Assert.That(_viewModel.EvaluatorError, Is.EqualTo(testError), "Errors don't match");
+            Assert.That(_viewModel.Error, Is.EqualTo(testError), "Errors don't match");
             Assert.IsNull(_viewModel.OxyPlotModel, "Plot model should be null");
         }
 
@@ -147,7 +147,7 @@ namespace app.Test.Unit
             // --------
             // ASSERT
             // --------
-            Assert.IsEmpty(_viewModel.EvaluatorError, "There mustn't be an error");
+            Assert.IsEmpty(_viewModel.Error, "There mustn't be an error");
             Assert.That(_viewModel.OxyPlotModel, Is.EqualTo(plotModel), "Plot models should be equal");
             Assert.IsNotEmpty(_viewModel.EquationColors, "EquationColours can't be empty");
         }

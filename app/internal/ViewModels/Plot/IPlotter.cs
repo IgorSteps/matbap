@@ -1,14 +1,16 @@
 ﻿using OxyPlot;
-using System.Collections.Generic;
 
 namespace app
 {
+    /// <summary>
+    /// Interface implemented by the PlottingService, that provides functions to modify plot data.
+    /// </summary>
     public interface IPlotter
     {
-        public PlotResult CreatePlot(string function, double xmin, double xmax, double xstep);
+        public PlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep);
 
-        public void ClearPlots();
+        public void ClearPlotModel(PlotModel plotModel);
 
-        public PlotResult AddTangent(double x, string function, double xmin, double xmax, double xstep);
+        public PlotResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
     }
 }
