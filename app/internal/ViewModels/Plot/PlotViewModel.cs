@@ -8,8 +8,6 @@ using System.Windows.Media;
 
 namespace app
 {
-   
-
     public class PlotViewModel : ObservableObject
     {
         private readonly IPlotter _plotter;
@@ -106,11 +104,11 @@ namespace app
 
         private void Plot()
         {
-            Plot newPlot = new Plot(InputEquation, _xMinimum, _xMaximum, _xStep, _plotter);
-            string err = newPlot.Intilise(_oxyPlotModel);
+            Plot newPlot = new Plot(InputEquation, XMinimum, XMaximum, XStep, _plotter);
+            Error err = newPlot.Intilise(OxyPlotModel);
             if (err != null)
             {
-                Error = err;
+                Error = err.ToString();
                 return;
             }
             
@@ -126,10 +124,10 @@ namespace app
 
         private void AddTangent()
         {
-            string err = SelectedPlot.AddTangent(_oxyPlotModel, TangentX);
+            Error err = SelectedPlot.AddTangent(_oxyPlotModel, TangentX);
             if (err != null)
             {
-                Error = err; 
+                Error = err.ToString(); 
                 return;
             }
 

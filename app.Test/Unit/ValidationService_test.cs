@@ -17,17 +17,17 @@ namespace app.Test.Unit
             // --------
             double xmin = 10, xmax = 1, xstep = 0.1;
             ValidationService validationService= new ValidationService();
-            string expectedErr = "XMin can't be greater than XMax";
+            Error expectedErr = new Error("XMin can't be greater than XMax");
 
             // ----
             // ACT
             // ----
-            string err = validationService.ValidatePlotInput(xmin, xmax, xstep);
+            Error err = validationService.ValidatePlotInput(xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.That(err, Is.EqualTo(expectedErr), "Errors must be the same");
+            Assert.That(err.Message, Is.EqualTo(expectedErr.Message), "Error messages must be the same");
         }
 
         [Test]
@@ -38,17 +38,17 @@ namespace app.Test.Unit
             // --------
             double xmin = 1, xmax = 10, xstep = 0;
             ValidationService validationService = new ValidationService();
-            string expectedErr = "XStep can't be 0";
+            Error expectedErr = new Error("XStep can't be 0");
 
             // ----
             // ACT
             // ----
-            string err = validationService.ValidatePlotInput(xmin, xmax, xstep);
+            Error err = validationService.ValidatePlotInput(xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.That(err, Is.EqualTo(expectedErr), "Errors must be the same");
+            Assert.That(err.Message, Is.EqualTo(expectedErr.Message), "Error messages must be the same");
         }
 
         [Test]
@@ -62,17 +62,17 @@ namespace app.Test.Unit
             // ASSEMBLE
             // --------
             ValidationService validationService = new ValidationService();
-            string expectedErr = error;
-
+            Error expectedErr = new Error(error);
+            
             // ----
             // ACT
             // ----
-            string err = validationService.ValidateAddTangentInput(x, xmin, xmax, xstep);
+            Error err = validationService.ValidateAddTangentInput(x, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.That(err, Is.EqualTo(expectedErr), "Errors must be the same");
+            Assert.That(err.Message, Is.EqualTo(expectedErr.Message), "Error messages must be the same");
         }
     }
 }

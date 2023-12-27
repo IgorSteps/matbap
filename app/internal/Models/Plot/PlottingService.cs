@@ -5,19 +5,6 @@ using System.DirectoryServices.ActiveDirectory;
 
 namespace app
 {
-    public struct PlotResult
-    {
-        public PlotModel OxyPlotModel { get; set; }
-        public string Error { get; set; }
-        public readonly bool HasError => !string.IsNullOrEmpty(Error);
-
-        public PlotResult(PlotModel oxyPlotModel, string error)
-        {
-            OxyPlotModel = oxyPlotModel;
-            Error = error;
-        }
-    }
-
     /// <summary>
     /// PlottingService provides functionality for creating and manipulating plot data.
     /// </summary>
@@ -33,38 +20,38 @@ namespace app
         }
 
         /// <summary>
-        /// Creates a plot on the given PlotModel based on the given function, range and step.
+        /// Creates a plot with function, range and step on a Plot Model.
         /// </summary>
-        public PlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep)
+        public Error CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep)
         {
-            string err = _validator.ValidatePlotInput(xmin, xmax, xstep);
+            Error err = _validator.ValidatePlotInput(xmin, xmax, xstep);
             if (err != null)
             {
-                return new PlotResult(null, err);
+                return err;
             }
 
             var result = EvaluateFunction(function, xmin, xmax, xstep);
             if (result.HasError)
             {
-                return new PlotResult(null, result.Error);
+                return new Error(result.Error);
             }
 
             LineSeries newSeries = CreateLineSeries(result.Points, "y = "+function, LineStyle.Solid);
             AddSeriesToPlotModel(plotModel, newSeries);
             SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
-            return new PlotResult(plotModel, null);
+            return null;
         }
 
         /// <summary>
-        /// Add Tangent at point x for a function.
+        /// Add Tangent at point x for a function on a Plot Model.
         /// </summary>
-        public PlotResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep)
+        public Error AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep)
         {
-            string err = _validator.ValidateAddTangentInput(x, xmin, xmax, xstep);
+            Error err = _validator.ValidateAddTangentInput(x, xmin, xmax, xstep);
             if (err != null)
             {
-                return new PlotResult(null, err);
+                return err;
             }
 
             // Hacky way of doing it for now, Evaluate() will return only 1 point
@@ -72,7 +59,7 @@ namespace app
             var result = EvaluateFunction(function, x, x, x);
             if (result.HasError)
             {
-                return new PlotResult(null, result.Error);
+                return new Error(result.Error);
             }
 
             // Calculate y-intercept for tangent,
@@ -85,14 +72,14 @@ namespace app
             var tangentEvalResult = EvaluateFunction(tangentFunction, xmin, xmax, xstep);
             if (tangentEvalResult.HasError)
             {
-                return new PlotResult(null, tangentEvalResult.Error);
+                return new Error(tangentEvalResult.Error);
             }
 
             LineSeries tangentLineSeries = CreateLineSeries(tangentEvalResult.Points, "Tangent at x = " + x, LineStyle.Dash);
             AddSeriesToPlotModel(plotModel, tangentLineSeries);
             SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
-            return new PlotResult(plotModel, null);
+            return null;
         }
 
         /// <summary>

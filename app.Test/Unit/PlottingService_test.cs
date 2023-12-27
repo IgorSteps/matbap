@@ -1,4 +1,5 @@
 ﻿using Moq;
+using OxyPlot;
 using OxyPlot.Series;
 
 namespace app.Test.Unit
@@ -23,30 +24,29 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
-            string testInput = "1+1";
+            PlotModel plotModel = new PlotModel();  
+            string function = "1+1";
             double[][] testPoints = new double[][] 
             {
                 new double[] { 0, 0 },
                 new double[] { 1, 1 }
             };
-            double testValue = 1;
+            double xmin = 1, xmax = 10, xstep = 0.1;
             var testEvaluatorResult = new EvaluationResult(testPoints, null);
-            string validtorError = null;
-            _validatorMock.Setup(v => v.ValidatePlotInput(testValue, testValue, testValue)).Returns(validtorError);
-            _evaluatorMock.
-                Setup(e => e.Evaluate(testValue, testValue, testValue, testInput)).
-                Returns(testEvaluatorResult);
+            Error validtorError = null;
+            _validatorMock.Setup(v => v.ValidatePlotInput(xmin, xmax, xstep)).Returns(validtorError);
+            _evaluatorMock.Setup(e => e.Evaluate(xmin, xmax, xstep, function)).Returns(testEvaluatorResult);
 
             // --------
             // ACT
             // --------
-            var result = _plottingService.CreatePlot(testInput, testValue, testValue, testValue);
+            Error err = _plottingService.CreatePlot(plotModel, function, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsFalse(result.HasError);
-            Assert.That(result.OxyPlotModel.Series.Count, Is.EqualTo(1));
+            Assert.IsNull(err, "Must not return an error");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(1), "Plot Model must be populated with a Series");
         }
 
         [Test]
@@ -55,6 +55,7 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testInput = "1+1";
             double[][] testPoints = new double[][]
             {
@@ -62,21 +63,20 @@ namespace app.Test.Unit
                 new double[] { 1, 1 }
             };
             double xmin = 10, xmax = 1, xstep = 0.1;
-            string validtorError = "test error";
-            _validatorMock.Setup(v => v.ValidatePlotInput(xmin, xmax, xstep)).Returns(validtorError);
-            
+            Error validatorError = new Error("test error");
+            _validatorMock.Setup(v => v.ValidatePlotInput(xmin, xmax, xstep)).Returns(validatorError);
+
 
             // --------
             // ACT
             // --------
-            var result = _plottingService.CreatePlot(testInput, xmin, xmax, xstep);
+            Error err = _plottingService.CreatePlot(plotModel, testInput, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsTrue(result.HasError, "There should be an error");
-            Assert.IsNull(result.OxyPlotModel, "Plot Model must be null");
-            Assert.That(result.Error, Is.EqualTo(validtorError), "Errors must be the same");
+            Assert.That(err, Is.EqualTo(validatorError), "Errors don't match");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(0), "Plot Model must be empty");
         }
 
         [Test]
@@ -85,8 +85,9 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testInvalidInput = "Boom";
-            string testError = "Error";
+            string testError = "test error";
             double testValue = 1;
             var testEvaluatorResult = new EvaluationResult(null, testError);
             _evaluatorMock.
@@ -96,14 +97,13 @@ namespace app.Test.Unit
             // --------
             // ACT
             // --------
-            var result = _plottingService.CreatePlot(testInvalidInput, testValue, testValue, testValue);
+            Error err = _plottingService.CreatePlot(plotModel, testInvalidInput, testValue, testValue, testValue);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsTrue(result.HasError);
-            Assert.IsNull(result.OxyPlotModel);  
-            Assert.That(result.Error, Is.EqualTo(testError));
+            Assert.That(plotModel.Series.Count, Is.EqualTo(0), "Plot Model must be empty");
+            Assert.That(err.ToString(), Is.EqualTo("Error: " + testError), "Errors don't match");
         }
 
         [Test]
@@ -112,6 +112,7 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testInput = "11";
             double testValue = 1;
             double[][] testPoints = new double[][]
@@ -124,17 +125,17 @@ namespace app.Test.Unit
                 Setup(e => e.Evaluate(testValue, testValue, testValue, testInput)).
                 Returns(testEvaluatorResult);
 
-            _plottingService.CreatePlot(testInput, testValue, testValue, testValue);
+            _plottingService.CreatePlot(plotModel, testInput, testValue, testValue, testValue);
 
             // --------
             // ACT
             // --------
-            _plottingService.ClearPlots();
+            _plottingService.ClearPlotModel(plotModel);
 
             // --------
             // ASSERT
             // --------
-            Assert.That(_plottingService.OxyPlotModel.Series.Count, Is.EqualTo(0));
+            Assert.That(plotModel.Series.Count, Is.EqualTo(0), "Plot Model must be empty");
         }
 
         [Test]
@@ -143,24 +144,24 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testFunction = "x";
             double x = 10;
             double xmin = 0, xmax = 10, xstep = 0.1;
 
-            string validtorError = "test error";
+            Error validtorError = new Error("test error");
             _validatorMock.Setup(v => v.ValidateAddTangentInput(x, xmin, xmax, xstep)).Returns(validtorError);
 
             // --------
             // ACT
             // --------
-            var result = _plottingService.AddTangent(x, testFunction, xmin, xmax, xstep);
+            Error err = _plottingService.AddTangent(plotModel, x, testFunction, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsTrue(result.HasError, "Must return an error");
-            Assert.IsNull(result.OxyPlotModel, "Plot Model should be null");
-            Assert.That(result.Error, Is.EqualTo(validtorError), "Errors must be the same");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(0), "Plot Model must be empty");
+            Assert.That(err, Is.EqualTo(validtorError), "Errors must be the same");
         }
 
         [Test]
@@ -169,25 +170,26 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testFunction = "x";
             double x = 10;
             double xmin = 0, xmax = 10, xstep = 0.1;
             string testError = "test error";
-        
+
             var testEvaluationResult = new EvaluationResult(null, testError);
-            
+
             _evaluatorMock.Setup(e => e.Evaluate(x, x, x, testFunction)).Returns(testEvaluationResult);
 
             // --------
             // ACT
             // --------
-            var result = _plottingService.AddTangent(x, testFunction, xmin, xmax, xstep);
+            Error err = _plottingService.AddTangent(plotModel, x, testFunction, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsTrue(result.HasError, "Must return an error");
-            Assert.IsNull(result.OxyPlotModel, "Plot Model should be null");
+            Assert.That(err.ToString(), Is.EqualTo("Error: " + testError), "Errors don't match");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(0), "Plot Model must be empty");
         }
 
         [Test]
@@ -196,6 +198,7 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
+            PlotModel plotModel = new PlotModel();
             string testFunction = "x^2";
             double x = 2;
             double expectedY = x * x; // y = x^2
@@ -217,15 +220,15 @@ namespace app.Test.Unit
             // --------
             // ACT
             // --------
-            var result = _plottingService.AddTangent(x, testFunction, xmin, xmax, xstep);
+            Error err = _plottingService.AddTangent(plotModel, x, testFunction, xmin, xmax, xstep);
 
             // --------
             // ASSERT
             // --------
-            Assert.IsFalse(result.HasError, "Shouldn't return an error");
-            Assert.That(result.OxyPlotModel.Series.Count, Is.EqualTo(1), "There should be a tangent line series in the plot model");
+            Assert.IsNull(err, "Shouldn't return an error");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(1), "There should be a tangent line series in the plot model");
 
-            var tangentLineSeries = (LineSeries)result.OxyPlotModel.Series.Last();
+            var tangentLineSeries = (LineSeries)plotModel.Series.Last();
             Assert.That(tangentLineSeries.Title, Is.EqualTo($"Tangent at x = {x}"), "Series titlea don't match");
 
             // Tolerance for floating point comparison.

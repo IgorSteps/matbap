@@ -7,10 +7,10 @@ namespace app
     /// </summary>
     public interface IPlotter
     {
-        public PlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep);
+        public Error CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep);
 
         public void ClearPlotModel(PlotModel plotModel);
 
-        public PlotResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
+        public Error AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
     }
 }

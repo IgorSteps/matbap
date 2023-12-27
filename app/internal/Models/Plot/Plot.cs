@@ -28,26 +28,26 @@ namespace app
         /// <summary>
         /// Initialises the plot by populating a PlotModel.
         /// </summary>
-        public string Intilise(PlotModel plotModel)
+        public Error Intilise(PlotModel plotModel)
         {
-            var result = _plotter.CreatePlot(plotModel, Function, XMin, XMax, XStep);
-            if (result.HasError)
+            Error err = _plotter.CreatePlot(plotModel, Function, XMin, XMax, XStep);
+            if (err != null)
             {
-                return result.Error;
+                return err;
             }
 
             return null;
         }
 
         /// <summary>
-        /// Adds a tangent line to the plot at a specified x-coordinate.
+        /// Adds a tangent line to the plot at a specified x-coordinate on a Plot Model.
         /// </summary>
-        public string AddTangent(PlotModel plotModel, double x)
+        public Error AddTangent(PlotModel plotModel, double x)
         {
-            var plotResult = _plotter.AddTangent(plotModel, x, Function, XMin, XMax, XStep);
-            if (plotResult.HasError)
+            Error err = _plotter.AddTangent(plotModel, x, Function, XMin, XMax, XStep);
+            if (err != null)
             {
-                return plotResult.Error;
+                return err;
             }
 
             return null;
