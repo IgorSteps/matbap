@@ -8,23 +8,27 @@ namespace app.Test.Unit
     {
         private PlotViewModel _viewModel;
         private Mock<IPlotter> _plotterMock;
+        private Mock<IOxyPlotModelManager> _plotModelManager;
 
         [SetUp]
         public void Setup()
         {
             _plotterMock = new Mock<IPlotter>();
-            _viewModel = new PlotViewModel(_plotterMock.Object);
+            _plotModelManager = new Mock<IOxyPlotModelManager>();
+            _viewModel = new PlotViewModel(_plotterMock.Object, _plotModelManager.Object);
         }
 
         [Test]
-        public void Test_PlotViewModel_PlotCmd_CreatesPlotSuccessfully()
+        public void Test_PlotViewModel_PlotCmd_CreatePlot_Successfully()
         {
             // --------
             // ASSEMBLE
             // --------
+            Plot testPlot = new Plot(_viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep);
+            var mockResult = new CreatePlotResult(testPlot, null);
             _plotterMock.
                 Setup(p => p.CreatePlot(_viewModel.OxyPlotModel, _viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep)).
-                Returns((Error)null);
+                Returns(mockResult);
 
             // --------
             // ACT
@@ -40,15 +44,18 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_PlotViewModel_PlotCmd_PlotterError()
+        public void Test_PlotViewModel_PlotCmd_CreatesPlot_Error()
         {
             // --------
             // ASSEMBLE
             // --------
             Error testError = new Error("Boom");
+            var mockResult = new CreatePlotResult(null, testError);
+
             _plotterMock.
                 Setup(p => p.CreatePlot(It.IsAny<PlotModel>(), _viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep)).
-                Returns(testError);
+                Returns(mockResult);
+            _plotModelManager.Setup(p => p.RefreshPlotModel(_viewModel.OxyPlotModel));
 
             // --------
             // ACT
@@ -59,7 +66,7 @@ namespace app.Test.Unit
             // ASSERT
             // --------
             Assert.That(_viewModel.Error, Is.EqualTo(testError.ToString()), "Errors don't match");
-            Assert.That(_viewModel.OxyPlotModel.Series.Count, Is.EqualTo(0), "Plot model should have 0 series");
+            Assert.That(_viewModel.Plots.Count, Is.EqualTo(0), "Plot model should have 0 series");
         }
 
         [Test]
@@ -68,7 +75,8 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
-            _plotterMock.Setup(p => p.ClearPlotModel(_viewModel.OxyPlotModel));
+            _plotModelManager.Setup(p => p.ClearPlotModel(_viewModel.OxyPlotModel));
+            _plotModelManager.Setup(p => p.RefreshPlotModel(_viewModel.OxyPlotModel));
 
             // --------
             // ACT
@@ -83,11 +91,12 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_PlotViewModel_AddtangentCmd_AddsTangent_SelectedPlotNullError()
+        public void Test_PlotViewModel_AddtangentCmd_AddTangent_SelectedPlotNullError()
         {
             // --------
             // ASSEMBLE
             // -------- 
+            string errMsg = "You must select the plot to add a tangent to it.";
 
             // --------
             // ACT
@@ -97,7 +106,7 @@ namespace app.Test.Unit
             // --------
             // ASSERT
             // --------
-            Assert.That(_viewModel.Error, Is.EqualTo("You must select the plot"), "There must be an error");
+            Assert.That(_viewModel.Error, Is.EqualTo(errMsg), "There must be an error");
         }
 
         [Test]
@@ -106,36 +115,25 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // -------- 
-            _viewModel.OxyPlotModel.Title = "Hi";
-            _viewModel.InputEquation = "x";
-            _viewModel.TangentX = 2;
-            _plotterMock.
-                Setup(p => p.CreatePlot(_viewModel.OxyPlotModel, _viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep)).
-                Returns((Error)null).
-                Callback<PlotModel, string, double, double, double>((plotModel, _, _, _, _) =>
-                {
-                    plotModel.Series.Add(new LineSeries());
-                });
-
+            Plot testPlot = new Plot(_viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep);
+            _viewModel.SelectedPlot = testPlot;
+            Tangent testTangent = new Tangent(1, 2, 3);
+            var mockTangetResult = new AddTangentResult(testTangent, null);
             _plotterMock.
                 Setup(p => p.AddTangent(_viewModel.OxyPlotModel, _viewModel.TangentX, _viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep)).
-                Returns((Error)null).
-                Callback<PlotModel, double, string, double, double, double>((plotModel, _, _, _, _, _) =>
-                {
-                    plotModel.Series.Add(new LineSeries());
-                });
+                Returns(mockTangetResult);
+            _plotModelManager.Setup(p => p.RefreshPlotModel(_viewModel.OxyPlotModel));
 
             // --------
             // ACT
             // --------
-            _viewModel.PlotCmd.Execute(null);
             _viewModel.AddTangentCmd.Execute(null);
 
             // --------
             // ASSERT
             // --------
             Assert.IsEmpty(_viewModel.Error, "There shouldn't be an error");
-            Assert.That(_viewModel.OxyPlotModel.Series.Count, Is.EqualTo(2), "There should be 2 serieses in the plot model");
+            Assert.That(_viewModel.SelectedPlot.Tangent, Is.EqualTo(testTangent), "Tangents are not equal");
         }
     }
 }

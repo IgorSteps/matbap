@@ -14,6 +14,18 @@ namespace app
             Error = error;
         }
     }
+
+    public struct AddTangentResult
+    {
+        public Tangent Tangent { get; private set; }
+        public Error Error { get; private set; }
+        public readonly bool HasError => Error != null;
+        public AddTangentResult(Tangent t, Error error)
+        {
+            Tangent = t;
+            Error = error;
+        }
+    }
     /// <summary>
     /// PlottingService provides functionality for creating and manipulating plot data.
     /// </summary>
@@ -66,30 +78,30 @@ namespace app
         /// Validate user input;
         /// Add Tangent at point x for a function on the OxyPlot Plot Model.
         /// </summary>
-        public Error AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep)
+        public AddTangentResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep)
         {
             Error err = _validator.ValidateAddTangentInput(x, xmin, xmax, xstep);
             if (err != null)
             {
-                return err;
+                return new AddTangentResult(null, err);
             }
 
             var createResult = _tangentManager.CreateTangent(x, function);
             if (createResult.HasError)
             {
-                return createResult.Error;
+                return new AddTangentResult(null, createResult.Error); ;
             }
 
             var result = _tangentManager.GetTangentLineSeries(createResult.Tangent, xmin, xmax, xstep);
             if (result.HasError)
             {
-                return result.Error;
+                return new AddTangentResult(null, result.Error); ;
             }
 
             _oxyPlotModelManager.AddSeriesToPlotModel(plotModel, result.LineSeries);
             _oxyPlotModelManager.SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
-            return null;
+            return new AddTangentResult(createResult.Tangent, null);
         }
     }
 }

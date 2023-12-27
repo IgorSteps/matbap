@@ -55,6 +55,7 @@ namespace app
         public double TakeDerivative(double x, string function) 
         {
             double h = 1e-5; // A small number for the central difference calculation
+            // Error checking is missing.
             double yPlus = Evaluate(function, x + h, x + h, 1).Points[0][1];
             double yMinus = Evaluate(function, x - h, x - h, 1).Points[0][1];
 

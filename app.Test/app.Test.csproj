@@ -22,4 +22,8 @@
     <ProjectReference Include="..\app\app.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Unit\Managers\" />
+  </ItemGroup>
+
 </Project>

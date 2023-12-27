@@ -128,14 +128,14 @@ namespace app
                 return;
             }
 
-            Error err = _plotter.AddTangent(OxyPlotModel, TangentX, InputEquation, XMinimum, XMaximum, XStep);
-            if (err != null)
+            var result = _plotter.AddTangent(OxyPlotModel, TangentX, InputEquation, XMinimum, XMaximum, XStep);
+            if (result.HasError)
             {
-                Error = err.ToString();
+                Error = result.Error.ToString();
                 return;
             }
-            // @TODO assign tangent to selected plot
-            //SelectedPlot.Tangent = ...
+
+            SelectedPlot.Tangent = result.Tangent;
 
             RefreshPlottingArea();
         }     

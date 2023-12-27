@@ -8,6 +8,6 @@ namespace app
     public interface IPlotter
     {
         public CreatePlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep);
-        public Error AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
+        public AddTangentResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
     }
 }
