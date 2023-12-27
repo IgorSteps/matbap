@@ -1,16 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using OxyPlot;
-using OxyPlot.Series;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Windows.Media;
 
 namespace app
 {
     public class PlotViewModel : ObservableObject
     {
         private readonly IPlotter _plotter;
+        private readonly IOxyPlotModelManager _plotModelManager;
 
         private readonly RelayCommand _plotCmd, _clearCmd, _addTangentCmd;
 
@@ -26,9 +24,10 @@ namespace app
         private double _xStep;
         private double _tangentX;
 
-        public PlotViewModel(IPlotter plotter)
+        public PlotViewModel(IPlotter plotter, IOxyPlotModelManager plotModelManager)
         {
             _plotter = plotter;
+            _plotModelManager = plotModelManager;
             _plotCmd = new RelayCommand(Plot);
             _clearCmd = new RelayCommand(Clear);
             _addTangentCmd = new RelayCommand(AddTangent);
@@ -104,16 +103,15 @@ namespace app
 
         private void Plot()
         {
-            Plot newPlot = new Plot(InputEquation, XMinimum, XMaximum, XStep, _plotter);
-            Error err = newPlot.Intilise(OxyPlotModel);
-            if (err != null)
+            var result = _plotter.CreatePlot(OxyPlotModel, InputEquation, XMinimum, XMaximum, XStep);
+            if (result.HasError)
             {
-                Error = err.ToString();
+                Error = result.Error.ToString();
                 return;
             }
-            
-            Plots.Add(newPlot);
-            SelectedPlot = newPlot;   
+
+            Plots.Add(result.Plot);
+            SelectedPlot = result.Plot;   
             RefreshPlottingArea(); 
         }
 
@@ -126,16 +124,18 @@ namespace app
         {
             if (SelectedPlot == null)
             {
-                Error = "You must select the plot";
+                Error = "You must select the plot to add a tangent to it.";
                 return;
             }
 
-            Error err = SelectedPlot.AddTangent(_oxyPlotModel, TangentX);
+            Error err = _plotter.AddTangent(OxyPlotModel, TangentX, InputEquation, XMinimum, XMaximum, XStep);
             if (err != null)
             {
-                Error = err.ToString(); 
+                Error = err.ToString();
                 return;
             }
+            // @TODO assign tangent to selected plot
+            //SelectedPlot.Tangent = ...
 
             RefreshPlottingArea();
         }     
@@ -151,7 +151,7 @@ namespace app
         /// </summary>
         private void Clear()
         {
-            _plotter.ClearPlotModel(_oxyPlotModel);
+            _plotModelManager.ClearPlotModel(_oxyPlotModel);
             _plots.Clear();
             RefreshPlottingArea() ;
         }
@@ -164,9 +164,12 @@ namespace app
             Error = "";
         }
  
+        /// <summary>
+        /// Refresh OxyPlot's Plot Model and clear error.
+        /// </summary>
         private void RefreshPlottingArea()
         {
-            OxyPlotModel.InvalidatePlot(true);
+            _plotModelManager.RefreshPlotModel(_oxyPlotModel);
             ClearError();
         }
     }

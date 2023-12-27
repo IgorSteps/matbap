@@ -7,13 +7,13 @@ namespace app.Test.Unit
     public class PlottingServiceTest
     {
         private app.PlottingService _plottingService;
-        private Mock<IPlotEquationEvaluator> _evaluatorMock;
+        private Mock<IFunctionEvaluator> _evaluatorMock;
         private Mock<IValidator> _validatorMock;
 
         [SetUp]
         public void Setup()
         {
-            _evaluatorMock = new Mock<IPlotEquationEvaluator>();
+            _evaluatorMock = new Mock<IFunctionEvaluator>();
             _validatorMock = new Mock<IValidator>();
             _plottingService = new PlottingService(_evaluatorMock.Object, _validatorMock.Object);
         }
