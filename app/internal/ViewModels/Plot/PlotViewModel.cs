@@ -124,6 +124,12 @@ namespace app
 
         private void AddTangent()
         {
+            if (SelectedPlot == null)
+            {
+                Error = "You must select the plot";
+                return;
+            }
+
             Error err = SelectedPlot.AddTangent(_oxyPlotModel, TangentX);
             if (err != null)
             {
