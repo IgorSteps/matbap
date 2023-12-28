@@ -4,7 +4,7 @@ using OxyPlot;
 namespace app
 {
     /// <summary>
-    /// Interface for manaing Plot Model from OxyPlot.
+    /// Interface for managing Plot Model from OxyPlot.
     /// </summary>
     public interface IOxyPlotModelManager
     {
