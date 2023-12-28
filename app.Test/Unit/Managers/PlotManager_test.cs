@@ -45,9 +45,14 @@ namespace app.Test.Unit
             // ASSEMBLE
             // --------
             Plot plot = new Plot("x^2", 0, 10, 1);
-            var evaluationResult = new EvaluationResult(new[] { new double[] { 0, 0 }, new double[] { 1, 1 } }, null);
+            double[][] testPoints = new[]
+            {
+                new double[] { 0, 0 },
+                new double[] { 1, 1 }
+            };
+            var evaluationResult = new EvaluationResult(testPoints, null);
             _evaluator.
-                Setup(f => f.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
+                Setup(e => e.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
                 Returns(evaluationResult);
 
             // --------
@@ -74,7 +79,7 @@ namespace app.Test.Unit
             Error error = new Error("Error evaluating function");
             var evaluationResult = new EvaluationResult(null, error);
             _evaluator.
-                Setup(f => f.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
+                Setup(e => e.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
                 Returns(evaluationResult);
 
             // --------
