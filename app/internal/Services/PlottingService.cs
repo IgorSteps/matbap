@@ -27,7 +27,7 @@ namespace app
         }
     }
     /// <summary>
-    /// PlottingService provides functionality for creating and manipulating plot data.
+    /// PlottingService provides functionality for creating, manipulating and validating plot data.
     /// </summary>
     public class PlottingService : IPlotter
     {
