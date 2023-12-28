@@ -5,13 +5,13 @@ namespace app.Test.Unit
 {
     public class TangentManager_test
     {
-        private Mock<IFSharpFunctionEvaluatorWrapper> _evaluator;
+        private Mock<IFunctionEvaluator> _evaluator;
         private TangentManager _tangentManager;
 
         [SetUp]
         public void Setup()
         {
-            _evaluator = new Mock<IFSharpFunctionEvaluatorWrapper>();
+            _evaluator = new Mock<IFunctionEvaluator>();
             _tangentManager = new TangentManager(_evaluator.Object);
         }
 
@@ -27,7 +27,7 @@ namespace app.Test.Unit
             {
                 new double[] { x, y },
             };
-            var evaluationResult = new FunctionEvaluationResult(testPoints, null);
+            var evaluationResult = new EvaluationResult(testPoints, null);
 
             _evaluator.Setup(e => e.EvaluateAtPoint(x, function)).Returns(evaluationResult);
             _evaluator.Setup(e => e.TakeDerivative(x, function)).Returns(slope);
@@ -56,7 +56,7 @@ namespace app.Test.Unit
             string function = "x^2";
             Error testError = new Error("test error");
 
-            var evaluationResult = new FunctionEvaluationResult(null, testError);
+            var evaluationResult = new EvaluationResult(null, testError);
             _evaluator.Setup(e => e.EvaluateAtPoint(x, function)).Returns(evaluationResult);
 
             // --------
@@ -88,7 +88,7 @@ namespace app.Test.Unit
                 new double[] { 1, 2 },
                 new double[] { 3, 4 }
             };
-            var evaluationResult = new FunctionEvaluationResult(testPoints, null);
+            var evaluationResult = new EvaluationResult(testPoints, null);
             _evaluator.Setup(f => f.Evaluate(tangent.GetTangentEquation(), xmin, xmax, xstep)).Returns(evaluationResult);
 
             // --------

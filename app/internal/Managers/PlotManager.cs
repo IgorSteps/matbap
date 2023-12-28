@@ -20,8 +20,8 @@ namespace app
     /// </summary>
     public class PlotManager : IPlotManager
     {
-        private readonly IFSharpFunctionEvaluatorWrapper _functionEvaluator;
-        public PlotManager(IFSharpFunctionEvaluatorWrapper functionEvaluator)
+        private readonly IFunctionEvaluator _functionEvaluator;
+        public PlotManager(IFunctionEvaluator functionEvaluator)
         {
             _functionEvaluator = functionEvaluator;
         }

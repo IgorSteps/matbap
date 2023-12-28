@@ -4,13 +4,13 @@ namespace app.Test.Unit
 {
     public class PlotManager_test
     {
-        private Mock<IFSharpFunctionEvaluatorWrapper> _evaluator;
+        private Mock<IFunctionEvaluator> _evaluator;
         private PlotManager _manager;
 
         [SetUp]
         public void Setup()
         {
-            _evaluator = new Mock<IFSharpFunctionEvaluatorWrapper>();
+            _evaluator = new Mock<IFunctionEvaluator>();
             _manager = new PlotManager( _evaluator.Object );
         }
 
@@ -50,7 +50,7 @@ namespace app.Test.Unit
                 new double[] { 0, 0 },
                 new double[] { 1, 1 }
             };
-            var evaluationResult = new FunctionEvaluationResult(testPoints, null);
+            var evaluationResult = new EvaluationResult(testPoints, null);
             _evaluator.
                 Setup(e => e.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
                 Returns(evaluationResult);
@@ -77,7 +77,7 @@ namespace app.Test.Unit
             // --------
             Plot plot = new Plot("x^2", 0, 10, 1);
             Error error = new Error("Error evaluating function");
-            var evaluationResult = new FunctionEvaluationResult(null, error);
+            var evaluationResult = new EvaluationResult(null, error);
             _evaluator.
                 Setup(e => e.Evaluate(plot.Function, plot.XMin, plot.XMax, plot.XStep)).
                 Returns(evaluationResult);
