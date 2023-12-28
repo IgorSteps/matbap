@@ -48,7 +48,22 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 
 
 ## Tests
-To run unit and funtional tests, from project root:
+To run all tests, from project root:
 ```
 dotnet test
+```
+
+To run just functional tests:
+```
+ dotnet test --filter FullyQualifiedName~app.Test.Functional
+```
+
+To run units tests to the F# engine:
+```
+ dotnet test --filter FullyQualifiedName~engine.Test
+```
+
+To run unit tests for the C# app:
+```
+ dotnet test --filter FullyQualifiedName~app.Test.Unit
 ```

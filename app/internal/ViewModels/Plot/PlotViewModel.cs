@@ -138,19 +138,21 @@ namespace app
             SelectedPlot.Tangent = result.Tangent;
 
             RefreshPlottingArea();
-        }     
+        }
 
         /// <summary>
-        ///  ClearCmd binds to a button in the plot view, executes the Clear() when clicked.
+        /// ClearCmd binds to a button in the plot view, executes the Clear() when clicked.
         /// </summary>
         public RelayCommand ClearCmd => _clearCmd;
 
         /// <summary>
         /// Clear all plotting data.
-        /// Clear _plots, _oxyPlotModel.
+        /// Clear _plots, _oxyPlotModel
+        /// Sets SelectedPLot to null.
         /// </summary>
         private void Clear()
         {
+            SelectedPlot = null;
             _plotModelManager.ClearPlotModel(_oxyPlotModel);
             _plots.Clear();
             RefreshPlottingArea() ;

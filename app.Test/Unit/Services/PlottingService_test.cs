@@ -1,5 +1,4 @@
-﻿using Microsoft.Msagl.Core.Geometry.Curves;
-using Moq;
+﻿using Moq;
 using OxyPlot;
 using OxyPlot.Series;
 

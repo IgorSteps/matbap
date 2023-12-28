@@ -1,6 +1,4 @@
-﻿using System.Xaml.Schema;
-
-namespace app.Test.Unit
+﻿namespace app.Test.Unit
 {
     public class ValidationService_test
     {
