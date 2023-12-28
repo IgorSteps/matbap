@@ -10,7 +10,7 @@
             // --------
             string function = "x+1";
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
             // -----
             // ACT
             // -----
@@ -31,7 +31,7 @@
             // --------
             string function = "+1"; // invalid input.
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
             // -----
             // ACT
             // -----
@@ -53,7 +53,7 @@
             // --------
             string function = "x+1";
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT
@@ -76,7 +76,7 @@
             // --------
             string function = "+1"; // invalid input.
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT
@@ -99,7 +99,7 @@
             // --------
             string function = "x+1";
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT
