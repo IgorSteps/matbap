@@ -36,11 +36,15 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Polynomials
 - [ ] Advanced Plotting
   - [x] Trig and logarithmic functions
-  - [x] Visualise Parse Tree
-  - [x] Zoom in/out
-  - [x] Translate the axis
-  - [ ] Plotting multiple plots
+  - [x] Plotting multiple plots
   - [ ] Rational equations
+  - [x] Tangents
+  - [ ] Ereas under the curve for numerical integration.
+- [ ] Advanced GUI
+  - [x] Visualise Parse Tree
+  - [ ] Visualise Symbol Table
+  - [x] Display Plotted Equations
+
 
 
 ## Tests
