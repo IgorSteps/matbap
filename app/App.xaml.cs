@@ -33,18 +33,23 @@ namespace app
         {
             var services = new ServiceCollection();
 
-            // Models/Services.
-            services.AddSingleton<IInterpretModel, InterpretationModel>();
-            services.AddSingleton<IFunctionEvaluator, FunctionEvaluation>();
+            // Managers.
+            services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
+            services.AddSingleton<ISymbolTableManager, SymbolTableManager>(); // Must be singleton, because manages symbol table.
+            services.AddSingleton<IExpressionManager, ExpressionManager>();
+            services.AddSingleton<IPlotManager, PlotManager>();
+            services.AddSingleton<ITangentManager, TangentManager>();
+
+            // Services.
+            services.AddSingleton<IFSharpFunctionEvaluatorWrapper, FSharpFunctionEvaluatiorWrapper>();
             services.AddSingleton<IASTConverter, ASTConversionService>();
             services.AddSingleton<IPlotter, PlottingService>();
             services.AddSingleton<IValidator, ValidationService>();
-            services.AddSingleton<IPlotManager, PlotManager>();
-            services.AddSingleton<ITangentManager, TangentManager>();
-            services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
+            services.AddSingleton<IFSharpEvaluatorWrapper, FSharpEvaluatorWrapper>();
+            services.AddSingleton<IEvaluator, ExpressionEvaluatingService>(); 
 
             // ViewModels.
-            services.AddTransient<InterpretationViewModel>();
+            services.AddTransient<ExpressionViewModel>();
             services.AddTransient<HelpViewModel>();
             services.AddTransient<PlotViewModel>();
             services.AddTransient<ASTViewModel>();
