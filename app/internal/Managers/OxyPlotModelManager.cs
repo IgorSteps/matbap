@@ -22,7 +22,7 @@ namespace app
         }
 
         /// <summary>
-        /// Refresh OxyPlot's Plot Modal.
+        /// Refresh OxyPlot's Plot Modal visual representation(ie. our UI).
         /// </summary>
         public void RefreshPlotModel(PlotModel plotModal)
         {
