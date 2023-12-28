@@ -11,27 +11,24 @@
             // --------
             // ASSEMBLE
             // --------
-            var manager = new ExpressionManager();
-            var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
-            var viewModel = new ExpressionViewModel(service);
+            var interpreter = new InterpretationModel();
+            var viewModel = new InterpretationViewModel(interpreter);
             viewModel.Expression = "x=5";
             string nextExpression = "5+x";
 
             // ---
             // ACT
             // ---
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Answer, Is.EqualTo("10"), "Responses don't match");
+            Assert.That(viewModel.Response, Is.EqualTo("10"), "Responses don't match");
         }
 
         /// <summary>
@@ -43,11 +40,8 @@
             // --------
             // ASSEMBLE
             // --------
-            var manager = new ExpressionManager();
-            var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
-            var viewModel = new ExpressionViewModel(service);
+            var interpreter = new InterpretationModel();
+            var viewModel = new InterpretationViewModel(interpreter);
             viewModel.Expression = "x=5";
             string nextVariable = "y=5";
             string nextExpression = "5+x";
@@ -55,19 +49,19 @@
             // ---
             // ACT
             // ---
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
             viewModel.Expression = nextVariable;
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Answer, Is.EqualTo("10"), "Responses don't match");
+            Assert.That(viewModel.Response, Is.EqualTo("10"), "Responses don't match");
         }
 
         /// <summary>
@@ -79,11 +73,8 @@
             // --------
             // ASSEMBLE
             // --------
-            var manager = new ExpressionManager();
-            var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
-            var viewModel = new ExpressionViewModel(service);
+            var interpreter = new InterpretationModel();
+            var viewModel = new InterpretationViewModel(interpreter);
             viewModel.Expression = "x=5";
             string nextVariable = "x=10";
             string nextExpression = "5+x";
@@ -91,19 +82,19 @@
             // ---
             // ACT
             // ---
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
             viewModel.Expression = nextVariable;
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.EvaluateCmd.Execute(null);
+            viewModel.InterpretCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Answer, Is.EqualTo("15"), "Responses don't match");
+            Assert.That(viewModel.Response, Is.EqualTo("15"), "Responses don't match");
         }
     }
 }

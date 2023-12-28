@@ -11,7 +11,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            FunctionEvaluation evaluator = new FunctionEvaluation();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -51,7 +51,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            FunctionEvaluation evaluator = new FunctionEvaluation();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -91,7 +91,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            FunctionEvaluation evaluator = new FunctionEvaluation();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -131,7 +131,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            FunctionEvaluation evaluator = new FunctionEvaluation();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -171,7 +171,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            FunctionEvaluation evaluator = new FunctionEvaluation();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
