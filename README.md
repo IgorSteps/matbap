@@ -39,7 +39,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Plotting multiple plots
   - [ ] Rational equations
   - [x] Tangents
-  - [ ] Areas under the curve for numerical integration
+  - [ ] Ereas under the curve for numerical integration.
 - [ ] Advanced GUI
   - [x] Visualise Parse Tree
   - [ ] Visualise Symbol Table
