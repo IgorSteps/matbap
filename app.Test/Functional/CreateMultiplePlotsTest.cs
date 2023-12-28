@@ -11,7 +11,7 @@
             // --------
             // ASSEMBLE
             // --------
-            FunctionEvaluation evaluator = new FunctionEvaluation();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();

@@ -11,8 +11,11 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
+            var manager = new ExpressionManager();
+            var symTableManager = new SymbolTableManager();
+            var evaluator = new FSharpEvaluatorWrapper();
+            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
+            var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
             string nextExpression = "y=5";
             string sumExpression = "x+z";
@@ -20,19 +23,19 @@
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = sumExpression;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo("Error while parsing: Identifier not found"), "Errors don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("Error: Error while parsing: Identifier not found"), "Errors don't match");
         }
     }
 }

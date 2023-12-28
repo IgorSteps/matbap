@@ -17,20 +17,24 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
-            viewModel.Expression = input;
-            
+            var expression = input;
+            var manager = new ExpressionManager();
+            var symTableManager = new SymbolTableManager();
+            var evaluator = new FSharpEvaluatorWrapper();
+            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
+            var viewModel = new ExpressionViewModel(service);
+            viewModel.Expression = expression;
+
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo(expectedError), "Errors don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("Error: "+expectedError), "Errors don't match");
         }
     }
 }
