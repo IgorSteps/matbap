@@ -35,11 +35,15 @@ namespace app
 
             // Models/Services.
             services.AddSingleton<IInterpretModel, InterpretationModel>();
-            services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
+            services.AddSingleton<IFunctionEvaluator, FunctionEvaluation>();
             services.AddSingleton<IASTConverter, ASTConversionService>();
-            services.AddSingleton<IPlotter, PlotingService>();
+            services.AddSingleton<IPlotter, PlottingService>();
+            services.AddSingleton<IValidator, ValidationService>();
+            services.AddSingleton<IPlotManager, PlotManager>();
+            services.AddSingleton<ITangentManager, TangentManager>();
+            services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
 
-            // Viewmodels.
+            // ViewModels.
             services.AddTransient<InterpretationViewModel>();
             services.AddTransient<HelpViewModel>();
             services.AddTransient<PlotViewModel>();

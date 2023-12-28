@@ -1,15 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Printing;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
-using static Engine.Types;
-
-namespace app.Test
+﻿namespace app.Test.Unit
 {
-    public class ASTNodesUnitTests
+    public class ASTNodes_test
     {
         [Test]
         public void ASTNodeModel_TestNumberNode_ToString()
