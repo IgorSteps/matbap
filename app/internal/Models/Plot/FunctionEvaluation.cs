@@ -1,6 +1,17 @@
-﻿namespace app
+﻿using Microsoft.FSharp.Core;
+using Microsoft.Msagl.Core.Geometry.Curves;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO.Packaging;
+using System.Linq;
+using System.Printing;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace app
 {
-    public struct FunctionEvaluationResult
+    public struct EvaluationResult
     {
         /// <summary>
         /// Returns points in [x,y] format.
@@ -9,35 +20,35 @@
         public Error Error { get; set; }
         public readonly bool HasError => Error != null;
 
-        public FunctionEvaluationResult(double[][] p, Error err)
+        public EvaluationResult(double[][] p, Error err)
         {
             Points = p;
             Error = err;
         }
     }
 
-    public class FSharpFunctionEvaluatiorWrapper: IFSharpFunctionEvaluatorWrapper
+    public class FunctionEvaluation: IFunctionEvaluator
     {
-        public FunctionEvaluationResult Evaluate(string function, double min, double max, double step)
+        public EvaluationResult Evaluate(string function, double min, double max, double step)
         {
             var result = Engine.Evaluator.plotPoints(min, max, step, function);
             if (result.IsError)
             {
-                return new FunctionEvaluationResult(null, new Error(result.ErrorValue));
+                return new EvaluationResult(null, new Error(result.ErrorValue));
             }
            
-            return new FunctionEvaluationResult(result.ResultValue, null);
+            return new EvaluationResult(result.ResultValue, null);
         }
 
-        public FunctionEvaluationResult EvaluateAtPoint(double x, string function)
+        public EvaluationResult EvaluateAtPoint(double x, string function)
         {
             var result = Evaluate(function, x, x, x);
             if (result.HasError)
             {
-                return new FunctionEvaluationResult(null, result.Error);
+                return new EvaluationResult(null, result.Error);
             }
 
-            return new FunctionEvaluationResult(result.Points, null);
+            return new EvaluationResult(result.Points, null);
         }
 
         // @TODO: Switch with implementation in F#.
