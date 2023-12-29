@@ -103,29 +103,31 @@ You should add additional references to the corresponding bib file (References.b
 
 linksDescribe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
 
-\section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
-\subsection{Grammar in BNF}
+\% https://liamfarese.atlassian.net/browse/AP-8
+\section{Sprint 1: Basic arithmetic calculations, Basic GUI.}
+In our first sprint, we focused on building the foundation of our maths interpreter, like basic arithmetic calculations and basic GUI. Our objective was to develop a software that mathces the spec requirements and is a robust and scalable application, keeping in mind maintainability and testability.
+
+\subsection{Lexer}
+We developed a lexer that would tokenise expressions consisting of digits, binary operations, identifiers and functions like sin, cos and tan. One of the challenges we faced was unfamiliarity with F\# and functional programming, especially the recursive nature of this programming paradigm. 
+
+\subsection{Parser}
+We developed a parser that would parse and evaluate expressions that followed this basic grammar.
 \begin{verbatim}
-<E>    ::= <T> <Eopt>
-<Eopt> ::= "+" <T> <Eopt> | "-" <T> <Eopt> | <empty>
-<T>    ::= <NR> <Topt>
-<Topt> ::= "*" <NR> <Topt> | "/" <NR> <Topt> | <empty>
-<NR>   ::= "Num" <value> | "(" <E> ")"
+ <E>    ::= <T> <Eopt>
+ <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+ <T>    ::= <NR> <Topt>
+ <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
+ <NR>   ::= <int> | <float> | (E)
 \end{verbatim}
 
 \subsection{Basic GUI}
-We used WPF with C\# to develop a basic GUI - see Figure \ref{gui01}.
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[width=0.9 \columnwidth]{GUI_01.png}
-\caption{A very basic GUI!}
-\label{gui01}
-\end{center}
-\end{figure}
+We used WPF\cite{WPF:2023} with C\# to develop a basic GUI, focusing on maintainability, testability, and scalability. App's architecture consists of several design patterns like Model-View-ViewModel\cite{MVVM:2022}, that improves GUI's responsiveness to user interactions and Dependency Injection\cite{DI:2023} for better modularity and easy maintenance. The GUI was a minimalistic interface allowing users to enter expressions and view the answers - see Figure \ref{basicgui}.
 
 \subsection{Testing}
-A subset of Table \ref{Table2} in Appendix \ref{app:test} could be referred to from here.
+Thorough unit tests were written for both the C\# app and the F\# engine. Table \ref{sprint1-lexer-test} includes unit test for the Lexer. Table \ref{sprint1-parser-test} includes unit tests for the Parser. The table with GUI unit tests can be seen in \ref{sprint1-gui-test}. The use of the MVVM and Dependency Injection patterns allowed us to to use the Moq\cite{Moq} mocking library to mock Model behaviours in our ViewModel. This allowed us to test code in isolation without relying on behaviour of real dependencies and to have control over what is returned from the mocked methods. As a result our code coverage was above 80\%.
+
+\subsection{Conclusion}
+The first sprint laid a solid foundation for our maths interpreter. The lexer and parser were capable of evaluation basic arithmetic expressions and the GUI was providing simple interface for user interaction. Our testing strategy set a ensured that future features were build upon a reliable codebase. 
 
 \section{Sprint 2: \href{https://liamfarese.atlassian.net/browse/AP-30}{As a user I want to have a basic GUI}}
 
@@ -195,41 +197,73 @@ State here the \% contribution to the project of each individual member of the g
 
 \chapter{Testing}
 \label{app:test}
-\section{Arithmetic expression testing}
-
+\section{F\# engine unit testing}
 \begin{table}[h]
-\caption{Arithmetic expression tests. Note that floating pointing values are accurate to three decimal places for the fractional part. ResE is expected result and ResA is actual result. \\}
-\begin{tabular}{|p{1.8in}|p{0.5in}|p{0.4in}|p{0.6in}|p{1.4in}|} \hline
-Expression & ResE & ResA& Pass/Fail & Action/comment \\ \hline \hline
-$5*3+(2*3-2)/2+6$ & 23 &  &  &  ... \\ \hline
-$9-3-2$ & 4 & & & left assoc.\  \\ \hline
-$10/3$ & 3 & & & int division  \\ \hline
-$10/3.0$ & 3.333 & & & float division \\ \hline
-$10\%3$ & 1 & & & \\ \hline
-$10 - -2$ & 12 & & & unary minus\\ \hline
-$-2 + 10$ & 8 & & & \\ \hline
-$3*5\verb|^|(-1+3)-2\verb|^|2*-3$ & 87 & & & power test \\ \hline
-$-3\verb|^|2$ & -9(*) or 9 & & & precedence \\ \hline
-$-7\%3$ & 2(*) or -1 & & & precedence (*)Python\\ \hline
-$3*5\verb|^|(-1+3)-2\verb|^|-2*-3$ & 75.750 or 75 & & & \\ \hline
-$3*5\verb|^|(-1+3)-2.0\verb|^|-2*-3$ & 75.750 & & & \\ \hline
-$(((3*2--2)))$ & 8 & & & \\ \hline 
-$(((3*2--2))$ & Error & & & syntax error \\ \hline
-$-((3*5-2*3))$ & -9 & & &  minus expression \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5$ & -39 & & & var assign \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5/2$ & -16 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*(5/2)$ & -12 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5/2.0$ & -16.5 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5\%2$ & 5 & & &  \\ \hline
-$x = 3; (2*x)-x\verb|^|2*(5\%2)$ & -3 & & &  \\ \hline
-... & ... & ... & ... & ... \\ \hline
+\caption{Sprint 1, Lexer unit tests}
+\label{sprint1-lexer-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression}        & \textbf{Pass/Fail} & \textbf{Comment}                      \\ \hline
+1a+12                      & Pass               & Tokenises variable, int and operation \\ \hline
+33.3/(12 + 3.5a)           & Pass               & Float/Int distinct tokenisation       \\ \hline
+sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation                 \\ \hline
+4 \% 2                     & Pass               & Modulus tokenisation                  \\ \hline
+4\textasciicircum{}3       & Pass               & Power tokenisation                    \\ \hline
+1. + 43                    & Pass               & Lexer error                           \\ \hline
+1.4.2                      & Pass               & Lexer error                           \\ \hline
+1\&                        & Pass               & Lexer error                           \\ \hline
 \end{tabular}
-\label{Table2}
 \end{table}
 
-\section{GUI testing}
+\begin{table}[h]
+\caption{Sprint 1, Parser unit tests}
+\label{sprint1-parser-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression} & \textbf{Pass/Fail} & \textbf{Comment}                                                                     \\ \hline
+2+10                & Pass               & Parses and evaluates basic addition                                                  \\ \hline
+7-3                 & Pass               & Parses and evaluates basic subtraction                                               \\ \hline
+5*7                 & Pass               & \begin{tabular}[c]{@{}l@{}}Parses and evaluates basic \\ multiplication\end{tabular} \\ \hline
+12/8                & Pass               & \begin{tabular}[c]{@{}l@{}}Parses and evaluates basic \\ division\end{tabular}       \\ \hline
+5*2.3               & Pass               & Parses and evaluates integers with floats                                            \\ \hline
+13.56-6+14*20.1     & Pass               & Order of operations                                                                  \\ \hline
+5-2.5/(6.0+6.5)+1   & Pass               & Order of operations using brackets                                                   \\ \hline
+1\&                 & Pass               & Operators without an operand between                                                 \\ \hline
+6+-2                & Pass               & Operators without an operand between                                                 \\ \hline
+5/                  & Pass               & Operator without an operand following                                                \\ \hline
+*                   & Pass               & Operator with no operands at all                                                     \\ \hline
+(()                 & Pass               & Opening a bracket without closing it                                                 \\ \hline
+())                 & Pass               & Closing a bracket without having opened a matching one                               \\ \hline
+1/0                 & Pass               & Division by 0                                                                        \\ \hline
+\end{tabular}
+\end{table}
+
+\newpage
+\section{C\# GUI unit testing}
+
+\begin{table}[h]
+\caption{Sprint 1, GUI unit test}
+\label{sprint1-gui-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Input} & \textbf{Pass/Fail} & \textbf{Comment}                 \\ \hline
+123            & Pass               & Updates the View with user input \\ \hline
+\end{tabular}
+\end{table}
+
 
 \section{Plot testing}
+
+\chapter{GUI}
+\label{app:gui}
+\section{Basic GUI}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{Basic GUI.png}
+\caption{Our first basic GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
 
 \chapter{Other stuff}
 \label{app:other}
