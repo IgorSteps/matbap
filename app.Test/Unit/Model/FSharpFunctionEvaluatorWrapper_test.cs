@@ -1,9 +1,9 @@
 ﻿namespace app.Test.Unit
 {
-    public class PlotEvaluation_test
+    public class FSharpFunctionEvaluatorWrapper_test
     {
         [Test]
-        public void Test_FunctionEvaluation_Evaluate_EvaluatesSuccessfully() 
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully() 
         {
             // --------
             // ASSEMBLE
@@ -24,7 +24,7 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_Evaluate_Error()
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_Error()
         {
             // --------
             // ASSEMBLE
@@ -46,7 +46,7 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_EvaluateAtPoint_Success()
+        public void Test_FSharpFunctionEvaluatiorWrapper_EvaluateAtPoint_Success()
         {
             // --------
             // ASSEMBLE
@@ -69,7 +69,7 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_EvaluateAtPoint_Error()
+        public void Test_FSharpFunctionEvaluatiorWrapper_EvaluateAtPoint_Error()
         {
             // --------
             // ASSEMBLE
@@ -92,7 +92,7 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_TakeDerivative()
+        public void Test_FSharpFunctionEvaluatiorWrapper_TakeDerivative()
         {
             // --------
             // ASSEMBLE

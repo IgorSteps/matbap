@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using RawSymbolTable = System.Collections.Generic.Dictionary<string, Engine.Parser.NumType>;
-
-namespace app
+﻿namespace app
 {
     public struct FSharpEvaluationResult
     {
