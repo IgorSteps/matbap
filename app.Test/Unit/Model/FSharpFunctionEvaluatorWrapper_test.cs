@@ -1,16 +1,16 @@
 ﻿namespace app.Test.Unit
 {
-    public class PlotEvaluation_test
+    public class FSharpFunctionEvaluatorWrapper_test
     {
         [Test]
-        public void Test_FunctionEvaluation_Evaluate_EvaluatesSuccessfully() 
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully() 
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "x+1";
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
             // -----
             // ACT
             // -----
@@ -24,14 +24,14 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_Evaluate_Error()
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_Error()
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "+1"; // invalid input.
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
             // -----
             // ACT
             // -----
@@ -46,14 +46,14 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_EvaluateAtPoint_Success()
+        public void Test_FSharpFunctionEvaluatiorWrapper_EvaluateAtPoint_Success()
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "x+1";
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT
@@ -69,14 +69,14 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_EvaluateAtPoint_Error()
+        public void Test_FSharpFunctionEvaluatiorWrapper_EvaluateAtPoint_Error()
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "+1"; // invalid input.
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT
@@ -92,14 +92,14 @@
         }
 
         [Test]
-        public void Test_FunctionEvaluation_TakeDerivative()
+        public void Test_FSharpFunctionEvaluatiorWrapper_TakeDerivative()
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "x+1";
             double x = 1;
-            var functionEvaluator = new FunctionEvaluation();
+            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
 
             // -----
             // ACT

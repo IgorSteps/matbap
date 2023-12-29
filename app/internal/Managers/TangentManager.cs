@@ -31,16 +31,16 @@ namespace app
     /// </summary>
     public class TangentManager : ITangentManager
     {
-        private readonly IFunctionEvaluator _functionEvaluator;
+        private readonly IFSharpFunctionEvaluatorWrapper _functionEvaluator;
 
-        public TangentManager(IFunctionEvaluator functionEvaluator)
+        public TangentManager(IFSharpFunctionEvaluatorWrapper functionEvaluator)
         {
             _functionEvaluator = functionEvaluator;
         }
 
         public CreateTangentResult CreateTangent(double x, string function)
         {
-            EvaluationResult result = _functionEvaluator.EvaluateAtPoint(x, function);
+            FunctionEvaluationResult result = _functionEvaluator.EvaluateAtPoint(x, function);
             if (result.HasError)
             {
                 return new CreateTangentResult(null, result.Error);
