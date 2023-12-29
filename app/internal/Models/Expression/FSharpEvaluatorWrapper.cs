@@ -17,9 +17,16 @@
     /// </summary>
     public class FSharpEvaluatorWrapper : IFSharpEvaluatorWrapper
     {
+        private readonly Engine.IEvaluator _fsharpEvaluator;
+
+        public FSharpEvaluatorWrapper(Engine.IEvaluator fsharpEvaluator)
+        {
+            _fsharpEvaluator = fsharpEvaluator;
+        }
+
         public FSharpEvaluationResult Evaluate(string expression, SymbolTable symbolTable )
         {
-            var result = Engine.Evaluator.eval(expression, symbolTable.Table);
+            var result = _fsharpEvaluator.Eval(expression, symbolTable.Table);
             if (result.IsError)
             {
                 return new FSharpEvaluationResult(null, new Error(result.ErrorValue));
