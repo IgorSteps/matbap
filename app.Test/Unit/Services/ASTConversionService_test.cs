@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using app;
-using FSharpASTNode = Engine.Types.Node;
+﻿using FSharpASTNode = Engine.Types.Node;
 using FSharpNumType = Engine.Types.NumType;
 
-namespace app.Test
+namespace app.Test.Unit
 
 {
-    public class ASTConversionServiceUnitTests
+    public class ASTConversionService_test
     {
         private ASTConversionService _converter;
 
@@ -51,8 +45,8 @@ namespace app.Test
             // --------
             var expected = "1 + 1";
             var testInput = 1;
-            var leftTestNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(testInput));
-            var rightTestNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(testInput));
+            var leftTestNode = FSharpASTNode.NewNumber(FSharpNumType.NewInt(testInput));
+            var rightTestNode = FSharpASTNode.NewNumber(FSharpNumType.NewInt(testInput));
             var fSharpBinaryTestNode = FSharpASTNode.NewBinaryOperation("+", leftTestNode, rightTestNode);
 
             // ---

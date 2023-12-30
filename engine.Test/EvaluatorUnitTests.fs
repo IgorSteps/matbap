@@ -156,6 +156,10 @@ type EvaluatorTests () =
             [|0.75; 0.421875|]; [|1.0; 1.0|]; [|1.25; 1.953125|]; [|1.5; 3.375|];
             [|1.75; 5.359375|]; [|2.0; 8.0|]|]
         }
+        {
+            Min = 2; Max = 2; Step = 0.25; Exp = "x";
+            Expected = Ok [|[|2.0; 2.0|]|];
+        }
     ]
 
     [<TestCaseSource("evaluatorTestCases")>]

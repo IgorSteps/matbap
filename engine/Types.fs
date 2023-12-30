@@ -9,4 +9,5 @@
             | Number of NumType
             | BinaryOperation of string * Node * Node
             | ParenthesisExpression of Node
+            | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node

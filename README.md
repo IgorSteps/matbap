@@ -36,15 +36,34 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Polynomials
 - [ ] Advanced Plotting
   - [x] Trig and logarithmic functions
-  - [x] Visualise Parse Tree
-  - [x] Zoom in/out
-  - [x] Translate the axis
-  - [ ] Plotting multiple plots
+  - [x] Plotting multiple plots
   - [ ] Rational equations
+  - [x] Tangents
+  - [ ] Areas under the curve for numerical integration
+- [ ] Advanced GUI
+  - [x] Visualise Parse Tree
+  - [ ] Visualise Symbol Table
+  - [x] Display Plotted Equations
+
 
 
 ## Tests
-To run unit and funtional tests, from project root:
+To run all tests, from project root:
 ```
 dotnet test
+```
+
+To run just functional tests:
+```
+ dotnet test --filter FullyQualifiedName~app.Test.Functional
+```
+
+To run units tests to the F# engine:
+```
+ dotnet test --filter FullyQualifiedName~engine.Test
+```
+
+To run unit tests for the C# app:
+```
+ dotnet test --filter FullyQualifiedName~app.Test.Unit
 ```

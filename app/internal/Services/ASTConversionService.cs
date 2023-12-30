@@ -12,9 +12,6 @@ namespace app
         /// <summary>
         /// Match against F# node types to constuct C# node types for an AST.
         /// </summary>
-        /// <param name="fSharpNode"> F# AST node</param>
-        /// <returns>Respective C# AST node</returns>
-        /// <exception cref="InvalidOperationException">If unknow node is present in F# AST.</exception>
         public ASTNode Convert(FSharpASTNode fSharpNode)
         {
             return fSharpNode switch
