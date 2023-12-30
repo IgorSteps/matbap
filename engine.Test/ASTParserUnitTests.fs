@@ -298,6 +298,16 @@ type ASTParserTests() =
             Args = [Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Add; Tokeniser.Int 1]
             Expected = "Missing closing bracket"
         }
+        {
+            Name = "Testing error: variable assignment without variable name: = 5"
+            Args = [Tokeniser.Equals; Tokeniser.Int 5]
+            Expected = "A variable assignment was attempted without giving a variable name"
+        }
+        {
+            Name = "Testing error: variable assignment without variable name: x = "
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals]
+            Expected = "A variable assignment was attempted without assigning a value"
+        }
     ]
 
     [<TestCaseSource("AstParserTestCases")>]
