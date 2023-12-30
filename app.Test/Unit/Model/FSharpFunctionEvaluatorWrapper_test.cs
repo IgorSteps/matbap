@@ -3,7 +3,7 @@
     public class FSharpFunctionEvaluatorWrapper_test
     {
         [Test]
-        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully() 
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully()
         {
             // --------
             // ASSEMBLE

@@ -1,4 +1,6 @@
-﻿namespace app.Test.Functional
+﻿using Engine;
+
+namespace app.Test.Functional
 {
     public class EvaluateExpressionWithVariable
     {
@@ -11,9 +13,10 @@
             // --------
             // ASSEMBLE
             // --------
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
@@ -45,7 +48,8 @@
             // --------
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
@@ -81,7 +85,8 @@
             // --------
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";

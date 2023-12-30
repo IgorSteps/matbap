@@ -11,10 +11,11 @@
             // --------
             // ASSEMBLE
             // --------
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var expression = "2";
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
@@ -45,10 +46,11 @@
             // x=1;
             // y=1;
             // x+y
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var expression = "x=1;\r\ny=1;\r\nx+y";
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
