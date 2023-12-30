@@ -86,9 +86,18 @@
                 | Ok (t, remainingTokens)   -> parseExpressionOperators (BinaryOperation ("-", expr, t), remainingTokens)
                 | Error err                 -> Error err
             | _ -> Ok (expr, tokens)
+        
+        /// Parses a potential variable assignment, if not it will default to parse an expression
+        and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
+            match tokens with
+            | Identifier varName :: Equals :: remainingTokens ->
+                match parseExpression remainingTokens with
+                | Ok (expr, remainingTokens)    -> Ok (VariableAssignment expr, remainingTokens)
+                | Error err                                     -> Error err
+            | _ -> parseExpression tokens
 
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
-            match parseExpression tokens with
+            match parseVariableAssignment tokens with
             | Ok (ast, _)   -> Ok ast
             | Error err     -> Error err
