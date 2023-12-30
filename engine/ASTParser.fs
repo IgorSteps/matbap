@@ -1,13 +1,17 @@
 ﻿namespace Engine
     // Grammar:
+    // <varA> ::= <varID> = <E>
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
     // <T>    ::= <P> <Topt>
     // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
     // <P>    ::= <NR> <Popt>
     // <Popt> ::= ^ <NR> <Popt> | <empty>
-    // <NR>   ::= (E) | -(E) | <num> | -<num>
-    // <num>  ::= <int> | <float>
+    // <NR>   ::= <num> | (E)
+    // <num>  ::= <int> | <float> | <varVal>
+
+    // varVal is fetched from symbol table using varID
+
     module ASTParser =
         open Types
         open Tokeniser
@@ -95,9 +99,21 @@
                 | Ok (t, remainingTokens)   -> parseExpressionOperators(BinaryOperation("-", expr, t), remainingTokens)
                 | Error err                 -> Error err
             | _ -> Ok (expr, tokens)
+        
+        /// Parses a potential variable assignment, if not it will default to parse an expression
+        and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
+            match tokens with
+            | Identifier varName :: Equals :: remainingTokens ->
+                match remainingTokens.IsEmpty with
+                | true  -> Error "A variable assignment was attempted without assigning a value"
+                | false -> match parseExpression remainingTokens with
+                           | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
+                           | Error err                     -> Error err
+            | Equals :: _ -> Error "A variable assignment was attempted without giving a variable name"
+            | _ -> parseExpression tokens
 
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
-            match parseExpression(tokens) with
+            match parseVariableAssignment tokens with
             | Ok (ast, _)   -> Ok ast
             | Error err     -> Error err

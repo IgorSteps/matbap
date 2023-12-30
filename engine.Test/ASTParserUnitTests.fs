@@ -266,6 +266,20 @@ type ASTParserTests() =
                             )
                         )
         }
+        // Variable Assignment
+        {
+            Name = "Test variable assignment: x = 1/2"
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 1; Tokeniser.Divide; Tokeniser.Int 2]
+            Expected = VariableAssignment(
+                           "x",
+                           BinaryOperation(
+                               "/",
+                               Number(Int(1)),
+                               Number(Int(2))
+                           )
+                       )
+        }
+
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
@@ -283,6 +297,16 @@ type ASTParserTests() =
             Name = "Testing error: Missing a closing bracket: (1+1."
             Args = [Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Add; Tokeniser.Int 1]
             Expected = "Missing closing bracket"
+        }
+        {
+            Name = "Testing error: variable assignment without variable name: = 5"
+            Args = [Tokeniser.Equals; Tokeniser.Int 5]
+            Expected = "A variable assignment was attempted without giving a variable name"
+        }
+        {
+            Name = "Testing error: variable assignment without assigning a value: x = "
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals]
+            Expected = "A variable assignment was attempted without assigning a value"
         }
     ]
 
