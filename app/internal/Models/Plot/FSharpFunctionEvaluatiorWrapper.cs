@@ -18,9 +18,16 @@
 
     public class FSharpFunctionEvaluatiorWrapper: IFSharpFunctionEvaluatorWrapper
     {
+        private readonly Engine.IEvaluator _fsharpEvaluator;
+        
+        public FSharpFunctionEvaluatiorWrapper(Engine.IEvaluator fsharpEvaluator)
+        {
+            _fsharpEvaluator = fsharpEvaluator;
+        }
+
         public FunctionEvaluationResult Evaluate(string function, double min, double max, double step)
         {
-            var result = Engine.Evaluator.plotPoints(min, max, step, function);
+            var result = _fsharpEvaluator.PlotPoints(min, max, step, function);
             if (result.IsError)
             {
                 return new FunctionEvaluationResult(null, new Error(result.ErrorValue));
