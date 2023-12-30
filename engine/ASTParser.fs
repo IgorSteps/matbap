@@ -96,9 +96,6 @@
                 | Error err                     -> Error err
             | _                                               -> parseExpression tokens
 
-        //and parseStatements(tokens: Token list) : Result<(Node * Token list), string> =
-        //    match tokens with
-
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
             match parseVariableAssignment tokens with
