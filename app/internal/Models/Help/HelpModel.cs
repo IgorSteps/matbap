@@ -10,6 +10,7 @@ namespace app
     {
         public string ExpressionsHelpText { get; }
         public string PlotHelpText { get; }
+        public string TangentHelpText { get; }
 
         public HelpContentModel()
         {
@@ -23,6 +24,10 @@ namespace app
                 "2) You can plot multiple graphs, just enter new equation and click Plot\n" +
                 "3) Click clear to clear plotting area\n" +
                 "4) Don't include 'y = ' part, otherwise we will error";
+
+            TangentHelpText =
+                "Add a tagnent to plot from the list on the right\n" +
+                "You can select the plot by left clicking its equation in the list on the right";
         }
     }
 }

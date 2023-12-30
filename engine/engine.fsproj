@@ -10,6 +10,8 @@
     <Compile Include="Parser.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="ASTParser.fs" />
+    <Compile Include="IEvaluator.fs" />
+    <Compile Include="EvaluatorWrapper.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.0.1">
