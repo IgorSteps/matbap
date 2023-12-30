@@ -304,7 +304,7 @@ type ASTParserTests() =
             Expected = "A variable assignment was attempted without giving a variable name"
         }
         {
-            Name = "Testing error: variable assignment without variable name: x = "
+            Name = "Testing error: variable assignment without assigning a value: x = "
             Args = [Tokeniser.Identifier "x"; Tokeniser.Equals]
             Expected = "A variable assignment was attempted without assigning a value"
         }
