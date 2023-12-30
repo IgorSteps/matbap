@@ -1,5 +1,6 @@
 ﻿namespace Engine
     // Grammar:
+    // <varA> ::= <varID> = <E>
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
     // <T>    ::= <P> <Topt>
@@ -8,7 +9,10 @@
     // <P>    ::= <NR> <Popt>
     // <Popt> ::= ^ <NR> <Popt> | <empty>
     // <NR>   ::= <num> | (E)
-    // <num>  ::= <int> | <float>
+    // <num>  ::= <int> | <float> | <varVal>
+
+    // varVal is fetched from symbol table using varID
+
     module ASTParser =
         open Types
         open Tokeniser
@@ -91,9 +95,12 @@
         and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
             match tokens with
             | Identifier varName :: Equals :: remainingTokens ->
-                match parseExpression remainingTokens with
-                | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
-                | Error err                     -> Error err
+                match remainingTokens.IsEmpty with
+                | true  -> Error "A variable assignment was attempted without assigning a value"
+                | false -> match parseExpression remainingTokens with
+                           | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
+                           | Error err                     -> Error err
+            | Equals :: _ -> Error "A variable assignment was attempted without giving a variable name"
             | _ -> parseExpression tokens
 
         // Parse tokens.
