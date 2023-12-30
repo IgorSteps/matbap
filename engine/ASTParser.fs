@@ -92,9 +92,12 @@
             match tokens with
             | Identifier varName :: Equals :: remainingTokens ->
                 match parseExpression remainingTokens with
-                | Ok (expr, remainingTokens)    -> Ok (VariableAssignment expr, remainingTokens)
-                | Error err                                     -> Error err
-            | _ -> parseExpression tokens
+                | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
+                | Error err                     -> Error err
+            | _                                               -> parseExpression tokens
+
+        //and parseStatements(tokens: Token list) : Result<(Node * Token list), string> =
+        //    match tokens with
 
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
