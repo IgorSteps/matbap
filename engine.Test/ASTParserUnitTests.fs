@@ -216,6 +216,18 @@ type ASTParserTests() =
                             )
                         )
         }
+        {
+            Name = "Test variable assignment: x = 1/2"
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 1; Tokeniser.Divide; Tokeniser.Int 2]
+            Expected = VariableAssignment(
+                           "x",
+                           BinaryOperation(
+                               "/",
+                               Number(Int(1)),
+                               Number(Int(2))
+                           )
+                       )
+        }
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [

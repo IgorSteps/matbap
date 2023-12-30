@@ -94,7 +94,7 @@
                 match parseExpression remainingTokens with
                 | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
                 | Error err                     -> Error err
-            | _                                               -> parseExpression tokens
+            | _ -> parseExpression tokens
 
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
