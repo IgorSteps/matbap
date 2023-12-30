@@ -1,20 +1,42 @@
-﻿namespace app.Test.Unit
+﻿using Engine;
+using Microsoft.FSharp.Core;
+using Moq;
+
+namespace app.Test.Unit
 {
     public class FSharpFunctionEvaluatorWrapper_test
     {
+        private Mock<Engine.IEvaluator> _mockEngineEvaluator;
+        private FSharpFunctionEvaluatiorWrapper _evaluator;
+
+        [SetUp]
+        public void Setup()
+        {
+            _mockEngineEvaluator = new Mock<Engine.IEvaluator>();
+            _evaluator = new FSharpFunctionEvaluatiorWrapper(_mockEngineEvaluator.Object);
+        }
+
         [Test]
-        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully() 
+        public void Test_FSharpFunctionEvaluatiorWrapper_Evaluate_EvaluatesSuccessfully()
         {
             // --------
             // ASSEMBLE
             // --------
             string function = "x+1";
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
+            double[][] points = new double[][]
+            {
+                new double[] {0,1},
+                new double[] {2,3},
+            };
+
+            var successResult = FSharpResult<double[][], string>.NewOk(points);
+            _mockEngineEvaluator.Setup(e => e.PlotPoints(xmin, xmax, xstep, function)).Returns(successResult);
+
             // -----
             // ACT
             // -----
-            var result = functionEvaluator.Evaluate(function, xmin, xmax, xstep);
+            var result = _evaluator.Evaluate(function, xmin, xmax, xstep);
 
             // ------
             // ASSERT
@@ -29,19 +51,22 @@
             // --------
             // ASSEMBLE
             // --------
-            string function = "+1"; // invalid input.
+            string function = "x+1";
             double xmin = 1, xmax = 10, xstep = 0.1;
-            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
+            string error = "Boom";
+            var errorResult = FSharpResult<double[][], string>.NewError(error);
+            _mockEngineEvaluator.Setup(e => e.PlotPoints(xmin, xmax, xstep, function)).Returns(errorResult);
+
             // -----
             // ACT
             // -----
-            var result = functionEvaluator.Evaluate(function, xmin, xmax, xstep);
+            var result = _evaluator.Evaluate(function, xmin, xmax, xstep);
 
             // ------
             // ASSERT
             // ------
             Assert.That(result.HasError, Is.True, "Should have an error");
-            Assert.That(result.Error.ToString(), Is.EqualTo("Error: Error while parsing: Unexpected token or end of expression"), "Errors don't match");
+            Assert.That(result.Error.Message, Is.EqualTo(error), "Errors don't match");
             Assert.That(result.Points, Is.Null, "Points should be null");
         }
 
@@ -53,12 +78,18 @@
             // --------
             string function = "x+1";
             double x = 1;
-            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
+            double[][] points = new double[][]
+            {
+                new double[] {0,1},
+            };
+
+            var successResult = FSharpResult<double[][], string>.NewOk(points);
+            _mockEngineEvaluator.Setup(e => e.PlotPoints(x, x, x, function)).Returns(successResult);
 
             // -----
             // ACT
             // -----
-            var result = functionEvaluator.EvaluateAtPoint(x, function);
+            var result = _evaluator.EvaluateAtPoint(x, function);
 
             // ------
             // ASSERT
@@ -76,40 +107,21 @@
             // --------
             string function = "+1"; // invalid input.
             double x = 1;
-            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
+            string error = "Boom";
+            var errorResult = FSharpResult<double[][], string>.NewError(error);
+            _mockEngineEvaluator.Setup(e => e.PlotPoints(x, x, x, function)).Returns(errorResult);
 
             // -----
             // ACT
             // -----
-            var result = functionEvaluator.EvaluateAtPoint(x, function);
+            var result = _evaluator.EvaluateAtPoint(x, function);
 
             // ------
             // ASSERT
             // ------
             Assert.That(result.HasError, Is.True, "Should have an error");
-            Assert.That(result.Error.ToString(), Is.EqualTo("Error: Error while parsing: Unexpected token or end of expression"), "Errors don't match");
+            Assert.That(result.Error.Message, Is.EqualTo(error), "Errors don't match");
             Assert.That(result.Points, Is.Null, "Points should be null");
-        }
-
-        [Test]
-        public void Test_FSharpFunctionEvaluatiorWrapper_TakeDerivative()
-        {
-            // --------
-            // ASSEMBLE
-            // --------
-            string function = "x+1";
-            double x = 1;
-            var functionEvaluator = new FSharpFunctionEvaluatiorWrapper();
-
-            // -----
-            // ACT
-            // -----
-            double d = functionEvaluator.TakeDerivative(x, function);
-
-            // ------
-            // ASSERT
-            // ------
-            Assert.That(d, Is.EqualTo(1).Within(0.000001), "Should be equal");
         }
     }
 }

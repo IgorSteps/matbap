@@ -33,6 +33,9 @@ namespace app
         {
             var services = new ServiceCollection();
 
+            // F# Evaluator Wrappers.
+            services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
+
             // Managers.
             services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
             services.AddSingleton<ISymbolTableManager, SymbolTableManager>(); // Must be singleton, because manages symbol table.

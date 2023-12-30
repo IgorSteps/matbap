@@ -1,4 +1,6 @@
-﻿namespace app.Test.Functional
+﻿using Engine;
+
+namespace app.Test.Functional
 {
     public class CreatePlotErrorsTest
     {
@@ -11,7 +13,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -51,7 +54,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -91,7 +95,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -131,7 +136,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();
@@ -171,7 +177,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();

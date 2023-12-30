@@ -13,7 +13,8 @@
             // --------
             var manager = new ExpressionManager();
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
