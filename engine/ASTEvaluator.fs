@@ -44,7 +44,7 @@
                                                             BinaryOperation("*", left, dRight)
                                                         ), 
                                                         BinaryOperation("*", right, right)))
-                
+                 
                 | "^", Ok(diffBase), Ok(Number (Int power)) ->
                     let newPower = power - 1
                     let newPowerExpr = BinaryOperation("^", left,  Number (Int power))
