@@ -10,6 +10,7 @@
     <Compile Include="Parser.fs" />
     <Compile Include="Evaluator.fs" />
     <Compile Include="ASTParser.fs" />
+    <Compile Include="ASTEvaluator.fs" />
     <Compile Include="IEvaluator.fs" />
     <Compile Include="EvaluatorWrapper.fs" />
   </ItemGroup>
