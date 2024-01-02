@@ -11,6 +11,7 @@
             | ParenthesisExpression of Node
             | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node
+            | Variable of string
             /// Represents a function like sin(x).
             | Function of string * Node
             /// Represents the derivative of the Node with respect to the variable in the string.

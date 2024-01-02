@@ -23,6 +23,7 @@
             | Float   floatNumber :: remainingTokens -> Ok (Number(NumType.Float(floatNumber)), remainingTokens)
             | Minus               :: remainingTokens -> parseUnaryMinusOperation(remainingTokens)
             | LeftBracket         :: remainingTokens -> parseBracketedExpression(remainingTokens)
+            | Identifier identifierName :: remainingTokens -> Ok (Variable(identifierName), remainingTokens)
             | _                                      -> Error "Expected number, '(' or '-'."
 
         and parseUnaryMinusOperation(tokens : Token list) : Result<(Node * Token list), string> =
