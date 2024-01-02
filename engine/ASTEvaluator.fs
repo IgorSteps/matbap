@@ -4,13 +4,17 @@
         // Functions for evaluating
         let rec private evalTree (topNode : Node) : Result<Node, string> =
             match topNode with
-            | BinaryOperation (op,a,b) -> match evalBinaryOperation (op, a, b) with
-                                          | Ok node -> Ok node
-                                          | Error e -> Error e
-            | ParenthesisExpression node  -> match evalTree node with
-                                             | Ok node -> Ok node
-                                             | Error e -> Error e
-            | UnaryMinusOperation  _   -> Ok (Number (Float 0))
+            | BinaryOperation (op, a, b)     -> match evalBinaryOperation (op, a, b) with
+                                                | Ok node -> Ok node
+                                                | Error e -> Error e
+            | ParenthesisExpression node     -> match evalTree node with
+                                                | Ok node -> Ok node
+                                                | Error e -> Error e
+            // Not going to bother checking operator for unary minus operation, assume it's there for future extension?
+            | UnaryMinusOperation (_, num)   -> match evalNum num with
+                                                | Ok (Int x)   -> Ok (Number (Int -x))
+                                                | Ok (Float x) -> Ok (Number (Float -x))
+                                                | Error e      -> Error e
             | VariableAssignment  _    -> Ok (Number (Float 0))
             | Number n                 -> Ok (Number n)
          
