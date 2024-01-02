@@ -14,4 +14,3 @@
             | Variable of string
             /// Represents a function like sin(x).
             | Function of string * Node
-
