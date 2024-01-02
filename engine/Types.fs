@@ -11,3 +11,4 @@
             | ParenthesisExpression of Node
             | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node
+            | Variable of string
