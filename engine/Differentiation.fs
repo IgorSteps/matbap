@@ -8,6 +8,8 @@
             "cos", (fun x -> UnaryMinusOperation("-", Function("sin", x)))
             "tan", (fun x -> BinaryOperation("^", Function("sec", x), Number(Int 2)))
             "log", (fun x -> BinaryOperation("/", Number(Int 1), x))
+            "ln", (fun x -> BinaryOperation("/", Number(Int 1), x))
+            "exp", (fun x -> Function("exp", x))
         ]
         
         /// Differentiate with respect to a variable.
@@ -21,18 +23,18 @@
                     Ok(Number(Int 0))    
             | BinaryOperation(operation, left, right) ->
                 match operation, differentiate left var, differentiate right var with
-                // d(u+v)/dx = du/dx + dv/dx
+                // Sum rule.
                 | "+", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("+", dLeft, dRight))
-                // d(u-v)/dx = du/dx - dv/dx
+                // Difference rule.
                 | "-", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("-", dLeft, dRight))
-                // d(u*v)/dx = u*dv/dx + v*du/dx
+                // Product rule.
                 | "*", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
                                                         "+", 
                                                         BinaryOperation("*", dLeft, right),
                                                         BinaryOperation("*", left, dRight)
                                                         )
                                                         )
-                // d(u/v)/dx = (v*du/dx - u*dv/dx) / v^2
+                // Quotent rule.
                 | "/", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
                                                         "/",
                                                         BinaryOperation(
@@ -64,4 +66,16 @@
                 match differentiate expression var with
                 | Ok(dExp)      -> Ok(UnaryMinusOperation("-", dExp))
                 | Error(msg)    -> Error(msg)
+            | Function(funcName, innerFunc) ->
+                if derivativeLUT.ContainsKey(funcName)
+                    then
+                        let outerDerivative = derivativeLUT.[funcName](innerFunc)
+                        chainRule outerDerivative innerFunc var
+                    else
+                        Error(sprintf "Function '%s' is not supported for differentiation" funcName)
             | _ -> Error ("Unsupported node type for differentiation")
+
+        and chainRule outerDerivativeFunc innerFunc var =
+            match differentiate innerFunc var with
+            | Ok(innerDerivative) -> Ok(BinaryOperation("*", outerDerivativeFunc, innerDerivative))
+            | Error(msg) -> Error(msg)
