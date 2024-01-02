@@ -19,44 +19,7 @@
                     Ok(Number(Int 1))    
                 else 
                     Ok(Number(Int 0))    
-            | BinaryOperation(operation, left, right) ->
-                match operation, differentiate left var, differentiate right var with
-                // Sum rule.
-                | "+", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("+", dLeft, dRight))
-                // Difference rule.
-                | "-", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("-", dLeft, dRight))
-                // Product rule.
-                | "*", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
-                                                        "+", 
-                                                        BinaryOperation("*", dLeft, right),
-                                                        BinaryOperation("*", left, dRight)
-                                                    ))
-                // Quotent rule.
-                | "/", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
-                                                        "/",
-                                                        BinaryOperation(
-                                                            "-",
-                                                            BinaryOperation("*", dLeft, right),
-                                                            BinaryOperation("*", left, dRight)
-                                                        ), 
-                                                        BinaryOperation("^", right, Number(Int 2))
-                                                    ))
-                         
-                // Power rule.
-                | "^", _, _ ->
-                    match left, right with
-                        | baseDiff, Number(Int power) ->
-                            let newPower = power - 1
-                            let newPowerExpr = BinaryOperation("^", baseDiff,  Number (Int newPower))
-                            let derivative = BinaryOperation("*", Number (Int power), newPowerExpr)
-                            Ok(derivative)
-                        | baseDiff, Number(Float power) ->
-                            let newPower = power - 1.0
-                            let newPowerExpr = BinaryOperation("^", baseDiff,  Number (Float newPower))
-                            let derivative = BinaryOperation("*", Number (Float power), newPowerExpr)
-                            Ok(derivative)
-                        | _, _ -> Error("Differentiation with non-constant power is not supported")
-                | _ -> Error(sprintf "Operation '%s' is not supported for differentiation" operation)
+            | BinaryOperation(operation, left, right) -> differentiateBinaryOperations operation var left right
             | ParenthesisExpression expression ->
                 match differentiate expression var with
                 | Ok(dExp)      -> Ok(ParenthesisExpression dExp)
@@ -66,15 +29,53 @@
                 | Ok(dExp)      -> Ok(UnaryMinusOperation("-", dExp))
                 | Error(msg)    -> Error(msg)
             | Function(funcName, innerFunc) ->
-                if derivativeLUT.ContainsKey(funcName)
-                    then
-                        let outerDerivative = derivativeLUT.[funcName](innerFunc)
-                        chainRule outerDerivative innerFunc var
-                    else
-                        Error(sprintf "Function '%s' is not supported for differentiation" funcName)
-            | _ -> Error ("Unsupported node type for differentiation")
+                match derivativeLUT.ContainsKey(funcName) with
+                | true ->
+                    let outerDerivative = derivativeLUT.[funcName](innerFunc)
+                    chainRule outerDerivative innerFunc var
+                | false -> Error(sprintf "Function '%s' is not supported for differentiation" funcName)
+            | _ -> Error("Unsupported node type for differentiation")
 
-        and chainRule outerDerivativeFunc innerFunc var =
+
+        and differentiateBinaryOperations operation var left right =
+            match operation, differentiate left var, differentiate right var with
+            // Sum rule.
+            | "+", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("+", dLeft, dRight))
+            // Difference rule.
+            | "-", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation("-", dLeft, dRight))
+            // Product rule.
+            | "*", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
+                                                    "+", 
+                                                    BinaryOperation("*", dLeft, right),
+                                                    BinaryOperation("*", left, dRight)
+                                                ))
+            // Quotent rule.
+            | "/", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
+                                                    "/",
+                                                    BinaryOperation(
+                                                        "-",
+                                                        BinaryOperation("*", dLeft, right),
+                                                        BinaryOperation("*", left, dRight)
+                                                    ), 
+                                                    BinaryOperation("^", right, Number(Int 2))
+                                                ))
+            // Power rule.
+            | "^", _, _ ->
+                match left, right with
+                    | baseDiff, Number(Int power) ->
+                        let newPower = power - 1
+                        let newPowerExpr = BinaryOperation("^", baseDiff,  Number (Int newPower))
+                        let derivative = BinaryOperation("*", Number (Int power), newPowerExpr)
+                        Ok(derivative)
+                    | baseDiff, Number(Float power) ->
+                        let newPower = power - 1.0
+                        let newPowerExpr = BinaryOperation("^", baseDiff,  Number (Float newPower))
+                        let derivative = BinaryOperation("*", Number (Float power), newPowerExpr)
+                        Ok(derivative)
+                    | _, _ -> Error("Differentiation with non-constant power is not supported")
+            | _ -> Error(sprintf "Operation '%s' is not supported for differentiation" operation)
+
+        and chainRule outerFuncDerivative innerFunc var =
             match differentiate innerFunc var with
-            | Ok(innerDerivative) -> Ok(BinaryOperation("*", outerDerivativeFunc, innerDerivative))
+            | Ok(innerDerivative) -> Ok(BinaryOperation("*", outerFuncDerivative, innerDerivative))
             | Error(msg) -> Error(msg)
