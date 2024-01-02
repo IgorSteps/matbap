@@ -7,12 +7,15 @@
             | BinaryOperation (op,a,b) -> match evalBinaryOperation (op, a, b) with
                                           | Ok node -> Ok node
                                           | Error e -> Error e
-            | ParenthesisExpression _  -> Ok (Number (Float 0))
+            | ParenthesisExpression node  -> match evalTree node with
+                                             | Ok node -> Ok node
+                                             | Error e -> Error e
             | UnaryMinusOperation  _   -> Ok (Number (Float 0))
             | VariableAssignment  _    -> Ok (Number (Float 0))
             | Number n                 -> Ok (Number n)
          
-        and private extractEval (node : Node) : Result<NumType, string> =
+        and private evalNum (node : Node) : Result<NumType, string> =
+            // Helper function to eval a node and extract a number
             match evalTree node with
             | Ok node -> match node with
                          | Number num -> Ok num
@@ -24,8 +27,8 @@
             // This can probably be rewritten in a better way, but the NumType returned still needs to be different. We
             // could potentially test whether the value returned by the operator is either int or float, but that might
             // result in worse performance and the intent is arguably less clear. Any comments on this are appreciated.
-            let evalA = extractEval a
-            let evalB = extractEval b
+            let evalA = evalNum a
+            let evalB = evalNum b
             match op with
             | "+" -> match (evalA, evalB) with
                      | Ok (Int a),   Ok (Int b)   -> Ok (Number (Int   (a+b)))
@@ -75,6 +78,11 @@
             match ASTParser.parse tokens with
             | Error parseError  -> Error parseError
             | Ok result         -> Ok result
+            
+        let debug(exp : string) =
+            match Tokeniser.tokenise exp with
+            | Ok tokens -> Ok (parse tokens)
+            | Error e -> Error e
 
         let eval(exp : string) =
             match Tokeniser.tokenise exp with
