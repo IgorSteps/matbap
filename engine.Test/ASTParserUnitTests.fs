@@ -279,6 +279,18 @@ type ASTParserTests() =
                            )
                        )
         }
+        // Variables
+        {
+            Name = "Test variables are parsed: 5*(x+1)"
+            Args = [Tokeniser.Int 5; Tokeniser.Multiply; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.Add; Tokeniser.Int 1; Tokeniser.RightBracket]
+            Expected = BinaryOperation(
+                            "*",
+                            Number(Int 5),
+                            ParenthesisExpression(
+                                BinaryOperation("+", Variable "x", Number(Int 1))
+                            )
+                        )
+        }
 
     ]
 
