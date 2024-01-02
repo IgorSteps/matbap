@@ -8,8 +8,6 @@
             "cos", (fun x -> UnaryMinusOperation("-", Function("sin", x)))
             "tan", (fun x -> BinaryOperation("^", Function("sec", x), Number(Int 2)))
             "log", (fun x -> BinaryOperation("/", Number(Int 1), x))
-            "ln", (fun x -> BinaryOperation("/", Number(Int 1), x))
-            "exp", (fun x -> Function("exp", x))
         ]
         
         /// Differentiate with respect to a variable.
@@ -32,8 +30,7 @@
                                                         "+", 
                                                         BinaryOperation("*", dLeft, right),
                                                         BinaryOperation("*", left, dRight)
-                                                        )
-                                                        )
+                                                    ))
                 // Quotent rule.
                 | "/", Ok(dLeft), Ok(dRight) -> Ok(BinaryOperation(
                                                         "/",
@@ -42,8 +39,10 @@
                                                             BinaryOperation("*", dLeft, right),
                                                             BinaryOperation("*", left, dRight)
                                                         ), 
-                                                        BinaryOperation("^", right, Number(Int 2))))
+                                                        BinaryOperation("^", right, Number(Int 2))
+                                                    ))
                          
+                // Power rule.
                 | "^", _, _ ->
                     match left, right with
                         | baseDiff, Number(Int power) ->
