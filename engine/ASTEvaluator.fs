@@ -63,6 +63,13 @@
                      | Ok (Float a), Ok (Float b) -> Ok (Number (Float (a/b)))
                      | Error e,      _            -> Error e
                      | _,            Error e      -> Error e
+            | "^" -> match (evalA, evalB) with
+                     | Ok (Int a),   Ok (Int b)   -> Ok (Number (Float (a**b)))
+                     | Ok (Int a),   Ok (Float b) -> Ok (Number (Float (a**b)))
+                     | Ok (Float a), Ok (Int b)   -> Ok (Number (Float (a**b)))
+                     | Ok (Float a), Ok (Float b) -> Ok (Number (Float (a**b)))
+                     | Error e,      _            -> Error e
+                     | _,            Error e      -> Error e
             | "%" -> match (evalA, evalB) with
                      | Ok (Int a),   Ok (Int b)   -> Ok (Number (Int   (a%b)))
                      | Ok (Int a),   Ok (Float b) -> Ok (Number (Float (float a%b)))
