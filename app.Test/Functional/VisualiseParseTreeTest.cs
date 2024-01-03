@@ -12,7 +12,7 @@
             // --------
             // ASSEMBLE
             // --------
-            ASTConversionService converter = new ASTConversionService();
+            ASTManager converter = new ASTManager();
             ASTViewModel viewModel = new ASTViewModel(converter);
 
             // -----

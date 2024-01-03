@@ -44,5 +44,15 @@
 
             return null;
         }
+
+        public Error ValidateExpressionInputIsNotNull(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return new Error("Expression is null or empty.");
+            }
+
+            return null;
+        }
     }
 }

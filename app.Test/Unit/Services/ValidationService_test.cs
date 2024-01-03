@@ -72,5 +72,26 @@
             // --------
             Assert.That(err.Message, Is.EqualTo(expectedErr.Message), "Error messages must be the same");
         }
+
+        [Test]
+        public void Test_ValidationService_ValidateExpressionInput()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string input = "";
+            ValidationService validationService = new ValidationService();
+            Error expectedErr = new Error("Expression is null or empty.");
+
+            // ----
+            // ACT
+            // ----
+            Error err = validationService.ValidateExpressionInputIsNotNull(input);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(err.Message, Is.EqualTo(expectedErr.Message), "Error messages must be the same");
+        }
     }
 }

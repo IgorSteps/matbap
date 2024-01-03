@@ -12,11 +12,15 @@
             // ASSEMBLE
             // --------
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
             var expression = "2";
-            var manager = new ExpressionManager();
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 
@@ -47,11 +51,15 @@
             // y=1;
             // x+y
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
             var expression = "x=1;\r\ny=1;\r\nx+y";
-            var manager = new ExpressionManager();
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 
