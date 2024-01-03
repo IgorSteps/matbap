@@ -118,11 +118,11 @@
 
         and parseForLoop(tokens: Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int x :: Comma :: Int y :: RightBracket :: Colon :: tail ->
+            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: RightBracket :: Colon :: tail ->
                 match parseExpression tail with
                 | Ok(expr, remainingTokens) -> 
                     Ok(
-                    ForLoop(VariableAssignment(varName, Number(NumType.Int(x))), Number(NumType.Int(y)), expr),
+                    ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), expr),
                     remainingTokens)
                 | Error err -> Error err
             | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
