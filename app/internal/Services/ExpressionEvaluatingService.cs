@@ -16,18 +16,21 @@ namespace app
     }
     public class ExpressionEvaluatingService : IEvaluator
     {
+        private readonly IValidator _validator;
         private readonly ISymbolTableManager _symbolTableManager;
         private readonly IFSharpEvaluatorWrapper _expressionEvaluator;
         private readonly IExpressionManager _expressionManager;
         private readonly IASTConverter _astConverter;
 
         public ExpressionEvaluatingService(
+                IValidator validator,
                 ISymbolTableManager symbolTableManager,
                 IFSharpEvaluatorWrapper expressionEvaluator,
                 IExpressionManager manager,
                 IASTConverter converter
             )
         {
+            _validator = validator;
             _symbolTableManager = symbolTableManager;
             _expressionEvaluator = expressionEvaluator;
             _expressionManager = manager;
@@ -36,6 +39,12 @@ namespace app
 
         public ExpressionEvaluatingServiceResult Evaluate(string input)
         {
+            Error err = _validator.ValidateExpressionInputIsNotNull( input );
+            if (err != null)
+            {
+                return new ExpressionEvaluatingServiceResult(null, err);
+            }
+
             Expression expression = _expressionManager.CreateExpression(input);
             SymbolTable symbolTable = _symbolTableManager.GetSymbolTable();
 
@@ -52,6 +61,12 @@ namespace app
 
         public ExpressionEvaluatingServiceResult Differentiate(string input) 
         {
+            Error err = _validator.ValidateExpressionInputIsNotNull(input);
+            if (err != null)
+            {
+                return new ExpressionEvaluatingServiceResult(null, err);
+            }
+
             Expression expression = _expressionManager.CreateExpression(input);
 
             expression.FSharpAST = TemporarySetAst(input);

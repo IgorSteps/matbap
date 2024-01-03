@@ -5,6 +5,7 @@ namespace app.Test.Unit
 {
     public class ExpressionEvaluatingService_test
     {
+        private Mock<IValidator> _mockValidator;
         private Mock<ISymbolTableManager> _mockSymbolTableManager;
         private Mock<IFSharpEvaluatorWrapper> _mockExpressionEvaluator;
         private Mock<IExpressionManager> _mockExpressionManager;
@@ -14,11 +15,13 @@ namespace app.Test.Unit
         [SetUp]
         public void Setup()
         {
+            _mockValidator = new Mock<IValidator>();
             _mockSymbolTableManager = new Mock<ISymbolTableManager>();
             _mockExpressionEvaluator = new Mock<IFSharpEvaluatorWrapper>();
             _mockExpressionManager = new Mock<IExpressionManager>();
             _mockConverter = new Mock<IASTConverter>();
             _service = new ExpressionEvaluatingService(
+                _mockValidator.Object,
                 _mockSymbolTableManager.Object,
                 _mockExpressionEvaluator.Object,
                 _mockExpressionManager.Object,

@@ -19,7 +19,8 @@
             var symTableManager = new SymbolTableManager();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager, converter);
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 
@@ -57,7 +58,8 @@
             var symTableManager = new SymbolTableManager();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager, converter);
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 

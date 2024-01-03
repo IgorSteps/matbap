@@ -18,7 +18,8 @@
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager, converter);
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
             string nextExpression = "y=5";
