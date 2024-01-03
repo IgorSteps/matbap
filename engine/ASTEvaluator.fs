@@ -13,8 +13,12 @@
                    | Error e -> Error e
             
         and private setVar (varName : string) (topNode : Node) (symTable : SymbolTable) : Result<Node*SymbolTable, string> =
-            match evalTree topNode symTable with
-            | Ok _ -> Error "Variable assignment not yet supported"
+            match evalNum topNode symTable with
+            | Ok num -> match symTable.ContainsKey varName with
+                        | true  -> symTable[varName] <- num
+                                   Ok (Number num, symTable)
+                        | false -> symTable.Add(varName, num)
+                                   Ok (Number num, symTable)
             | Error e -> Error e
             
         and private evalTree (node : Node) (symTable : SymbolTable) : Result<Node, string> =
