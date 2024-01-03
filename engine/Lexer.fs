@@ -27,7 +27,11 @@
             | Tan
             | Log
             | Exp
-            | EOL
+            | For
+            | In
+            | Comma
+            | Colon
+            | Range
 
         // Map stores reserved keywords, used to replace string variables
         // with the corresponding enum type when encountered in the tokenizer function
@@ -36,6 +40,9 @@
                                         .Add("tan", Tan)
                                         .Add("log", Log)
                                         .Add("exp", Exp)
+                                        .Add("for", For)
+                                        .Add("in", In)
+                                        .Add("range", Range)
 
         // Helpers.
         let private strToChar(str: string)   = [for c in str do yield c]
@@ -86,7 +93,6 @@
                 match chars with
                 // A line is terminated once it either it reaches a ';' or all chars are consumed if it is the final line
                 | []          -> Ok(List.rev acc)
-                | ';' :: tail -> matchTokens tail (EOL::acc)
                 | '+' :: tail -> matchTokens tail (Add::acc)
                 | '-' :: tail -> matchTokens tail (Minus::acc)
                 | '*' :: tail -> matchTokens tail (Multiply::acc)
@@ -96,6 +102,8 @@
                 | '%' :: tail -> matchTokens tail (Modulus::acc)
                 | '^' :: tail -> matchTokens tail (Power::acc)
                 | '=' :: tail -> matchTokens tail (Equals::acc)
+                | ',' :: tail -> matchTokens tail (Comma::acc)
+                | ':' :: tail -> matchTokens tail (Colon::acc)
                 | ' ' :: tail -> matchTokens tail acc
                 | '\n':: tail -> matchTokens tail acc
                 | '\r':: tail -> matchTokens tail acc

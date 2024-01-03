@@ -12,3 +12,5 @@
             | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node
             | Variable of string
+            | FunctionCall of string * Node
+            | ForLoop of Node * Node * Node
