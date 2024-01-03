@@ -22,13 +22,13 @@
 \begin{center}
 \rule{12cm}{1mm} \\
 \vspace{1cm}
-{\large  CMP-6048A/7009A Advanced Programming} %Delete as appropriate
+{\large  CMP-6048A Advanced Programming}
 \vspace{7.5cm}
 \\{\Large Project Report - 10 January 2024}
 \vspace{1.5cm}
-\\{\LARGE Matbap} % You can add to this title of modify it if you wish
+\\{\LARGE MATBAP: Maths Interpreter software}
 \vspace{1.0cm}
-\\{\Large Group members: \\ Igor Stepanenko, Lyra Dalton, Liam Farese\ }
+\\{\Large Group members: \\ Igor Stepanenko, Lyra, Liam Farese\ }
 \vspace{10.0cm}
 \\{\large School of Computing Sciences, University of East Anglia}
 \\ \rule{12cm}{0.5mm}
@@ -67,10 +67,6 @@ The main aim is to develop Matbap, a maths interpreter software for solving and 
 They are broken further into subtasks in this MoSCoW table \ref{appendix:moscow} 
 
 
-
-
-
-
 \chapter{Background}
 The development of maths software capable of plotting graphs has become significantly easier in recent years, because of integration of technology in education and research. Therefore, it is important we acknowledge key software and literature in this field.
 
@@ -87,8 +83,6 @@ The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Lea
 
 \chapter{Development History}\label{Chap:DevHist}
 
-linksDescribe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
-
 \section{Sprint 0: Setup development infrastructure}
 At the very start of this project, we needed to setup and integrate essentials tools that have been critical in streamlining workflow and improving teamwork.
 
@@ -104,37 +98,73 @@ We setup a version a control system for our codebase - GitHub repository(link - 
 \subsection{Conclusion}
 This sprint has laid foundation to our development journey. Setting up tools like Jira, GitHub and Visual Studio not only streamlined our workflow but also enabled us to be an effective and efficient team.
 
-\section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
+% https://liamfarese.atlassian.net/browse/AP-8
+\section{Sprint 1: Basic arithmetic calculations, Basic GUI.}
+In our first sprint, we focused on building the foundation of our maths interpreter, like basic arithmetic calculations and basic GUI. Our objective was to develop a software that mathces the spec requirements and is a robust and scalable application, keeping in mind maintainability and testability.
 
-\subsection{Grammar in BNF}
+\subsection{Lexer}
+We developed a lexer that would tokenise expressions consisting of digits, binary operations, identifiers and functions like sin, cos and tan. One of the challenges we faced was unfamiliarity with F\# and functional programming, especially the recursive nature of this programming paradigm. 
+
+\subsection{Parser}
+We developed a parser that would parse and evaluate expressions that followed this basic grammar.
 \begin{verbatim}
-<E>    ::= <T> <Eopt>
-<Eopt> ::= "+" <T> <Eopt> | "-" <T> <Eopt> | <empty>
-<T>    ::= <NR> <Topt>
-<Topt> ::= "*" <NR> <Topt> | "/" <NR> <Topt> | <empty>
-<NR>   ::= "Num" <value> | "(" <E> ")"
+ <E>    ::= <T> <Eopt>
+ <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+ <T>    ::= <NR> <Topt>
+ <Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
+ <NR>   ::= <int> | <float> | (E)
 \end{verbatim}
 
 \subsection{Basic GUI}
-We used WPF with C\# to develop a basic GUI - see Figure \ref{gui01}.
-
-\begin{figure}[htb]
-\begin{center}
-\includegraphics[width=0.9 \columnwidth]{GUI_01.png}
-\caption{A very basic GUI!}
-\label{gui01}
-\end{center}
-\end{figure}
+We used WPF\cite{WPF:2023} with C\# to develop a basic GUI, focusing on maintainability, testability, and scalability. App's architecture consists of several design patterns like Model-View-ViewModel\cite{MVVM:2022}, that improves GUI's responsiveness to user interactions and Dependency Injection\cite{DI:2023} for better modularity and easy maintenance. The GUI was a minimalistic interface allowing users to enter expressions and view the answers - see Figure \ref{basicgui}.
 
 \subsection{Testing}
-A subset of Table \ref{Table2} in Appendix \ref{app:test} could be referred to from here.
+Thorough unit tests were written for both the C\# app and the F\# engine. Table \ref{sprint1-lexer-test} includes unit test for the Lexer. Table \ref{sprint1-parser-test} includes unit tests for the Parser. The table with GUI unit tests can be seen in \ref{sprint1-gui-test}. The use of the MVVM and Dependency Injection patterns allowed us to to use the Moq\cite{Moq} mocking library to mock Model behaviours in our ViewModel. This allowed us to test code in isolation without relying on behaviour of real dependencies and to have control over what is returned from the mocked methods. As a result our code coverage was above 80\%.
+
+\subsection{Conclusion}
+The first sprint laid a solid foundation for our maths interpreter. The lexer and parser were capable of evaluation basic arithmetic expressions and the GUI was providing simple interface for user interaction. Our testing strategy set a ensured that future features were build upon a reliable codebase. 
 
 %https://liamfarese.atlassian.net/browse/AP-30
-\section{Sprint 2: As a user I want to have a basic GUI}
+\section{Sprint 2: Modulo and Power, Correct treatment of integers and floats, Help Menu, Lexer error handling, Link C\# app with F\# engine}
+
+In our second sprint, we focused on improving functionality and user experience of our maths interpreter. Key improvements were support for modulo and power operators, correct handling of integers and floats, better errors in the Lexer and linking our GUI with the interpreter.
+
+\subsection{Lexer}
+We updated our lexer with better errors. Now it returns error messages that include the problematic token and its position. This improvement helped us in our debugging processes and provided more clarity to users.
+
+\subsection{Parser}
+After a review from the teaching team, we identified a bug. We didn't correctly handle our floats and integers. Previously, integers were cast to floats in order to allow calculation with them. Our fix allowed integers and floats to be handled separately: integer operations would always return integers and the same would happen for floats. The updated BNF reflects this change:
+\begin{verbatim}
+<E>    ::= <T> <Eopt>
+<Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+<T>    ::= <NR> <Topt>
+<Topt> ::= * <NR> <Topt> | / <NR> <Topt> | <empty>
+<NR>   ::= <num> | (E)
+<num>  ::= <int> | <float>
+\end{verbatim}
+
+Furthermore, we added support for modulo (\%) and power (\textasciicircum) operators. This is reflected in this updated BNF:
+\begin{verbatim}
+<E>    ::= <T> <Eopt>
+<Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+<T>    ::= <P> <Topt>
+<Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
+<P>    ::= <NR> <Popt>
+<Popt> ::= ^ <NR> <Popt> | <empty>
+<NR>   ::= <num> | (E)
+<num>  ::= <int> | <float>
+\end{verbatim}
+
 
 \subsection{Updated GUI}
+The GUI was updated with a Help window, that showed all supported tokens. This addition improved user accessibility. The connection of our GUI to our interpreter allowed for real time calculations. The screenshot of updated GUI can be seen in TODO \ref{helpgui}.
 
 \subsection{Testing}
+We updated our unit tests to validate new features and fixed bugs. They can be seen under TODO\ref{}
+
+\subsection{Conclusion}
+Sprint 2 has made good progress in developing our maths interpreter. The introduction of new operators and the correction of behaviour around integer and floats improved our app's versatility and better matched requirements. The lexer's errors and updated GUI improved user experience.
+
 
 % https://liamfarese.atlassian.net/browse/AP-42
 \section{Sprint 3: As a user I want to be able to assign variables}
@@ -198,44 +228,6 @@ Briefly discuss  your achievements and put them in perspective with the MoSCoW a
 
 State here the \% contribution to the project of each individual member of the group and describe in brief what each member has done (if this corresponds to particular sections in the report then please specify these).
 
-\chapter{Testing}
-\label{app:test}
-\section{Arithmetic expression testing}
-
-\begin{table}[h]
-\caption{Arithmetic expression tests. Note that floating pointing values are accurate to three decimal places for the fractional part. ResE is expected result and ResA is actual result. \\}
-\begin{tabular}{|p{1.8in}|p{0.5in}|p{0.4in}|p{0.6in}|p{1.4in}|} \hline
-Expression & ResE & ResA& Pass/Fail & Action/comment \\ \hline \hline
-$5*3+(2*3-2)/2+6$ & 23 &  &  &  ... \\ \hline
-$9-3-2$ & 4 & & & left assoc.\  \\ \hline
-$10/3$ & 3 & & & int division  \\ \hline
-$10/3.0$ & 3.333 & & & float division \\ \hline
-$10\%3$ & 1 & & & \\ \hline
-$10 - -2$ & 12 & & & unary minus\\ \hline
-$-2 + 10$ & 8 & & & \\ \hline
-$3*5\verb|^|(-1+3)-2\verb|^|2*-3$ & 87 & & & power test \\ \hline
-$-3\verb|^|2$ & -9(*) or 9 & & & precedence \\ \hline
-$-7\%3$ & 2(*) or -1 & & & precedence (*)Python\\ \hline
-$3*5\verb|^|(-1+3)-2\verb|^|-2*-3$ & 75.750 or 75 & & & \\ \hline
-$3*5\verb|^|(-1+3)-2.0\verb|^|-2*-3$ & 75.750 & & & \\ \hline
-$(((3*2--2)))$ & 8 & & & \\ \hline 
-$(((3*2--2))$ & Error & & & syntax error \\ \hline
-$-((3*5-2*3))$ & -9 & & &  minus expression \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5$ & -39 & & & var assign \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5/2$ & -16 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*(5/2)$ & -12 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5/2.0$ & -16.5 & & & \\ \hline
-$x = 3; (2*x)-x\verb|^|2*5\%2$ & 5 & & &  \\ \hline
-$x = 3; (2*x)-x\verb|^|2*(5\%2)$ & -3 & & &  \\ \hline
-... & ... & ... & ... & ... \\ \hline
-\end{tabular}
-\label{Table2}
-\end{table}
-
-\section{GUI testing}
-
-\section{Plot testing}
-
 \chapter{Aims and objectives}
 \section{MoSCoW table}
 \label{appendix:moscow}
@@ -267,5 +259,93 @@ Priority & Task & Comments \\ \hline \hline
 \label{Table1}
 \end{center}
 \end{table}
+
+\chapter{Testing}
+\label{app:test}
+
+\section{F\# engine unit testing}
+
+\begin{table}[h]
+\caption{Sprint 1, Lexer unit tests}
+\label{sprint1-lexer-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression}        & \textbf{Pass/Fail} & \textbf{Comment}                      \\ \hline
+1a+12                      & Pass               & Tokenises variable, int and operation \\ \hline
+33.3/(12 + 3.5a)           & Pass               & Float/Int distinct tokenisation       \\ \hline
+sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation                 \\ \hline
+4 \% 2                     & Pass               & Modulus tokenisation                  \\ \hline
+4\textasciicircum{}3       & Pass               & Power tokenisation                    \\ \hline
+1. + 43                    & Pass               & Lexer error                           \\ \hline
+1.4.2                      & Pass               & Lexer error                           \\ \hline
+1\&                        & Pass               & Lexer error                           \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Sprint 1, Parser unit tests}
+\label{sprint1-parser-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression} & \textbf{Pass/Fail} & \textbf{Comment}                                                                     \\ \hline
+2+10                & Pass               & Parses and evaluates basic addition                                                  \\ \hline
+7-3                 & Pass               & Parses and evaluates basic subtraction                                               \\ \hline
+5*7                 & Pass               & \begin{tabular}[c]{@{}l@{}}Parses and evaluates basic \\ multiplication\end{tabular} \\ \hline
+12/8                & Pass               & \begin{tabular}[c]{@{}l@{}}Parses and evaluates basic \\ division\end{tabular}       \\ \hline
+5*2.3               & Pass               & Parses and evaluates integers with floats                                            \\ \hline
+13.56-6+14*20.1     & Pass               & Order of operations                                                                  \\ \hline
+5-2.5/(6.0+6.5)+1   & Pass               & Order of operations using brackets                                                   \\ \hline
+1\&                 & Pass               & Operators without an operand between                                                 \\ \hline
+6+-2                & Pass               & Operators without an operand between                                                 \\ \hline
+5/                  & Pass               & Operator without an operand following                                                \\ \hline
+*                   & Pass               & Operator with no operands at all                                                     \\ \hline
+(()                 & Pass               & Opening a bracket without closing it                                                 \\ \hline
+())                 & Pass               & Closing a bracket without having opened a matching one                               \\ \hline
+1/0                 & Pass               & Division by 0                                                                        \\ \hline
+\end{tabular}
+\end{table}
+
+
+
+\newpage
+\section{C\# GUI unit testing}
+
+\begin{table}[h]
+\caption{Sprint 1, GUI unit test}
+\label{sprint1-gui-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Input} & \textbf{Pass/Fail} & \textbf{Comment}                 \\ \hline
+123            & Pass               & Updates the View with user input \\ \hline
+\end{tabular}
+\end{table}
+
+
+\section{Plot testing}
+
+\chapter{GUI}
+\label{app:gui}
+\section{Basic GUI}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{Basic GUI.png}
+\caption{Our first basic GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{Updated GUI with Help Window}
+\label{helpgui}
+
+\chapter{Links}
+\label{app:links}
+\section{Jira Board}
+https://liamfarese.atlassian.net/jira/software/projects/AP/boards/2
+\label{ap-jira-link}
+
+\section{GitHub repository}
+https://github.com/IgorSteps/matbap
+\label{github-repo}
+
 \end{document}
 
