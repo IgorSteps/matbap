@@ -10,20 +10,12 @@
 \newcommand{\la}{\leftarrow}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{hyperref}
 \topmargin = 0pt
 \voffset = -80pt
 \oddsidemargin = 15pt
 \textwidth = 425pt
 \textheight = 750pt
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-    pdftitle={Overleaf Example},
-    pdfpagemode=FullScreen,
-    }
+
 \begin{document}
 
 \begin{titlepage}
@@ -80,17 +72,25 @@ They are broken further into subtasks in this MoSCoW table \ref{appendix:moscow}
 
 
 \chapter{Background}
+The development of maths software capable of plotting graphs has become significantly easier in recent years, because of integration of technology in education and research. Therefore, it is important we acknowledge key software and literature in this field.
 
-Give a brief background on similar software, e.g.\ \cite{Desmos:2023}, \cite{Matlab:2023}, etc.
-Also cite the books \cite{Nystrom:2021} or documentation \cite{WPF:2023} that you consulted.
-You should add additional references to the corresponding bib file (References.bib) referred to in the bottom of this document.
+Desmos\cite{Desmos:2023} software offers a graphical calculator that changed the way students learn mathematics by providing an intuitive UI and robust plotting functionality to allow for visualisations of complex functions and equations.
+
+MATLAB\cite{Matlab:2023} is the mainstream tool in the field of mathematical computing, visualising and programming. It offers extensive tooling that includes signal and image processing, which is why it is widely used in academia and industry.
+
+The Windows Presentation Foundation (WPF)\cite{WPF:2023} documentation provided by Microsoft Learn offered tutorials and guidance on creating desktop user interfaces. WPF’s powerful data-bindings were critical in displaying mathematical data back to the user.
+
+The Dependency Injection (DI) \cite{DI:2023} documentation from Microsoft Learn described the design pattern that produces more testable and modular software. In the context of our application, this pattern allowed for dynamic integration of different services like equation evaluator and plotting evaluator, and as a result made our software more maintainable and scalable.
+
+The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Learn describes the architecture, which is primarily used with WPF applications due to its powerful data-binding features. MVVM creates a clear separation of concerns where business logic is decoupled from the UI. This architecture was important in developing our software because it allowed for maintainable and scalable code, which could handle mathematical calculations and user interactions.
 
 
 \chapter{Development History}\label{Chap:DevHist}
 
 linksDescribe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
 
-\section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
+% https://liamfarese.atlassian.net/browse/AP-8
+\section{Sprint 1:As a user I want perform arithmetic calculations}
 \subsection{Grammar in BNF}
 \begin{verbatim}
 <E>    ::= <T> <Eopt>
@@ -114,14 +114,17 @@ We used WPF with C\# to develop a basic GUI - see Figure \ref{gui01}.
 \subsection{Testing}
 A subset of Table \ref{Table2} in Appendix \ref{app:test} could be referred to from here.
 
-\section{Sprint 2: \href{https://liamfarese.atlassian.net/browse/AP-30}{As a user I want to have a basic GUI}}
+%https://liamfarese.atlassian.net/browse/AP-30
+\section{Sprint 2: As a user I want to have a basic GUI}
 
 \subsection{Updated GUI}
 
 \subsection{Testing}
 
-\section{Sprint 3: \href{https://liamfarese.atlassian.net/browse/AP-42}{As a user I want to be able to assign variables}}
-\section{Sprint 4: \href{https://liamfarese.atlassian.net/browse/AP-50}{As a user I want to be able to plot lines and polynomials}}
+% https://liamfarese.atlassian.net/browse/AP-42
+\section{Sprint 3: As a user I want to be able to assign variables}
+% https://liamfarese.atlassian.net/browse/AP-50
+\section{Sprint 4: As a user I want to be able to plot lines and polynomials}
 \section{Sprint 5: As a developer I would like to have an AST Parser}
 \section{Sprint 6: As a user I would like to run for-loops}
 \section{Sprint 7: As a user I want to visualise an AST}
