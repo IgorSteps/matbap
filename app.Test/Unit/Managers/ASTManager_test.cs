@@ -15,7 +15,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void ASTConvertionService_Convert_FSharpNumberNode_CreatesCorrectCSharpNode()
+        public void ASTManager_Convert_FSharpNumberNode_CreatesCorrectCSharpNode()
         {
             // --------
             // ASSEMBLE
@@ -38,7 +38,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void ASTConvertionService_Convert_FSharpBinaryOperationNode_CreatesCorrectCSharpNode()
+        public void ASTManager_Convert_FSharpBinaryOperationNode_CreatesCorrectCSharpNode()
         {
             // --------
             // ASSEMBLE
@@ -62,7 +62,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void ASTConvertionService_Convert_FSharpParenthesisNode_CreatesCorrectCSharpNode()
+        public void ASTManager_Convert_FSharpParenthesisNode_CreatesCorrectCSharpNode()
         {
             // --------
             // ASSEMBLE
@@ -84,7 +84,29 @@ namespace app.Test.Unit
             Assert.That(cSharpNode.ToString(), Is.EqualTo(expected));
         }
 
-        public void ASTConvertionService_Convert_ComplexNodes()
+        [Test]
+        public void ASTManager_Convert_FSharpvariableNode_CreatesCorrectCSharpNode()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var expected = "x";
+            var testInput = "x";
+            var varNode = FSharpASTNode.NewVariable(testInput);
+
+            // ---
+            // ACT
+            // ---
+            var cSharpNode = _converter.Convert(varNode);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.IsInstanceOf<VariableNode>(cSharpNode);
+            Assert.That(cSharpNode.ToString(), Is.EqualTo(expected));
+        }
+
+        public void ASTManager_Convert_ComplexNodes()
         {
             // --------
             // ASSEMBLE
