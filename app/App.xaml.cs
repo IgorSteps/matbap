@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -38,14 +33,33 @@ namespace app
         {
             var services = new ServiceCollection();
 
-            // Models/Services.
-            services.AddSingleton<IInterpretModel, InterpretationModel>();
-            services.AddSingleton<IPlotEquationEvaluator, PlotEquationEvaluationService>();
+            // F# Evaluator Wrappers.
+            services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
+            services.AddTransient<Engine.IDifferentiator, Engine.DifferentiatorWrapper>();
 
-            // Viewmodels.
-            services.AddTransient<InterpretationViewModel>();
-            services.AddTransient<TokenHelpViewModel>();
+            // Managers.
+            services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
+            services.AddSingleton<ISymbolTableManager, SymbolTableManager>(); // Must be singleton, because manages symbol table.
+            services.AddSingleton<IExpressionManager, ExpressionManager>();
+            services.AddSingleton<IPlotManager, PlotManager>();
+            services.AddSingleton<ITangentManager, TangentManager>();
+
+            // C# Wrappers.
+            services.AddSingleton<IFSharpFunctionEvaluatorWrapper, FSharpFunctionEvaluatiorWrapper>();
+            services.AddSingleton<IFSharpDifferentiatorWrapper, FSharpDifferentiatorWrapper>();
+            
+            // Services.
+            services.AddSingleton<IASTConverter, ASTManager>();
+            services.AddSingleton<IPlotter, PlottingService>();
+            services.AddSingleton<IValidator, ValidationService>();
+            services.AddSingleton<IFSharpEvaluatorWrapper, FSharpEvaluatorWrapper>();
+            services.AddSingleton<IEvaluator, ExpressionEvaluatingService>(); 
+
+            // ViewModels.
+            services.AddTransient<ExpressionViewModel>();
+            services.AddTransient<HelpViewModel>();
             services.AddTransient<PlotViewModel>();
+            services.AddTransient<ASTViewModel>();
 
             return services.BuildServiceProvider();
         }

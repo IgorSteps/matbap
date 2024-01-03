@@ -3,60 +3,265 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:oxy="http://oxyplot.org/wpf"
+        xmlns:local="clr-namespace:app"
         mc:Ignorable="d"
-        Title="Matbap" Height="500" Width="394">
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        Title="Matbap" Height="600" Width="1200">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="2*"/>
+        </Grid.ColumnDefinitions>
 
-        <TextBox Grid.Row="0"
-                 Text="{Binding Expression}"
-                 Margin="10,10,10,0"
-                 x:Name="ExpressionInputBox"
-                 VerticalAlignment="Stretch"
-                 FontSize="18"
-                 TextWrapping="Wrap"
-                VerticalScrollBarVisibility="Visible"
-                AcceptsReturn="True"/>
-        <TextBlock Grid.Row="0" IsHitTestVisible="False" Text="Enter expression here..." Padding="5,5,0,0" Margin="10,10,10,0" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
-            <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <!-- Check if the expression text box is empty and change placeholder visibility accordingly. -->
-                        <DataTrigger Binding="{Binding Text, ElementName=ExpressionInputBox}" Value="">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
+        <!-- Evaluation and options column -->
+        <Grid
+            DataContext="{Binding ExpressionViewModel, Source={StaticResource ViewModelLocator}}"
+            Grid.Column="0"
+            Margin="10"
+            Background="#FFF0F8FF"
+            >
 
-        <Border Grid.Row="1" Margin="10,0,10,10" BorderBrush="Black" BorderThickness="1" Padding="5" >
-            <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Response}" FontSize="18"/>
-        </Border>
-        <TextBlock Grid.Row="1" IsHitTestVisible="False" Text="Answer..." Padding="5,5,0,0" Margin="10,0,10,10" VerticalAlignment="Stretch" Foreground="DarkGray" FontSize="18">
-            <TextBlock.Style>
-                <Style TargetType="{x:Type TextBlock}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                    <Style.Triggers>
-                        <!-- Check if the answer text box is empty and change placeholder visibility accordingly. -->
-                        <DataTrigger Binding="{Binding Text, ElementName=AnswerBox}" Value="">
-                            <Setter Property="Visibility" Value="Visible"/>
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TextBlock.Style>
-        </TextBlock>
-        
-        <Button Grid.Row="2" Content="Evaluate" FontSize="20" FontWeight="Bold"  Command="{Binding InterpretCmd}" Margin="10" Background="#FFE29E9E"/>
-        <Button Grid.Row="3" Content="Help" FontSize="20"  FontWeight="Bold"  Click="OpenTokenHelpClick" Margin="10" Background="#FFE29E9E"/>
-        <Button Grid.Row="4" Content="Plot Mode" FontSize="20"  FontWeight="Bold"  Click="OpenPlotClick" Margin="10" Background="#FFE29E9E"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+
+
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Enter maths expression to evaluate:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                <Button Grid.Column="1"
+                        DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
+                        Content="?"
+                        FontSize="18"
+                        FontWeight="Bold"
+                        Background="#FFC7C7C7"
+                        BorderThickness="1"
+                        Padding="10,0,10,0"
+                        ToolTipService.InitialShowDelay="0" 
+                        ToolTipService.ToolTip="{Binding HelpTexts.ExpressionsHelpText}"
+                     >
+                </Button>
+            </Grid>
+
+            <TextBox Grid.Row="1" 
+                     Text="{Binding Expression}"
+                     Margin="10"
+                     FontSize="18"
+                     TextWrapping="Wrap" 
+                     VerticalScrollBarVisibility="Visible"
+                     AcceptsReturn="True" 
+                     Background="#FFEEF7FF" 
+                     BorderBrush="#FFB1B1B1" 
+                     BorderThickness="2"/>
+
+            <TextBlock Grid.Row="2" Text="Answer:" Margin="10" FontSize="16" FontWeight="Bold"/>
+            <Border Grid.Row="3" Margin="10" BorderBrush="#FFC7C7C7" BorderThickness="2" Padding="5">
+                <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Answer}" FontSize="18" />
+            </Border>
+
+
+            <Button 
+                    Grid.Row="4"
+                    Content="Evaluate expression"
+                    Command="{Binding EvaluateCmd}"
+                    Margin="10"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+
+            
+            <TextBlock Grid.Row="5" Text="Options:" Margin="10" FontSize="16" FontWeight="Bold"/>
+
+            <Button 
+                Grid.Row="6"
+                Content="Differentiate expression"
+                Command="{Binding DifferentiateCmd}"
+                Margin="10"
+                FontSize="20"
+                FontWeight="Bold"
+                Background="#FFC7C7C7"
+                BorderThickness="2"/>   
+            <Button 
+                Grid.Row="7"
+                Content="Visualise parse tree"
+                FontSize="20"
+                FontWeight="Bold" 
+                Click="OpenASTVisualisationClick"
+                Margin="10"
+                Background="#FFC7C7C7"
+                BorderThickness="2"/>
+        </Grid>
+
+        <!-- Plotting Column -->
+        <Grid 
+            DataContext="{Binding PlotViewModel, Source={StaticResource ViewModelLocator}}"
+            Grid.Column="1"
+            Margin="10"
+            Background="#FFF0F8FF">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Enter maths function to plot:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                <Button Grid.Column="1"
+                    DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
+                    Content="?"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#FFC7C7C7"
+                    BorderThickness="1"
+                    Padding="10,0,10,0"
+                    ToolTipService.InitialShowDelay="0" 
+                    ToolTipService.ToolTip="{Binding HelpTexts.PlotHelpText}"
+                 >
+                </Button>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBox Grid.Column="0"
+                    Text="{Binding InputEquation}"
+                    Margin="10"
+                    FontSize="18"
+                    Background="#FFEEF7FF"
+                    BorderBrush="#FFC7C7C7"
+                    BorderThickness="2"/>
+                <Button Grid.Column="1"
+                    Content="Plot"
+                    Command="{Binding PlotCmd}"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Margin="10"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+                <Button Grid.Column="2"
+                    Content="Clear"
+                    Command="{Binding ClearCmd}"
+                    FontSize="20"
+                    FontWeight="Bold"
+                    Margin="10"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+            </Grid>
+
+            <!-- Polynomial coefficients controls -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="5">
+                <Label Content="X Min:"/>
+                <TextBox Width="50" Text="{Binding XMinimum, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <Label Content="X Max:"/>
+                <TextBox Width="50" Text="{Binding XMaximum, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <Label Content="X Step:"/>
+                <TextBox Width="50" Text="{Binding XStep, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+            </StackPanel>
+
+            <!-- Add tangent block -->
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                    <ColumnDefinition Width="Auto" MinWidth="50"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Column="0" Content="Tangent's x coordinate:" Margin="5"/>
+                <TextBox Grid.Column="1" Name="XCoordinateTextBox" Text="{Binding TangentX, UpdateSourceTrigger=PropertyChanged}" Margin="5" />
+                <Button 
+                    Grid.Column="2" 
+                    Content="Add Tangent" 
+                    Command="{Binding AddTangentCmd}"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Margin="5"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+
+                <Button 
+                    Grid.Column="3"
+                    DataContext="{Binding HelpViewModel, Source={StaticResource ViewModelLocator}}"
+                    Content="?"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Background="#FFC7C7C7"
+                    BorderThickness="1"
+                    Margin="5"
+                    Padding="10,0,10,0"
+                    ToolTipService.InitialShowDelay="0" 
+                    ToolTipService.ToolTip="{Binding HelpTexts.TangentHelpText}"
+                >
+
+                </Button>
+            </Grid>
+            <!-- End Add tangent block -->
+
+            <!-- Plotting error block -->
+            <TextBlock 
+                Grid.Row="4"
+                Text="{Binding Error}"
+                Width="760"
+                Margin="5"
+                FontSize="18"
+                HorizontalAlignment="Left"
+                Foreground="Red" />
+            <!-- End Plotting error block -->
+
+            <!-- Plot block -->
+            <Grid Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="41*"/>
+                    <ColumnDefinition Width="582*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <oxy:PlotView Grid.Column="0" Model="{Binding OxyPlotModel}" x:Name="PlotArea" Grid.ColumnSpan="3" Margin="0,0,156,0" />
+
+                <Grid Grid.Column="2">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock  Grid.Row="0" Text="Plotted Functions:" Margin="10" FontSize="16" FontWeight="Bold"/>
+                    <ListView Grid.Row="1" ItemsSource="{Binding Plots}"  SelectedItem="{Binding SelectedPlot}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Function}" FontSize="16"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+
+            </Grid>
+            <!-- End Plot block -->
+
+        </Grid>
 
     </Grid>
 </Window>
