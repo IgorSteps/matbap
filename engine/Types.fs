@@ -12,3 +12,5 @@
             | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node
             | Variable of string
+            /// Represents a function like sin(x).
+            | Function of string * Node
