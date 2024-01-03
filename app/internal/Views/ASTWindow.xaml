@@ -1,0 +1,18 @@
+﻿<Window x:Class="app.ASTWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:gv="clr-namespace:Microsoft.Msagl.GraphViewerGdi;assembly=Microsoft.Msagl.GraphViewerGDI"
+        xmlns:local="clr-namespace:app"
+        mc:Ignorable="d"
+        Title="AST" Height="450" Width="800">
+
+    <WindowsFormsHost Name="windowsFormsHost1" Margin="0,0,0,0">
+
+        <gv:GViewer x:Name="gViewer"></gv:GViewer>
+
+    </WindowsFormsHost>
+
+
+</Window>

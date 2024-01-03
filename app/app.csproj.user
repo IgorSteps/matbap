@@ -7,18 +7,15 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
-    <Compile Update="internal\Views\PlotWindow.xaml.cs">
+    <Compile Update="internal\Views\ASTWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Page Update="internal\Views\HelpWindow.xaml">
+    <Page Update="internal\Views\ASTWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="internal\Views\MainWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="internal\Views\PlotWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

@@ -37,5 +37,11 @@ jobs:
     - name: Build
       run: dotnet build --no-restore
 
-    - name: Unit Test
-      run: dotnet test --no-build --verbosity normal
+    - name: Unit Test For C# app
+      run: dotnet test --filter FullyQualifiedName~app.Test.Unit --no-build --verbosity normal
+
+    - name: Unit Test For F# engine
+      run: dotnet test --filter FullyQualifiedName~engine.Test --no-build --verbosity normal
+
+    - name: Functional tests
+      run: dotnet test --filter FullyQualifiedName~app.Test.Functional --no-build --verbosity normal
