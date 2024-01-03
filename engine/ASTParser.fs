@@ -48,7 +48,7 @@
         
         and parseFunctionCall(funcName: string, tokens: Token list) : Result<(Node * Token list), string> =
             match parseExpression(tokens) with
-                | Ok (expr, RightBracket :: remainingTokens)    -> Ok (FunctionCall(funcName, expr), remainingTokens)
+                | Ok (expr, RightBracket :: remainingTokens)    -> Ok (Function(funcName, expr), remainingTokens)
                 | Ok _                                          -> Error "Missing closing bracket on function call"
                 | Error err                                     -> Error err
 
@@ -120,14 +120,14 @@
             match tokens with
             | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: tail->
                 match tail with
-                | Int step :: RightBracket :: Colon :: tail   -> 
+                | Comma :: Int step :: RightBracket :: Colon :: tail   -> 
                     match parseExpression tail with
                     | Ok(expr, remainingTokens) -> 
                         Ok(
                         ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Int(step)), expr),
                         remainingTokens)
                     | Error err -> Error err
-                | Float step :: RightBracket :: Colon :: tail ->
+                | Comma :: Float step :: RightBracket :: Colon :: tail ->
                     match parseExpression tail with
                     | Ok(expr, remainingTokens) -> 
                         Ok(

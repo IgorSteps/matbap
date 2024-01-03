@@ -295,7 +295,7 @@ type ASTParserTests() =
         {
             Name = "Test that tan function is properly parsed: tan(7/2)"
             Args = [Tokeniser.Tan; Tokeniser.LeftBracket; Tokeniser.Int 7; Tokeniser.Divide; Tokeniser.Int 2; Tokeniser.RightBracket]
-            Expected = FunctionCall(
+            Expected = Function(
                            "tan",
                            BinaryOperation(
                                 "/",
@@ -315,14 +315,14 @@ type ASTParserTests() =
                            ),
                            Number(Int(10)),
                            Number(Int(0)),
-                           FunctionCall(
+                           Function(
                                "sin",
                                Variable("x")
                            )
                        )
         }
         {
-            Name = "Test for loop int step parsing: for x in range(1,10, 2) : sin(x)"
+            Name = "Test for loop int step parsing: for x in range(1,10,2) : sin(x)"
             Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Int 2; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
             Expected = ForLoop(
                            VariableAssignment(
@@ -331,14 +331,14 @@ type ASTParserTests() =
                            ),
                            Number(Int(10)),
                            Number(Int(2)),
-                           FunctionCall(
+                           Function(
                                "sin",
                                Variable("x")
                            )
                        )
         }
         {
-            Name = "Test for loop float step parsing: for x in range(1,10, 0.5) : sin(x)"
+            Name = "Test for loop float step parsing: for x in range(1,10,0.5) : sin(x)"
             Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Float 0.5; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
             Expected = ForLoop(
                            VariableAssignment(
@@ -347,7 +347,7 @@ type ASTParserTests() =
                            ),
                            Number(Int(10)),
                            Number(Float(0.5)),
-                           FunctionCall(
+                           Function(
                                "sin",
                                Variable("x")
                            )

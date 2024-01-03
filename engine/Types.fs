@@ -12,5 +12,7 @@
             | UnaryMinusOperation of string * Node
             | VariableAssignment of string * Node
             | Variable of string
-            | FunctionCall of string * Node
+            // Represents a for loop, VariableAssignment * xmax * step * Expr
             | ForLoop of Node * Node * Node * Node
+            /// Represents a function like sin(x).
+            | Function of string * Node
