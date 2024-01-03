@@ -291,7 +291,35 @@ type ASTParserTests() =
                             )
                         )
         }
-
+        // Built in function test
+        {
+            Name = "Test that tan function is properly parsed: tan(7/2)"
+            Args = [Tokeniser.Tan; Tokeniser.LeftBracket; Tokeniser.Int 7; Tokeniser.Divide; Tokeniser.Int 2; Tokeniser.RightBracket]
+            Expected = FunctionCall(
+                           "tan",
+                           BinaryOperation(
+                                "/",
+                                Number(Int(7)),
+                                Number(Int(2))
+                           )
+                       )
+        }
+        // For Loop
+        {
+            Name = "Test for loop parsing: for x in range(1,10) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           FunctionCall(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
@@ -319,6 +347,16 @@ type ASTParserTests() =
             Name = "Testing error: variable assignment without assigning a value: x = "
             Args = [Tokeniser.Identifier "x"; Tokeniser.Equals]
             Expected = "A variable assignment was attempted without assigning a value"
+        }
+        {
+            Name = "Testing incorrect for loop declaration: for(1,10) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+        }
+        {
+            Name = "Testing function call no closing bracket error: exp(2"
+            Args = [Tokeniser.Exp; Tokeniser.LeftBracket; Tokeniser.Int 2]
+            Expected = "Missing closing bracket on function call"
         }
     ]
 

@@ -32,6 +32,7 @@
             | Comma
             | Colon
             | Range
+            | EOL
 
         // Map stores reserved keywords, used to replace string variables
         // with the corresponding enum type when encountered in the tokenizer function
@@ -104,6 +105,7 @@
                 | '=' :: tail -> matchTokens tail (Equals::acc)
                 | ',' :: tail -> matchTokens tail (Comma::acc)
                 | ':' :: tail -> matchTokens tail (Colon::acc)
+                | ';' :: tail -> matchTokens tail (EOL::acc)
                 | ' ' :: tail -> matchTokens tail acc
                 | '\n':: tail -> matchTokens tail acc
                 | '\r':: tail -> matchTokens tail acc
