@@ -1,5 +1,7 @@
 ﻿namespace Engine
     // Grammar:
+    // ForLoop ::= "for" <varID> "in" "range(<int>,<int>)" ":" <E>
+    //           | "for" <varID> "in" "range(<int>,<int>,<float>)" ":" <E>
     // <varA> ::= <varID> = <E>
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
@@ -7,8 +9,11 @@
     // <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
     // <P>    ::= <NR> <Popt>
     // <Popt> ::= ^ <NR> <Popt> | <empty>
-    // <NR>   ::= <num> | (E)
+    // <NR>   ::= <num> | (E) | <func-call>
     // <num>  ::= <int> | <float> | <varVal>
+
+    // <func-call> ::= <func-name>(<E>)
+    // <func-name> ::= sin | cos | tan | log
 
     // varVal is fetched from symbol table using varID
 
@@ -23,6 +28,11 @@
             | Float   floatNumber :: remainingTokens -> Ok (Number(NumType.Float(floatNumber)), remainingTokens)
             | Minus               :: remainingTokens -> parseUnaryMinusOperation(remainingTokens)
             | LeftBracket         :: remainingTokens -> parseBracketedExpression(remainingTokens)
+            | Sin :: LeftBracket  :: remainingTokens -> parseFunctionCall("sin", remainingTokens)
+            | Cos :: LeftBracket  :: remainingTokens -> parseFunctionCall("cos", remainingTokens)
+            | Tan :: LeftBracket  :: remainingTokens -> parseFunctionCall("tan", remainingTokens)
+            | Log :: LeftBracket  :: remainingTokens -> parseFunctionCall("log", remainingTokens)
+            | Exp :: LeftBracket  :: remainingTokens -> parseFunctionCall("exp", remainingTokens)
             | Identifier identifierName :: remainingTokens -> Ok (Variable(identifierName), remainingTokens)
             | _                                      -> Error "Expected number, '(' or '-'."
 
@@ -35,6 +45,12 @@
              match parseExpression(tokens) with
                 | Ok (expr, RightBracket :: remainingTokens)    -> Ok (ParenthesisExpression(expr), remainingTokens)
                 | Ok _                                          -> Error "Missing closing bracket"
+                | Error err                                     -> Error err
+        
+        and parseFunctionCall(funcName: string, tokens: Token list) : Result<(Node * Token list), string> =
+            match parseExpression(tokens) with
+                | Ok (expr, RightBracket :: remainingTokens)    -> Ok (Function(funcName, expr), remainingTokens)
+                | Ok _                                          -> Error "Missing closing bracket on function call"
                 | Error err                                     -> Error err
 
         /// Parses the power <P>.
@@ -100,7 +116,36 @@
                 | Ok (t, remainingTokens)   -> parseExpressionOperators(BinaryOperation("-", expr, t), remainingTokens)
                 | Error err                 -> Error err
             | _ -> Ok (expr, tokens)
-        
+
+        and parseForLoop(tokens: Token list) : Result<(Node * Token list), string> =
+            match tokens with
+            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: tail->
+                match tail with
+                | Comma :: Int step :: RightBracket :: Colon :: tail   -> 
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(float step)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | Comma :: Float step :: RightBracket :: Colon :: tail ->
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(step)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | RightBracket :: Colon :: tail                        ->
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(1.0)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
+                
+            | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+
         /// Parses a potential variable assignment, if not it will default to parse an expression
         and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
             match tokens with
@@ -111,6 +156,7 @@
                            | Ok (expr, remainingTokens)    -> Ok (VariableAssignment (varName, expr), remainingTokens)
                            | Error err                     -> Error err
             | Equals :: _ -> Error "A variable assignment was attempted without giving a variable name"
+            | For :: _    -> parseForLoop tokens
             | _ -> parseExpression tokens
 
         // Parse tokens.
