@@ -118,13 +118,31 @@
 
         and parseForLoop(tokens: Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: RightBracket :: Colon :: tail ->
-                match parseExpression tail with
-                | Ok(expr, remainingTokens) -> 
-                    Ok(
-                    ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), expr),
-                    remainingTokens)
-                | Error err -> Error err
+            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: tail->
+                match tail with
+                | Int step :: RightBracket :: Colon :: tail   -> 
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Int(step)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | Float step :: RightBracket :: Colon :: tail ->
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(step)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | RightBracket :: Colon :: tail               ->
+                    match parseExpression tail with
+                    | Ok(expr, remainingTokens) -> 
+                        Ok(
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Int(0)), expr),
+                        remainingTokens)
+                    | Error err -> Error err
+                | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
+                
             | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
 
         /// Parses a potential variable assignment, if not it will default to parse an expression

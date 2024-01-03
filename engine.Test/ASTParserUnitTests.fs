@@ -314,6 +314,39 @@ type ASTParserTests() =
                                Number(Int(1))
                            ),
                            Number(Int(10)),
+                           Number(Int(0)),
+                           FunctionCall(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
+        {
+            Name = "Test for loop int step parsing: for x in range(1,10, 2) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Int 2; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           Number(Int(2)),
+                           FunctionCall(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
+        {
+            Name = "Test for loop float step parsing: for x in range(1,10, 0.5) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Float 0.5; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           Number(Float(0.5)),
                            FunctionCall(
                                "sin",
                                Variable("x")
@@ -352,6 +385,11 @@ type ASTParserTests() =
             Name = "Testing incorrect for loop declaration: for(1,10) : sin(x)"
             Args = [Tokeniser.For; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
             Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+        }
+        {
+            Name = "Testing incorrect for loop declaration: for x in range(1,10, 4 : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Int 4; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = "Incorrect for-loop declaration, either the step or closing bracket is missing"
         }
         {
             Name = "Testing function call no closing bracket error: exp(2"
