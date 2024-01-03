@@ -88,7 +88,7 @@ namespace app
         public ASTNode Left => _left;
         public ASTNode Right => _right;
     }
-
+     
     public class ParenthesisExpressionNode : ASTNode
     {
         private readonly ASTNode _bracketedNode;

@@ -6,7 +6,7 @@ namespace app
     {
         public string Value { get; private set; }
         public FSharpAST FSharpAST { get; set; }
-        public ASTNode CSharpAST { get; private set; }
+        public ASTNode CSharpAST { get; set; }
         public Expression(string expression)
         {
             Value = expression;

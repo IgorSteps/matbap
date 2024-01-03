@@ -23,6 +23,11 @@ namespace app
             };
         }
 
+        public string ConvertToString(ASTNode root)
+        {
+            return root.ToString();
+        }
+
         private static ASTNode ConvertFSharpNumber(FSharpNumType numType)
         {
             return numType switch
@@ -33,6 +38,5 @@ namespace app
                 _ => throw new InvalidOperationException("Unknown number type in F# NumType."),
             };
         }
-
     }
 }

@@ -1,4 +1,5 @@
-﻿using FSharpAST = Engine.Types.Node;
+﻿using System.Windows.Forms;
+using FSharpAST = Engine.Types.Node;
 
 namespace app
 {
@@ -18,21 +19,24 @@ namespace app
         private readonly ISymbolTableManager _symbolTableManager;
         private readonly IFSharpEvaluatorWrapper _expressionEvaluator;
         private readonly IExpressionManager _expressionManager;
+        private readonly IASTConverter _astConverter;
 
         public ExpressionEvaluatingService(
                 ISymbolTableManager symbolTableManager,
                 IFSharpEvaluatorWrapper expressionEvaluator,
-                IExpressionManager manager 
+                IExpressionManager manager,
+                IASTConverter converter
             )
         {
             _symbolTableManager = symbolTableManager;
             _expressionEvaluator = expressionEvaluator;
             _expressionManager = manager;
+            _astConverter = converter;
         }
 
-        public ExpressionEvaluatingServiceResult Evaluate(Expression expression, string input)
+        public ExpressionEvaluatingServiceResult Evaluate(string input)
         {
-            expression = _expressionManager.CreateExpression(input);
+            Expression expression = _expressionManager.CreateExpression(input);
             SymbolTable symbolTable = _symbolTableManager.GetSymbolTable();
 
             var result = _expressionEvaluator.Evaluate(expression.Value, symbolTable);
@@ -46,19 +50,24 @@ namespace app
             return new ExpressionEvaluatingServiceResult(result.EvaluationResult, null);
         }
 
-        public ExpressionEvaluatingServiceResult Differentiate(Expression expression) 
+        public ExpressionEvaluatingServiceResult Differentiate(string input) 
         {
+            Expression expression = _expressionManager.CreateExpression(input);
+            expression.FSharpAST = TemporarySetAst(input);
+
             var result = _expressionManager.Differentiate(expression);
             if (result.HasError)
             {
                 return new ExpressionEvaluatingServiceResult(null, result.Error);
             }
 
-            // @TODO:
+           
             // Convert AST to C# AST;
+            expression.CSharpAST = _astConverter.Convert(expression.FSharpAST);
             // Convert AST to expression;
+            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
-            return new ExpressionEvaluatingServiceResult("BOOM", null);
+            return new ExpressionEvaluatingServiceResult(derivative, null);
         }
 
         // @TODO: Refactor once Evaluator is switched to AST Evaluator.
