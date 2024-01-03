@@ -1,6 +1,7 @@
 ﻿namespace Engine
     // Grammar:
     // ForLoop ::= "for" <varID> "in" "range(<int>,<int>)" ":" <E>
+    //           | "for" <varID> "in" "range(<int>,<int>,<float>)" ":" <E>
     // <varA> ::= <varID> = <E>
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
@@ -124,7 +125,7 @@
                     match parseExpression tail with
                     | Ok(expr, remainingTokens) -> 
                         Ok(
-                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Int(step)), expr),
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(float step)), expr),
                         remainingTokens)
                     | Error err -> Error err
                 | Comma :: Float step :: RightBracket :: Colon :: tail ->
@@ -134,11 +135,11 @@
                         ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(step)), expr),
                         remainingTokens)
                     | Error err -> Error err
-                | RightBracket :: Colon :: tail               ->
+                | RightBracket :: Colon :: tail                        ->
                     match parseExpression tail with
                     | Ok(expr, remainingTokens) -> 
                         Ok(
-                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Int(0)), expr),
+                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(1.0)), expr),
                         remainingTokens)
                     | Error err -> Error err
                 | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"

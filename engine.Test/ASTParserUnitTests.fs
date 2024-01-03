@@ -314,7 +314,7 @@ type ASTParserTests() =
                                Number(Int(1))
                            ),
                            Number(Int(10)),
-                           Number(Int(0)),
+                           Number(Float(1.0)),
                            Function(
                                "sin",
                                Variable("x")
@@ -330,7 +330,7 @@ type ASTParserTests() =
                                Number(Int(1))
                            ),
                            Number(Int(10)),
-                           Number(Int(2)),
+                           Number(Float(2.0)),
                            Function(
                                "sin",
                                Variable("x")
