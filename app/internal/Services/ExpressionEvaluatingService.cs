@@ -1,4 +1,6 @@
-﻿namespace app
+﻿using FSharpAST = Engine.Types.Node;
+
+namespace app
 {
     public struct ExpressionEvaluatingServiceResult
     {
@@ -28,9 +30,9 @@
             _expressionManager = manager;
         }
 
-        public ExpressionEvaluatingServiceResult Evaluate(string input)
+        public ExpressionEvaluatingServiceResult Evaluate(Expression expression, string input)
         {
-            Expression expression = _expressionManager.CreateExpression(input);
+            expression = _expressionManager.CreateExpression(input);
             SymbolTable symbolTable = _symbolTableManager.GetSymbolTable();
 
             var result = _expressionEvaluator.Evaluate(expression.Value, symbolTable);
@@ -39,7 +41,16 @@
                 return new ExpressionEvaluatingServiceResult(null, result.Error);
             }
 
+            expression.FSharpAST = TemporarySetAst(input);
+
             return new ExpressionEvaluatingServiceResult(result.EvaluationResult, null);
+        }
+
+        // @TODO: Refactor once Evaluator is switched to AST Evaluator.
+        private FSharpAST TemporarySetAst(string input)
+        {
+            var tokens = Engine.Tokeniser.tokenise(input);
+            return Engine.ASTParser.parse(tokens.ResultValue).ResultValue;
         }
     }
 }

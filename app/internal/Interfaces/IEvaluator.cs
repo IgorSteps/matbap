@@ -5,6 +5,6 @@
     /// </summary>
     public interface IEvaluator
     {
-        public ExpressionEvaluatingServiceResult Evaluate(string input);
+        public ExpressionEvaluatingServiceResult Evaluate(Expression expression, string input)
     }
 }
