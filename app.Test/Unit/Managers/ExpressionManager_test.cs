@@ -1,4 +1,6 @@
-﻿namespace app.Test.Unit
+﻿using Moq;
+
+namespace app.Test.Unit
 {
     public class ExpressionManager_test
     {
@@ -10,7 +12,8 @@
             // --------
             string expression = "1+1";
             Expression expected = new Expression(expression);
-            ExpressionManager manager = new ExpressionManager();
+            var fSharpDiffWrapper = new Mock<IFSharpDifferentiatorWrapper>();
+            ExpressionManager manager = new ExpressionManager(fSharpDiffWrapper.Object);
 
             // ----
             // ACT

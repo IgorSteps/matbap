@@ -4,7 +4,7 @@ using FSharpNumType = Engine.Types.NumType;
 namespace app.Test.Unit
 
 {
-    public class ASTConversionService_test
+    public class ASTManager_test
     {
         private ASTManager _converter;
 

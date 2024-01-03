@@ -18,11 +18,14 @@
             // ASSEMBLE
             // --------
             var expression = input;
-            var manager = new ExpressionManager();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
-            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager);
+            var converter = new ASTManager();
+            var service = new ExpressionEvaluatingService(symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 

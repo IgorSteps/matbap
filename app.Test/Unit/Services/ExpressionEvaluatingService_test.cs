@@ -7,6 +7,7 @@ namespace app.Test.Unit
         private Mock<ISymbolTableManager> _mockSymbolTableManager;
         private Mock<IFSharpEvaluatorWrapper> _mockExpressionEvaluator;
         private Mock<IExpressionManager> _mockExpressionManager;
+        private Mock<IASTConverter> _mockConverter;
         private ExpressionEvaluatingService _service;
 
         [SetUp]
@@ -15,10 +16,12 @@ namespace app.Test.Unit
             _mockSymbolTableManager = new Mock<ISymbolTableManager>();
             _mockExpressionEvaluator = new Mock<IFSharpEvaluatorWrapper>();
             _mockExpressionManager = new Mock<IExpressionManager>();
+            _mockConverter = new Mock<IASTConverter>();
             _service = new ExpressionEvaluatingService(
                 _mockSymbolTableManager.Object,
                 _mockExpressionEvaluator.Object,
-                _mockExpressionManager.Object
+                _mockExpressionManager.Object,
+                _mockConverter.Object
                 );
         }
 
