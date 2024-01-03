@@ -46,6 +46,21 @@ namespace app
             return new ExpressionEvaluatingServiceResult(result.EvaluationResult, null);
         }
 
+        public ExpressionEvaluatingServiceResult Differentiate(Expression expression) 
+        {
+            var result = _expressionManager.Differentiate(expression);
+            if (result.HasError)
+            {
+                return new ExpressionEvaluatingServiceResult(null, result.Error);
+            }
+
+            // @TODO:
+            // Convert AST to C# AST;
+            // Convert AST to expression;
+
+            return new ExpressionEvaluatingServiceResult("BOOM", null);
+        }
+
         // @TODO: Refactor once Evaluator is switched to AST Evaluator.
         private FSharpAST TemporarySetAst(string input)
         {
