@@ -53,6 +53,7 @@ namespace app
         public ExpressionEvaluatingServiceResult Differentiate(string input) 
         {
             Expression expression = _expressionManager.CreateExpression(input);
+
             expression.FSharpAST = TemporarySetAst(input);
 
             var result = _expressionManager.Differentiate(expression);
@@ -61,10 +62,8 @@ namespace app
                 return new ExpressionEvaluatingServiceResult(null, result.Error);
             }
 
-           
-            // Convert AST to C# AST;
+            expression.FSharpAST = result.AST;
             expression.CSharpAST = _astConverter.Convert(expression.FSharpAST);
-            // Convert AST to expression;
             string derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
             return new ExpressionEvaluatingServiceResult(derivative, null);

@@ -19,6 +19,7 @@ namespace app
                 FSharpASTNode.Number num => ConvertFSharpNumber(num.Item),
                 FSharpASTNode.BinaryOperation node => new BinaryOperationNode(node.Item1, Convert(node.Item2), Convert(node.Item3)),
                 FSharpASTNode.ParenthesisExpression node => new ParenthesisExpressionNode(Convert(node.Item)),
+                FSharpASTNode.Variable node => new VariableNode(node.Item),
                 _ => throw new InvalidOperationException("Unknown C# node type in F# AST."),
             };
         }
