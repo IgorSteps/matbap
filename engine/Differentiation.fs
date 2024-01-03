@@ -36,7 +36,10 @@
                 | false -> Error(sprintf "Function '%s' is not supported for differentiation" funcName)
             | _ -> Error("Unsupported node type for differentiation")
 
-
+        /// Differentiate using Derivative Rules(ref: https://www.mathsisfun.com/calculus/derivatives-rules.html).
+        /// Opeartion is binary operaion.
+        /// Left and right are respective operands of that operation.
+        /// Var is the variable with respect to we are differentiating.
         and differentiateBinaryOperations operation var left right =
             match operation, differentiate left var, differentiate right var with
             // Sum rule.
