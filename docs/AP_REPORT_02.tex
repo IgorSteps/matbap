@@ -89,8 +89,23 @@ The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Lea
 
 linksDescribe the history of your development in terms of the iterations or sprints in your project (your Github repository or other version control should help you to retrospectively identify these). Use different sections for different sprints and subsections for specific details on the same sprint. Feel free to use subsubsections or paragraphs (which are not numbered) if needed. 
 
-% https://liamfarese.atlassian.net/browse/AP-8
-\section{Sprint 1:As a user I want perform arithmetic calculations}
+\section{Sprint 0: Setup development infrastructure}
+At the very start of this project, we needed to setup and integrate essentials tools that have been critical in streamlining workflow and improving teamwork.
+
+\subsection{Jira Board}
+To track our work, we chose Jira\cite{Atlassian:JIRA} - tool for task management and sprint planning, which provided us with visual representation of our project's progress. We setup a Jira Board(link \ref{ap-jira-link}) that helped us create a backlog tickets, that can be assigned to a team member and tracked in To Do, In Progress and Done columns.
+
+\subsection{Visual Studio Project}
+Next we configured a Visual Studio solution that could reference a F\# application in a C\# application as a DLL\cite{DLL}.
+
+\subsection{GitHub repository}
+We setup a version a control system for our codebase - GitHub repository(link - \ref{github-repo}). This enabled us to collaborate, peer review each others work and keep a history of contributions to the project. A significant objective was to setup a Continuous Integration (CI)\cite{Atlassian:CI} using GitHub Actions\cite{GitHubDocs:Actions} to ensure that our codebase remains bug free through automated testing before any changes are merged to the main branch.
+
+\subsection{Conclusion}
+This sprint has laid foundation to our development journey. Setting up tools like Jira, GitHub and Visual Studio not only streamlined our workflow but also enabled us to be an effective and efficient team.
+
+\section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
+
 \subsection{Grammar in BNF}
 \begin{verbatim}
 <E>    ::= <T> <Eopt>
