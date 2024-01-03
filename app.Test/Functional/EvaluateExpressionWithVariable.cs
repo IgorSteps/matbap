@@ -1,4 +1,6 @@
-﻿namespace app.Test.Functional
+﻿using Engine;
+
+namespace app.Test.Functional
 {
     public class EvaluateExpressionWithVariable
     {
@@ -11,24 +13,32 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
             string nextExpression = "5+x";
 
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo("10"), "Responses don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("10"), "Responses don't match");
         }
 
         /// <summary>
@@ -40,8 +50,16 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
             string nextVariable = "y=5";
             string nextExpression = "5+x";
@@ -49,19 +67,19 @@
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextVariable;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo("10"), "Responses don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("10"), "Responses don't match");
         }
 
         /// <summary>
@@ -73,8 +91,16 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = "x=5";
             string nextVariable = "x=10";
             string nextExpression = "5+x";
@@ -82,19 +108,19 @@
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextVariable;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
             viewModel.Expression = nextExpression;
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo("15"), "Responses don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("15"), "Responses don't match");
         }
     }
 }

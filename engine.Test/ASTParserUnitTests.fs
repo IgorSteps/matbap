@@ -216,23 +216,185 @@ type ASTParserTests() =
                             )
                         )
         }
+        // Unary minus.
+        {
+            Name = "Testing unary minus: -1"
+            Args = [Tokeniser.Minus; Tokeniser.Int(1);]
+            Expected = UnaryMinusOperation("-", Number(NumType.Int(1)))
+        }
+        {
+            Name = "Testing unary minus expression with unary minus: -(-1)"
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Minus; Tokeniser.Int(1); Tokeniser.RightBracket]
+            Expected = UnaryMinusOperation(
+                            "-",
+                            ParenthesisExpression(  
+                                UnaryMinusOperation(
+                                    "-",
+                                    Number(NumType.Int(1))
+                                )
+                            )
+                       )
+        }
+        {
+            Name = "Testing unary minus expression with unary minus: -(-(1 + 1))"
+            Args = [Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Minus; Tokeniser.LeftBracket; Tokeniser.Int(1); Tokeniser.Add; Tokeniser.Int(1);Tokeniser.RightBracket; Tokeniser.RightBracket]
+            Expected = UnaryMinusOperation(
+                            "-",
+                            ParenthesisExpression(  
+                                UnaryMinusOperation(
+                                    "-",
+                                    ParenthesisExpression(
+                                        BinaryOperation(
+                                            "+",
+                                            Number(NumType.Int(1)),
+                                            Number(NumType.Int(1))
+                                        )
+                                    )
+                                )
+                            )
+                       )
+        }
+        {
+            Name = "Testinh unary minus in a power: 1^-1"
+            Args = [Tokeniser.Int(1); Tokeniser.Power; Tokeniser.Minus; Tokeniser.Int(1)]
+            Expected = BinaryOperation(
+                            "^",
+                            Number(NumType.Int(1)),
+                            UnaryMinusOperation(
+                                "-",
+                                Number(NumType.Int(1))
+                            )
+                        )
+        }
+        // Variable Assignment
+        {
+            Name = "Test variable assignment: x = 1/2"
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals; Tokeniser.Int 1; Tokeniser.Divide; Tokeniser.Int 2]
+            Expected = VariableAssignment(
+                           "x",
+                           BinaryOperation(
+                               "/",
+                               Number(Int(1)),
+                               Number(Int(2))
+                           )
+                       )
+        }
+        // Variables
+        {
+            Name = "Test variables are parsed: 5*(x+1)"
+            Args = [Tokeniser.Int 5; Tokeniser.Multiply; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.Add; Tokeniser.Int 1; Tokeniser.RightBracket]
+            Expected = BinaryOperation(
+                            "*",
+                            Number(Int 5),
+                            ParenthesisExpression(
+                                BinaryOperation("+", Variable "x", Number(Int 1))
+                            )
+                        )
+        }
+        // Built in function test
+        {
+            Name = "Test that tan function is properly parsed: tan(7/2)"
+            Args = [Tokeniser.Tan; Tokeniser.LeftBracket; Tokeniser.Int 7; Tokeniser.Divide; Tokeniser.Int 2; Tokeniser.RightBracket]
+            Expected = Function(
+                           "tan",
+                           BinaryOperation(
+                                "/",
+                                Number(Int(7)),
+                                Number(Int(2))
+                           )
+                       )
+        }
+        // For Loop
+        {
+            Name = "Test for loop parsing: for x in range(1,10) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           Number(Float(1.0)),
+                           Function(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
+        {
+            Name = "Test for loop int step parsing: for x in range(1,10,2) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Int 2; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           Number(Float(2.0)),
+                           Function(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
+        {
+            Name = "Test for loop float step parsing: for x in range(1,10,0.5) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Float 0.5; Tokeniser.RightBracket; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = ForLoop(
+                           VariableAssignment(
+                               "x",
+                               Number(Int(1))
+                           ),
+                           Number(Int(10)),
+                           Number(Float(0.5)),
+                           Function(
+                               "sin",
+                               Variable("x")
+                           )
+                       )
+        }
     ]
 
     static member AstParserErrorTestCases: ASTParserErrorTestCase list = [
         {
             Name = "Testing error: Missing a number or a bracket: 1+."
             Args = [Tokeniser.Int 1; Tokeniser.Add]
-            Expected = "Expected number or '('"
+            Expected = "Expected number, '(' or '-'."
         }
         {
             Name = "Testing error: Missing a number or a bracket: +1."
             Args = [Tokeniser.Add; Tokeniser.Int 1]
-            Expected = "Expected number or '('"
+            Expected = "Expected number, '(' or '-'."
         }
         {
             Name = "Testing error: Missing a closing bracket: (1+1."
             Args = [Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Add; Tokeniser.Int 1]
             Expected = "Missing closing bracket"
+        }
+        {
+            Name = "Testing error: variable assignment without variable name: = 5"
+            Args = [Tokeniser.Equals; Tokeniser.Int 5]
+            Expected = "A variable assignment was attempted without giving a variable name"
+        }
+        {
+            Name = "Testing error: variable assignment without assigning a value: x = "
+            Args = [Tokeniser.Identifier "x"; Tokeniser.Equals]
+            Expected = "A variable assignment was attempted without assigning a value"
+        }
+        {
+            Name = "Testing incorrect for loop declaration: for(1,10) : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+        }
+        {
+            Name = "Testing incorrect for loop declaration: for x in range(1,10, 4 : sin(x)"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Comma; Tokeniser.Int 4; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
+            Expected = "Incorrect for-loop declaration, either the step or closing bracket is missing"
+        }
+        {
+            Name = "Testing function call no closing bracket error: exp(2"
+            Args = [Tokeniser.Exp; Tokeniser.LeftBracket; Tokeniser.Int 2]
+            Expected = "Missing closing bracket on function call"
         }
     ]
 

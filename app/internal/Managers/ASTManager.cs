@@ -7,7 +7,7 @@ namespace app
     /// <summary>
     /// Convert F# AST Node to C# AST Node.
     /// </summary>
-    public class ASTConversionService : IASTConverter
+    public class ASTManager : IASTConverter
     {
         /// <summary>
         /// Match against F# node types to constuct C# node types for an AST.
@@ -19,8 +19,14 @@ namespace app
                 FSharpASTNode.Number num => ConvertFSharpNumber(num.Item),
                 FSharpASTNode.BinaryOperation node => new BinaryOperationNode(node.Item1, Convert(node.Item2), Convert(node.Item3)),
                 FSharpASTNode.ParenthesisExpression node => new ParenthesisExpressionNode(Convert(node.Item)),
+                FSharpASTNode.Variable node => new VariableNode(node.Item),
                 _ => throw new InvalidOperationException("Unknown C# node type in F# AST."),
             };
+        }
+
+        public string ConvertToString(ASTNode root)
+        {
+            return root.ToString();
         }
 
         private static ASTNode ConvertFSharpNumber(FSharpNumType numType)
@@ -33,6 +39,5 @@ namespace app
                 _ => throw new InvalidOperationException("Unknown number type in F# NumType."),
             };
         }
-
     }
 }

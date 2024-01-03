@@ -1,4 +1,6 @@
-﻿namespace app.Test.Functional
+﻿using Engine;
+
+namespace app.Test.Functional
 {
     public class DisplayMultiplePlottedFunctionsTest
     {
@@ -11,7 +13,8 @@
             // --------
             // ASSEMBLE
             // --------
-            FunctionEvaluation evaluator = new FunctionEvaluation();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
             PlotManager plotManager = new PlotManager(evaluator);
             TangentManager tangentManager = new TangentManager(evaluator);
             ValidationService validator = new ValidationService();

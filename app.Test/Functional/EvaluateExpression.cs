@@ -11,21 +11,30 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
-            viewModel.Expression = "1+1";
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var expression = "2";
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
+            viewModel.Expression = expression;
 
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
-            // ------
+            // ------ 
             // We check F# engine returns a string to make sure our GUI output is a clear string.
-            Assert.That(viewModel.Response, Is.EqualTo("2"), "F# engine returned a value C# can't understand");
+            Assert.That(viewModel.Answer, Is.EqualTo("2"), "Answer doesn't match expected");
         }
 
         /// <summary>
@@ -37,24 +46,33 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
             // Same as 
             // x=1;
             // y=1;
             // x+y
-            viewModel.Expression = "x=1;\r\ny=1;\r\nx+y";
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var expression = "x=1;\r\ny=1;\r\nx+y";
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
+            viewModel.Expression = expression;
 
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo("2"), "Expression with new lines has returned wrong answer");
+            Assert.That(viewModel.Answer, Is.EqualTo("2"), "Expression with new lines has returned wrong answer");
         }
     }
 }

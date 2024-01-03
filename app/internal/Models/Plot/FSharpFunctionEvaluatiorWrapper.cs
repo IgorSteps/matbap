@@ -1,17 +1,6 @@
-﻿using Microsoft.FSharp.Core;
-using Microsoft.Msagl.Core.Geometry.Curves;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO.Packaging;
-using System.Linq;
-using System.Printing;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace app
+﻿namespace app
 {
-    public struct EvaluationResult
+    public struct FunctionEvaluationResult
     {
         /// <summary>
         /// Returns points in [x,y] format.
@@ -20,35 +9,42 @@ namespace app
         public Error Error { get; set; }
         public readonly bool HasError => Error != null;
 
-        public EvaluationResult(double[][] p, Error err)
+        public FunctionEvaluationResult(double[][] p, Error err)
         {
             Points = p;
             Error = err;
         }
     }
 
-    public class FunctionEvaluation: IFunctionEvaluator
+    public class FSharpFunctionEvaluatiorWrapper: IFSharpFunctionEvaluatorWrapper
     {
-        public EvaluationResult Evaluate(string function, double min, double max, double step)
+        private readonly Engine.IEvaluator _fsharpEvaluator;
+        
+        public FSharpFunctionEvaluatiorWrapper(Engine.IEvaluator fsharpEvaluator)
         {
-            var result = Engine.Evaluator.plotPoints(min, max, step, function);
-            if (result.IsError)
-            {
-                return new EvaluationResult(null, new Error(result.ErrorValue));
-            }
-           
-            return new EvaluationResult(result.ResultValue, null);
+            _fsharpEvaluator = fsharpEvaluator;
         }
 
-        public EvaluationResult EvaluateAtPoint(double x, string function)
+        public FunctionEvaluationResult Evaluate(string function, double min, double max, double step)
+        {
+            var result = _fsharpEvaluator.PlotPoints(min, max, step, function);
+            if (result.IsError)
+            {
+                return new FunctionEvaluationResult(null, new Error(result.ErrorValue));
+            }
+           
+            return new FunctionEvaluationResult(result.ResultValue, null);
+        }
+
+        public FunctionEvaluationResult EvaluateAtPoint(double x, string function)
         {
             var result = Evaluate(function, x, x, x);
             if (result.HasError)
             {
-                return new EvaluationResult(null, result.Error);
+                return new FunctionEvaluationResult(null, result.Error);
             }
 
-            return new EvaluationResult(result.Points, null);
+            return new FunctionEvaluationResult(result.Points, null);
         }
 
         // @TODO: Switch with implementation in F#.

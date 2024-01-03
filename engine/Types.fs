@@ -9,3 +9,10 @@
             | Number of NumType
             | BinaryOperation of string * Node * Node
             | ParenthesisExpression of Node
+            | UnaryMinusOperation of string * Node
+            | VariableAssignment of string * Node
+            | Variable of string
+            // Represents a for loop, VariableAssignment * xmax * step * Expr
+            | ForLoop of Node * Node * Node * Node
+            /// Represents a function like sin(x).
+            | Function of string * Node

@@ -17,20 +17,29 @@
             // --------
             // ASSEMBLE
             // --------
-            var interpreter = new InterpretationModel();
-            var viewModel = new InterpretationViewModel(interpreter);
-            viewModel.Expression = input;
-            
+            var expression = input;
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+            var viewModel = new ExpressionViewModel(service);
+            viewModel.Expression = expression;
+
             // ---
             // ACT
             // ---
-            viewModel.InterpretCmd.Execute(null);
+            viewModel.EvaluateCmd.Execute(null);
 
 
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Response, Is.EqualTo(expectedError), "Errors don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("Error: "+expectedError), "Errors don't match");
         }
     }
 }

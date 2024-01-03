@@ -15,7 +15,7 @@
 
         <!-- Evaluation and options column -->
         <Grid
-            DataContext="{Binding InterpretationViewModel, Source={StaticResource ViewModelLocator}}"
+            DataContext="{Binding ExpressionViewModel, Source={StaticResource ViewModelLocator}}"
             Grid.Column="0"
             Margin="10"
             Background="#FFF0F8FF"
@@ -24,6 +24,7 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="2*"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -67,24 +68,34 @@
 
             <TextBlock Grid.Row="2" Text="Answer:" Margin="10" FontSize="16" FontWeight="Bold"/>
             <Border Grid.Row="3" Margin="10" BorderBrush="#FFC7C7C7" BorderThickness="2" Padding="5">
-                <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Response}" FontSize="18" />
+                <TextBlock x:Name="AnswerBox" TextWrapping="Wrap" Text="{Binding Answer}" FontSize="18" />
             </Border>
 
 
             <Button 
                     Grid.Row="4"
                     Content="Evaluate expression"
-                    Command="{Binding InterpretCmd}"
+                    Command="{Binding EvaluateCmd}"
                     Margin="10"
                     FontSize="20"
                     FontWeight="Bold"
                     Background="#FFC7C7C7"
                     BorderThickness="2"/>
 
-
+            
             <TextBlock Grid.Row="5" Text="Options:" Margin="10" FontSize="16" FontWeight="Bold"/>
+
             <Button 
                 Grid.Row="6"
+                Content="Differentiate expression"
+                Command="{Binding DifferentiateCmd}"
+                Margin="10"
+                FontSize="20"
+                FontWeight="Bold"
+                Background="#FFC7C7C7"
+                BorderThickness="2"/>   
+            <Button 
+                Grid.Row="7"
                 Content="Visualise parse tree"
                 FontSize="20"
                 FontWeight="Bold" 
