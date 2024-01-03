@@ -12,6 +12,9 @@
     <Compile Include="ASTParser.fs" />
     <Compile Include="IEvaluator.fs" />
     <Compile Include="EvaluatorWrapper.fs" />
+    <Compile Include="Differentiation.fs" />
+    <Compile Include="IDifferentiator.fs" />
+    <Compile Include="DifferentiatorWrappers.fs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Serilog" Version="3.0.1">

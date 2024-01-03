@@ -2,9 +2,26 @@
 {
     public class ExpressionManager : IExpressionManager
     {
+        private readonly IFSharpDifferentiatorWrapper _differentiator;
+        public ExpressionManager(IFSharpDifferentiatorWrapper differentiator)
+        {
+            _differentiator = differentiator;
+        }
+
         public Expression CreateExpression(string expression)
         {
             return new Expression(expression);
+        }
+
+        public FSharpDifferentiationResult Differentiate(Expression expression)
+        {
+            var result = _differentiator.DifferentiateExpression(expression.FSharpAST, "x");
+            if (result.HasError)
+            {
+                return new FSharpDifferentiationResult(null, result.Error);
+            }
+
+            return new FSharpDifferentiationResult(result.AST, null);
         }
     }
 }

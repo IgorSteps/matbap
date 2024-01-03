@@ -1,46 +1,40 @@
 ﻿namespace app.Test.Functional
 {
-    public class EvaluateExpressionWithVaribalesErrors
+    public class DifferentiateExpressionTest
     {
         /// <summary>
-        /// Test to simualte user entering math expression with an unknown variable that causes error in the Parser.
+        /// Test to simualte user entering a math expression and differentiating it successfuly.
         /// </summary>
         [Test]
-        public void Test_EvaluateExpression_WithVariables_UnknownIdetifierError()
+        public void Test_DifferentiateExpression_Success()
         {
             // --------
             // ASSEMBLE
             // --------
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var expression = "x^2";
             var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
             var validator = new ValidationService();
             var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
             var viewModel = new ExpressionViewModel(service);
-            viewModel.Expression = "x=5";
-            string nextExpression = "y=5";
-            string sumExpression = "x+z";
+            viewModel.Expression = expression;
 
             // ---
             // ACT
             // ---
-            viewModel.EvaluateCmd.Execute(null);
-
-            viewModel.Expression = nextExpression;
-            viewModel.EvaluateCmd.Execute(null);
-
-            viewModel.Expression = sumExpression;
-            viewModel.EvaluateCmd.Execute(null);
-
+            viewModel.DifferentiateCmd.Execute(null);
 
             // ------
             // ASSERT
-            // ------
-            Assert.That(viewModel.Answer, Is.EqualTo("Error: Error while parsing: Identifier not found"), "Errors don't match");
+            // ------ 
+            // We check F# engine returns a string to make sure our GUI output is a clear string.
+            Assert.That(viewModel.Answer, Is.EqualTo("2 * x ^ 1"), "Answer doesn't match expected");
         }
     }
 }
+  
