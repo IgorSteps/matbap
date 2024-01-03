@@ -7,7 +7,7 @@ namespace app
     /// <summary>
     /// Convert F# AST Node to C# AST Node.
     /// </summary>
-    public class ASTConversionService : IASTConverter
+    public class ASTManager : IASTConverter
     {
         /// <summary>
         /// Match against F# node types to constuct C# node types for an AST.

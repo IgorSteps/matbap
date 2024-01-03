@@ -49,7 +49,7 @@ namespace app
             services.AddSingleton<IFSharpDifferentiatorWrapper, FSharpDifferentiatorWrapper>();
             
             // Services.
-            services.AddSingleton<IASTConverter, ASTConversionService>();
+            services.AddSingleton<IASTConverter, ASTManager>();
             services.AddSingleton<IPlotter, PlottingService>();
             services.AddSingleton<IValidator, ValidationService>();
             services.AddSingleton<IFSharpEvaluatorWrapper, FSharpEvaluatorWrapper>();

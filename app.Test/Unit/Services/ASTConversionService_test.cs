@@ -6,12 +6,12 @@ namespace app.Test.Unit
 {
     public class ASTConversionService_test
     {
-        private ASTConversionService _converter;
+        private ASTManager _converter;
 
         [SetUp]
         public void Setup()
         {
-            _converter = new ASTConversionService();
+            _converter = new ASTManager();
         }
 
         [Test]
