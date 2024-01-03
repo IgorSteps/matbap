@@ -10,20 +10,12 @@
 \newcommand{\la}{\leftarrow}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{hyperref}
 \topmargin = 0pt
 \voffset = -80pt
 \oddsidemargin = 15pt
 \textwidth = 425pt
 \textheight = 750pt
-\hypersetup{
-    colorlinks=true,
-    linkcolor=blue,
-    filecolor=magenta,      
-    urlcolor=cyan,
-    pdftitle={Overleaf Example},
-    pdfpagemode=FullScreen,
-    }
+
 \begin{document}
 
 \begin{titlepage}
@@ -34,9 +26,9 @@
 \vspace{7.5cm}
 \\{\Large Project Report - 10 January 2024}
 \vspace{1.5cm}
-\\{\LARGE MATBAP: Maths Interpreter software} % You can add to this title of modify it if you wish
+\\{\LARGE Matbap} % You can add to this title of modify it if you wish
 \vspace{1.0cm}
-\\{\Large Group members: \\ Igor Stepanenko, Lyra, Liam Farese\ }
+\\{\Large Group members: \\ Igor Stepanenko, Lyra Dalton, Liam Farese\ }
 \vspace{10.0cm}
 \\{\large School of Computing Sciences, University of East Anglia}
 \\ \rule{12cm}{0.5mm}
@@ -57,46 +49,40 @@ Please replace this section with your own abstract. An abstract is a brief summa
 \chapter{Introduction}
 \label{chap:intro}
 
-The introduction should be brief and comprise the following:
-
 \section{Project statement}
-A (brief) statement including the nature of the project, i.e.\ what you will do, how you will accomplish it and what the final deliverable will be.
+This project will be a Maths Interpreter software with extensions aiming
+towards a Turing complete language. It will be used to evaluate expressions, define
+variables and functions, and plot functions of two variables. The software
+will allow the user to enter expressions and equations using a custom language which is processed by a lexer, parser and evaluator. Plots of mathematical equations will be interactive. Additional functionality might include root finding, differentiation and integration. The software will be developed keeping in mind software engineering principles such as low coupling and high cohesion achieved through Model-View-ViewModel and Inversion of Control patterns. 
 
 \section{Aims and objectives}
+The main aim is to develop Matbap, a maths interpreter software for solving and plotting mathematical expressions. Main objectives include:
+\begin{itemize}
+    \item Create Lexer, Parser and Evaluator in F\# to process mathematical expressions and equations to plot.
+    \item Develop a Graphical User Interface (GUI) in C\# for user interaction.
+    \item Integrate F\# and C\# components keeping in mind low coupling.
+\end{itemize}
 
-Clearly specify the main aim and objective(s) and subsequent tasks of your project. You can use a MoSCoW to further elaborate on each individual task. If you do so, use a table with three columns (e.g.\ Table \ref{Table1}), the first one having the four categories; the second column a brief description of the task and the third column further elaboration or comments on the task. Note that a MoSCoW is normally for functional requirements only. You should treat non-functional requirements in a separate MoSCoW.
+\noindent % Start a new paragraph without indentation
+They are broken further into subtasks in this MoSCoW table \ref{appendix:moscow} 
 
-\begin{table}[h]
-\caption{MoSCoW}
-\begin{center}
-\begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
-Priority & Task & Comments \\ \hline \hline
-\multirow{3}{1in}{Must}
-& Task M1 & Comment M1 \\ \cline{2-3}
-& Task M2 & Comment M2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Should}
-& Task S1 & Comment S1 \\ \cline{2-3}
-& Task S2 & Comment S2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Could}
-& Task C1 & Comment C1 \\ \cline{2-3}
-& Task C2 & Comment C2 \\ \cline{2-3}
-& ... & ... \\ \hline \hline
-\multirow{3}{1in}{Should not}
-& Task SN1 & Comment SN1 \\ \cline{2-3}
-& ... & ... \\ \hline
-\end{tabular}
-\label{Table1}
-\end{center}
-\end{table}
+
+
+
 
 
 \chapter{Background}
+The development of maths software capable of plotting graphs has become significantly easier in recent years, because of integration of technology in education and research. Therefore, it is important we acknowledge key software and literature in this field.
 
-Give a brief background on similar software, e.g.\ \cite{Desmos:2023}, \cite{Matlab:2023}, etc.
-Also cite the books \cite{Nystrom:2021} or documentation \cite{WPF:2023} that you consulted.
-You should add additional references to the corresponding bib file (References.bib) referred to in the bottom of this document.
+Desmos\cite{Desmos:2023} software offers a graphical calculator that changed the way students learn mathematics by providing an intuitive UI and robust plotting functionality to allow for visualisations of complex functions and equations.
+
+MATLAB\cite{Matlab:2023} is the mainstream tool in the field of mathematical computing, visualising and programming. It offers extensive tooling that includes signal and image processing, which is why it is widely used in academia and industry.
+
+The Windows Presentation Foundation (WPF)\cite{WPF:2023} documentation provided by Microsoft Learn offered tutorials and guidance on creating desktop user interfaces. WPF’s powerful data-bindings were critical in displaying mathematical data back to the user.
+
+The Dependency Injection (DI) \cite{DI:2023} documentation from Microsoft Learn described the design pattern that produces more testable and modular software. In the context of our application, this pattern allowed for dynamic integration of different services like equation evaluator and plotting evaluator, and as a result made our software more maintainable and scalable.
+
+The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Learn describes the architecture, which is primarily used with WPF applications due to its powerful data-binding features. MVVM creates a clear separation of concerns where business logic is decoupled from the UI. This architecture was important in developing our software because it allowed for maintainable and scalable code, which could handle mathematical calculations and user interactions.
 
 
 \chapter{Development History}\label{Chap:DevHist}
@@ -119,6 +105,7 @@ We setup a version a control system for our codebase - GitHub repository(link - 
 This sprint has laid foundation to our development journey. Setting up tools like Jira, GitHub and Visual Studio not only streamlined our workflow but also enabled us to be an effective and efficient team.
 
 \section{Sprint 1: \href{https://liamfarese.atlassian.net/browse/AP-8}{As a user I want perform arithmetic calculations}}
+
 \subsection{Grammar in BNF}
 \begin{verbatim}
 <E>    ::= <T> <Eopt>
@@ -142,14 +129,17 @@ We used WPF with C\# to develop a basic GUI - see Figure \ref{gui01}.
 \subsection{Testing}
 A subset of Table \ref{Table2} in Appendix \ref{app:test} could be referred to from here.
 
-\section{Sprint 2: \href{https://liamfarese.atlassian.net/browse/AP-30}{As a user I want to have a basic GUI}}
+%https://liamfarese.atlassian.net/browse/AP-30
+\section{Sprint 2: As a user I want to have a basic GUI}
 
 \subsection{Updated GUI}
 
 \subsection{Testing}
 
-\section{Sprint 3: \href{https://liamfarese.atlassian.net/browse/AP-42}{As a user I want to be able to assign variables}}
-\section{Sprint 4: \href{https://liamfarese.atlassian.net/browse/AP-50}{As a user I want to be able to plot lines and polynomials}}
+% https://liamfarese.atlassian.net/browse/AP-42
+\section{Sprint 3: As a user I want to be able to assign variables}
+% https://liamfarese.atlassian.net/browse/AP-50
+\section{Sprint 4: As a user I want to be able to plot lines and polynomials}
 \section{Sprint 5: As a developer I would like to have an AST Parser}
 \section{Sprint 6: As a user I would like to run for-loops}
 \section{Sprint 7: As a user I want to visualise an AST}
@@ -246,7 +236,36 @@ $x = 3; (2*x)-x\verb|^|2*(5\%2)$ & -3 & & &  \\ \hline
 
 \section{Plot testing}
 
-\chapter{Other stuff}
-\label{app:other}
+\chapter{Aims and objectives}
+\section{MoSCoW table}
+\label{appendix:moscow}
+\begin{table}[h]
+\caption{MoSCoW}
+\begin{center}
+\begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
+Priority & Task & Comments \\ \hline \hline
+\multirow{3}{1in}{Must}
+& Solve arithmetic expressions & Works with ints and floats, processing is left-associative, BODMAS/BIDMAS rules apply \\ \cline{2-3}
+& Have basic GUI & Input textbox, output textbox and help functionality \\ \cline{2-3}
+& Have variable assignment & Assignment token, Grammar change, Stored in a symbol table \\ \cline{2-3}
+& Be tested & Unit and functionally tested \\ \cline{2-3}
+& Have basic plotting & Plotting area in GUI window to visualise mathematical functions: lines and polynomials \\ \hline \hline
+\multirow{3}{1in}{Should}
+& AST Parser & Parser constructs an Abstract Syntax Tree \\ \cline{2-3}
+& Functions & Works with built-in functions such as cos, sin, tan, exp, log  \\ \cline{2-3}
+& Multiple plots & User can plot multiple equations and clear the plotting area \\ \hline \hline
+\multirow{3}{1in}{Could}
+& For loops & \\ \cline{2-3}
+& Conditionals & If statements \\ \cline{2-3}
+& Rational numbers & \\ \cline{2-3}
+& Complex numbers & \\ \cline{2-3}
+& Rational equations plotting & Plot equations like 1/x that produce more than 1 line \\ \hline \hline
+\multirow{3}{1in}{Will not}
+& Compiler & Too much work to implement a compiler in a given timeframe \\ \cline{2-3}
+& Static typing & Making our language statically typed requires a very strong typing system in place which is too hard to implement in a give timeframe \\ \hline
+\end{tabular}
+\label{Table1}
+\end{center}
+\end{table}
 \end{document}
 
