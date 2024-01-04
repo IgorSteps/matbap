@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using Microsoft.Msagl.Core.Layout;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace app
@@ -14,14 +15,15 @@ namespace app
 
     public abstract class ASTNode : ObservableObject
     {
-        private ASTNode _parent;
+        public ASTNode Parent { get; set; }
+        public List<ASTNode> Children = new List<ASTNode>();
         private readonly ASTNodeType _nodeType; // Node types are immutable once created.
-        private ObservableCollection<ASTNode> _children = new ObservableCollection<ASTNode>();
 
         protected ASTNode(ASTNodeType type)
         {
             _nodeType = type;
         }
+        public ASTNodeType NodeType => _nodeType;
 
         public new abstract string ToString();
 
@@ -34,19 +36,6 @@ namespace app
             }
         }
 
-        public ASTNode Parent
-        {
-            get => _parent;
-            set => SetProperty(ref _parent, value);
-        }
-
-        public ASTNodeType NodeType => _nodeType;
-
-        public ObservableCollection<ASTNode> Children
-        {
-            get => _children;
-            set => SetProperty(ref _children, value);
-        }
     }
 
     public class NumberNode<T> : ASTNode
@@ -82,7 +71,7 @@ namespace app
 
         public override string ToString()
         {
-            return $"{_left.ToString()} {_operator} {_right.ToString()}";
+            return $"{_left.ToString()}{_operator}{_right.ToString()}";
         }
 
         public string Operator => _operator;

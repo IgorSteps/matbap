@@ -1,6 +1,8 @@
 ﻿using Engine;
 using Moq;
 using FSharpASTNode = Engine.Types.Node;
+using Microsoft.Msagl.Drawing;
+using static app.ASTManager;
 
 namespace app.Test.Unit
 {
@@ -114,9 +116,10 @@ namespace app.Test.Unit
 
             var mockResult = new FSharpDifferentiationResult(ast, null);
             _mockExpressionManager.Setup(m => m.Differentiate(expression)).Returns(mockResult);
-            var mockConverterResult = new VariableNode(testInput);
+            var testCSNode = new VariableNode(testInput);
+            var mockConverterResult = new ConvertionResult(testCSNode, null);
             _mockConverter.Setup(c => c.Convert(expression.FSharpAST)).Returns(mockConverterResult);
-            _mockConverter.Setup(c => c.ConvertToString(mockConverterResult)).Returns(testInput);
+            _mockConverter.Setup(c => c.ConvertToString(testCSNode)).Returns(testInput);
             
             // --------
             // ACT
@@ -153,6 +156,78 @@ namespace app.Test.Unit
             // ACT
             // --------
             var result = _service.Differentiate(testInput);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsTrue(result.HasError, "Must be true");
+            Assert.That(result.Error, Is.Not.Null, "Error must not be null");
+            Assert.That(result.Error.Message, Is.EqualTo(testError.Message), "Errors don't match");
+            _mockExpressionManager.VerifyAll();
+            _mockSymbolTableManager.VerifyAll();
+            _mockExpressionEvaluator.VerifyAll();
+        }
+
+
+        [Test]
+        public void Test_ExpressionEvaluatingService_VisualiseASTHappy()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string testInput = "1+1";
+            var graph = new Graph();
+            graph.AddNode("x");
+            Graph expectedGraph = graph;
+            _mockValidator.Setup(v => v.ValidateExpressionInputIsNotNull(testInput)).Returns((Error)null);
+            var fsharpNode = FSharpASTNode.NewVariable("x");
+            var mockedResult = new FSharpASTGetterResult(fsharpNode, null);
+            _mockASTGetter.Setup(g => g.GetAST(testInput)).Returns(mockedResult);
+            var csharpNode = new VariableNode("x");
+            var mockConverterResult = new ConvertionResult(csharpNode, null);
+            _mockConverter.Setup(c => c.Convert(fsharpNode)).Returns(mockConverterResult);
+            
+            _mockConverter.Setup(c => c.ConvertAstToGraph(csharpNode)).Returns(graph);
+
+            // --------
+            // ACT
+            // --------
+            var result = _service.VisualiseAST(testInput);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsFalse(result.HasError, "Must be false");
+            Assert.That(result.Error, Is.Null, "Error must be null");
+            Assert.That(expectedGraph, Is.EqualTo(result.AST), "Graphs don't match");
+            _mockExpressionManager.VerifyAll();
+            _mockSymbolTableManager.VerifyAll();
+            _mockExpressionEvaluator.VerifyAll();
+        }
+
+        [Test]
+        public void Test_ExpressionEvaluatingService_VisualiseASTError()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            string testInput = "1+1";
+            var graph = new Graph();
+            graph.AddNode("x");
+            Graph expectedGraph = graph;
+            _mockValidator.Setup(v => v.ValidateExpressionInputIsNotNull(testInput)).Returns((Error)null);
+            var fsharpNode = FSharpASTNode.NewVariable("x");
+            var mockedResult = new FSharpASTGetterResult(fsharpNode, null);
+            _mockASTGetter.Setup(g => g.GetAST(testInput)).Returns(mockedResult);
+
+            var testError = new Error("boom");
+            var expectedResult = new ConvertionResult(null, testError);
+            _mockConverter.Setup(c => c.Convert(fsharpNode)).Returns(expectedResult);
+
+            // --------
+            // ACT
+            // --------
+            var result = _service.VisualiseAST(testInput);
 
             // --------
             // ASSERT

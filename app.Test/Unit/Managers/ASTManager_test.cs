@@ -30,13 +30,15 @@ namespace app.Test.Unit
             // ---
             // ACT
             // ---
-            var cSharpNode = _converter.Convert(fSharpNumberNode);
+            var result = _converter.Convert(fSharpNumberNode);
 
             // ------
             // ASSERT
             // ------
-            Assert.IsInstanceOf<NumberNode<int>>(cSharpNode);
-            Assert.That(expected, Is.EqualTo(cSharpNode.ToString()));
+            Assert.IsFalse(result.HasError, "Shoudln't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<NumberNode<int>>(result.AST);
+            Assert.That(expected, Is.EqualTo(result.AST.ToString()));
         }
 
         [Test]
@@ -45,7 +47,7 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
-            var expected = "1 + 1";
+            var expected = "1+1";
             var testInput = 1;
             var leftTestNode = FSharpASTNode.NewNumber(FSharpNumType.NewInt(testInput));
             var rightTestNode = FSharpASTNode.NewNumber(FSharpNumType.NewInt(testInput));
@@ -54,13 +56,15 @@ namespace app.Test.Unit
             // ---
             // ACT
             // ---
-            var cSharpNode = _converter.Convert(fSharpBinaryTestNode);
+            var result = _converter.Convert(fSharpBinaryTestNode);
 
             // ------
             // ASSERT
             // ------
-            Assert.IsInstanceOf<BinaryOperationNode>(cSharpNode);
-            Assert.That(expected, Is.EqualTo(cSharpNode.ToString()));
+            Assert.IsFalse(result.HasError, "Shoudln't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<BinaryOperationNode>(result.AST);
+            Assert.That(expected, Is.EqualTo(result.AST.ToString()));
         }
 
         [Test]
@@ -77,17 +81,19 @@ namespace app.Test.Unit
             // ---
             // ACT
             // ---
-            var cSharpNode = _converter.Convert(fSharpParenthesisNode);
+            var result = _converter.Convert(fSharpParenthesisNode);
 
             // ------
             // ASSERT
             // ------
-            Assert.IsInstanceOf<ParenthesisExpressionNode>(cSharpNode);
-            Assert.That(cSharpNode.ToString(), Is.EqualTo(expected));
+            Assert.IsFalse(result.HasError, "Shoudln't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<ParenthesisExpressionNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
         }
 
         [Test]
-        public void ASTManager_Convert_FSharpvariableNode_CreatesCorrectCSharpNode()
+        public void ASTManager_Convert_FSharpVariableNode_CreatesCorrectCSharpNode()
         {
             // --------
             // ASSEMBLE
@@ -99,13 +105,40 @@ namespace app.Test.Unit
             // ---
             // ACT
             // ---
-            var cSharpNode = _converter.Convert(varNode);
+            var result = _converter.Convert(varNode);
 
             // ------
             // ASSERT
             // ------
-            Assert.IsInstanceOf<VariableNode>(cSharpNode);
-            Assert.That(cSharpNode.ToString(), Is.EqualTo(expected));
+            Assert.IsFalse(result.HasError, "Shoudln't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<VariableNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ASTManager_Convert_FSharpUnsupportedeNode_Error()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var expected = "Failed to convert F# AST - unknown node type.";
+            var testVarInput = "x";
+            var testNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(2));
+            var varNode = FSharpASTNode.NewVariableAssignment(testVarInput, testNode);
+
+            // ---
+            // ACT
+            // ---
+            var result = _converter.Convert(varNode);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.IsTrue(result.HasError, "Should have an error");
+            Assert.IsNotNull(result.Error, "Error must not be null");
+            Assert.IsNull(result.AST, "AST must be null");
+            Assert.That(result.Error.Message, Is.EqualTo(expected));
         }
 
         public void ASTManager_Convert_ComplexNodes()
@@ -122,15 +155,18 @@ namespace app.Test.Unit
             // ---
             // ACT
             // ---
-            var cSharpNode = _converter.Convert(fSharpBinaryNode);
+            var result = _converter.Convert(fSharpBinaryNode);
 
             // ------
             // ASSERT
             // ------
-            Assert.IsInstanceOf<BinaryOperationNode>(cSharpNode);
+            Assert.IsFalse(result.HasError, "Shoudln't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+
+            Assert.IsInstanceOf<BinaryOperationNode>(result.AST);
 
             // Cast to C# BinaryOperationNode to access its properties.
-            var cSharpBinaryNode = (BinaryOperationNode)cSharpNode;
+            var cSharpBinaryNode = (BinaryOperationNode)result.AST;
 
             // Verify left and right children.
             Assert.IsInstanceOf<NumberNode<int>>(cSharpBinaryNode.Left);

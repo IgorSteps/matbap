@@ -1,4 +1,5 @@
 ﻿using Microsoft.Msagl.Drawing;
+using static app.ASTManager;
 using FSharpAST = Engine.Types.Node;
 
 namespace app
@@ -94,8 +95,14 @@ namespace app
             }
 
             expression.FSharpAST = result.AST;
-            expression.CSharpAST = _astConverter.Convert(expression.FSharpAST);
-            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
+            var convertionResult = _astConverter.Convert(expression.FSharpAST);
+            if (convertionResult.HasError)
+            {
+                return new ExpressionEvaluatingServiceResult(null, convertionResult.Error);
+            }
+
+            expression.CSharpAST = convertionResult.AST;
+            var derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
             return new ExpressionEvaluatingServiceResult(derivative, null);
         }
@@ -114,8 +121,12 @@ namespace app
                 return new VisualiseASTResult(null, result.Error);
             }
 
-            var convertedAST = _astConverter.Convert(result.AST);
-            var graphAST = _astConverter.ConvertAstToGraph(convertedAST);
+            var convetionResult = _astConverter.Convert(result.AST);
+            if (convetionResult.HasError)
+            {
+                return new VisualiseASTResult(null, convetionResult.Error);
+            }
+            var graphAST = _astConverter.ConvertAstToGraph(convetionResult.AST);
 
             return new VisualiseASTResult(graphAST, null);
         }
