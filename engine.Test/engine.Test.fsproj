@@ -13,6 +13,7 @@
     <Compile Include="EvaluatorUnitTests.fs" />
     <Compile Include="ASTParserUnitTests.fs" />
     <Compile Include="ASTEvaluatorUnitTests.fs" />
+    <Compile Include="DifferentiationUnitTests.fs" />
   </ItemGroup>
 
   <ItemGroup>

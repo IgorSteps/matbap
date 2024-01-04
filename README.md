@@ -15,7 +15,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Functions
   - [ ] Rational
   - [ ] Complex
-  - [ ] Parse Tree
+  - [x] Parse Tree
 - [ ] Assignment
   - [x] Dynamic typing
   - [ ] Static typing
@@ -23,7 +23,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [ ] Iteration
   - [ ] Condition
 - [ ] Maths toolbox
-   - [ ] Derivatives
+   - [x] Derivatives
    - [ ] Root finding
    - [ ] Integration
    - [ ] Matrix and Vector library

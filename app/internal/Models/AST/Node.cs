@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using Microsoft.Msagl.Core.Layout;
 using System.Collections.ObjectModel;
 
 namespace app
@@ -7,7 +8,8 @@ namespace app
     {
         Number,
         BinaryOperation,
-        ParenthesisExpression
+        ParenthesisExpression,
+        Variable
     }
 
     public abstract class ASTNode : ObservableObject
@@ -88,7 +90,7 @@ namespace app
         public ASTNode Left => _left;
         public ASTNode Right => _right;
     }
-
+     
     public class ParenthesisExpressionNode : ASTNode
     {
         private readonly ASTNode _bracketedNode;
@@ -103,4 +105,18 @@ namespace app
             return $"({_bracketedNode.ToString()})";
         }
     }
+
+    public class VariableNode : ASTNode
+    {
+        private readonly string _name;
+        public VariableNode(string variable) : base(ASTNodeType.Variable)
+        {
+            _name = variable;
+        }
+        public override string ToString()
+        {
+            return _name.ToString();
+        }
+    }
+
 }
