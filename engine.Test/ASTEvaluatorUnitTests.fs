@@ -24,7 +24,7 @@ module AstHelper =
 [<TestFixture>]
 [<DefaultFloatingPointTolerance(0.0000000001)>]
 type AstEvaluatorTests () =
-    static member evaluatorTestCases: AstEvaluatorTestCase list = [
+    static member astEvaluatorTestCases: AstEvaluatorTestCase list = [
        {
             // Basic addition
             Args = "2+10"
@@ -222,7 +222,7 @@ type AstEvaluatorTests () =
        }
     ]
     
-    static member plotTestCases: PlotTestCase list = [
+    static member astPlotTestCases: PlotTestCase list = [
         // Plot test cases.
         // Some of these can be rewritten once implicit multiplication is allowed
         {
