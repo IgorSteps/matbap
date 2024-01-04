@@ -16,11 +16,7 @@ namespace app
         }
      
 
-        private void OpenASTVisualisationClick(object sender, RoutedEventArgs e)
-        {
-            ASTWindow astWindow = new ASTWindow();
-            astWindow.Show();
-        }
+       
     }
 
 

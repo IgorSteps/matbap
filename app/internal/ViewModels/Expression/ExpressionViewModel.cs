@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using System;
 
 namespace app
 {
@@ -7,7 +8,7 @@ namespace app
     {
         private readonly IEvaluator _evaluator;
         private string _answer;
-        private RelayCommand _evalauteCmd, _differentiateCmd;
+        private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd;
         private string _expressionValue;
 
         public ExpressionViewModel(IEvaluator evaluator)
@@ -15,11 +16,13 @@ namespace app
             _evaluator = evaluator;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
+            _visualiseASTCmd = new RelayCommand(VisualiseAST);
         }
 
         public RelayCommand EvaluateCmd => _evalauteCmd;
 
         public RelayCommand DifferentiateCmd => _differentiateCmd;
+        public RelayCommand VisualiseCmd => _visualiseASTCmd;
 
         public string Expression
         {
@@ -57,5 +60,17 @@ namespace app
             Answer = result.Result;
         }
 
+        public void VisualiseAST()
+        {
+            var result = _evaluator.VisualiseAST(_expressionValue);
+            if (result.HasError)
+            {
+                Answer = result.Error.ToString();
+                return;
+            }
+
+            var astWindow = new ASTWindow(result.AST);
+            astWindow.Show();
+        }
     }
 }

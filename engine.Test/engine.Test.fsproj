@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="GetASTUnitTests.fs" />
     <Compile Include="TokeniserUnitTests.fs" />
     <Compile Include="ParserUnitTests.fs" />
     <Compile Include="EvaluatorUnitTests.fs" />

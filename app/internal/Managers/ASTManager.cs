@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Msagl.Drawing;
+using System;
 using FSharpASTNode = Engine.Types.Node; // Alias F# node type for better readiblity.
 using FSharpNumType = Engine.Types.NumType; // Alias F# num type for better readiblity.
 
@@ -29,6 +30,31 @@ namespace app
             return root.ToString();
         }
 
+        public Graph ConvertAstToGraph(ASTNode root)
+        {
+            var graph = new Graph();
+
+            AddAstNodeToGraph(graph, null, root);
+
+            return graph;
+        }
+
+        private void AddAstNodeToGraph(Graph graph, Node parentGraphNode, ASTNode astNode)
+        {
+            var graphNode = graph.AddNode(astNode.ToString());
+            graphNode.Attr.Shape = Shape.Box;
+
+            if (parentGraphNode != null)
+            {
+                graph.AddEdge(parentGraphNode.Id, graphNode.Id);
+            }
+
+            foreach (var child in astNode.Children)
+            {
+                AddAstNodeToGraph(graph, graphNode, child);
+            }
+        }
+
         private static ASTNode ConvertFSharpNumber(FSharpNumType numType)
         {
             return numType switch
@@ -39,5 +65,7 @@ namespace app
                 _ => throw new InvalidOperationException("Unknown number type in F# NumType."),
             };
         }
+
+
     }
 }

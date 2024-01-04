@@ -99,7 +99,7 @@
                 Content="Visualise parse tree"
                 FontSize="20"
                 FontWeight="Bold" 
-                Click="OpenASTVisualisationClick"
+                Command="{Binding VisualiseCmd}"
                 Margin="10"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>

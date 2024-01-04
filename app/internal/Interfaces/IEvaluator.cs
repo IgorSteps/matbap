@@ -7,5 +7,7 @@
     {
         public ExpressionEvaluatingServiceResult Evaluate(string input);
         public ExpressionEvaluatingServiceResult Differentiate(string input);
+        public VisualiseASTResult VisualiseAST(string expression);
+
     }
 }
