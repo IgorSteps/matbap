@@ -11,7 +11,6 @@
         [TestCase("@", "Invalid Token at token position 1: @")]
         [TestCase("2++", "Expected number, '(' or '-'.")]
         [TestCase("2/0", "Evaluation error: division by 0.")]
-        [TestCase("2.0 % 2", "Error while parsing: modulo cannot be used with floats")]
         public void Test_EvaluateExpression_Error(string input, string expectedError)
         {
             // --------

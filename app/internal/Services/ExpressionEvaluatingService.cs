@@ -102,7 +102,7 @@ namespace app
             }
 
             expression.CSharpAST = convertionResult.AST;
-            var derivative = _astConverter.ConvertToString(expression.CSharpAST);
+            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
             return new ExpressionEvaluatingServiceResult(derivative, null);
         }
