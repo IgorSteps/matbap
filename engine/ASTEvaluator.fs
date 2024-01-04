@@ -28,7 +28,6 @@
             | ParenthesisExpression innerNode -> match evalTree innerNode symTable with
                                                  | Ok node -> Ok node
                                                  | Error e -> Error e
-            // Not going to bother checking operator for unary minus operation, assume it's there for future extension?
             | UnaryMinusOperation (_, num)    -> match evalNum num symTable with
                                                  | Ok (Int x)   -> Ok (Number (Int -x))
                                                  | Ok (Float x) -> Ok (Number (Float -x))
@@ -50,7 +49,7 @@
         and private evalBinaryOp (op : string, a : Node, b : Node) (symTable : SymbolTable) : Result<Node, string> =
             // This can probably be rewritten in a better way, but the NumType returned still needs to be different. We
             // could potentially test whether the value returned by the operator is either int or float, but that might
-            // result in worse performance and the intent is arguably less clear. Any comments on this are appreciated.
+            // result in worse performance and the intent is arguably less clear.
             let evalA = evalNum a symTable
             let evalB = evalNum b symTable
             match op with
@@ -114,10 +113,10 @@
                 | Float x -> x
         let private parse (tokens: Tokeniser.Token list) : Result<Node,string> =
             match ASTParser.parse tokens with
-            | Error parseError  -> Error parseError
             | Ok tokens         -> Ok tokens
+            | Error parseError  -> Error parseError
             
-        // Evaluation function
+        // Evaluation function. Does not return a string for C# - use evalToString for that
         let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
@@ -126,6 +125,15 @@
                                         | Error e            -> Error e
                            | Error e -> Error e
             | Error e -> Error (getStrFromLexerError e)
+            
+        // Returns evaluation result as a string
+        let evalToString (exp : string) (symTable : SymbolTable) : Result<string*SymbolTable*Node, string> =
+            match eval exp symTable with
+            | Ok (("", Int num), symTable, tree)        -> Ok (string num, symTable, tree)
+            | Ok (("", Float num), symTable, tree)      -> Ok (string num, symTable, tree)
+            | Ok ((varName, Int num), symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
+            | Ok ((varName, Float num), symTable, tree) -> Ok (varName+" = "+string num, symTable, tree)
+            | Error e -> Error e
             
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
         // and min/max are treated as "start point" and "end point"

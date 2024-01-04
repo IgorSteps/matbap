@@ -297,12 +297,14 @@ type AstEvaluatorTests () =
                             | Ok ((_, x), _, _) -> match x with
                                                    | Int y -> float y
                                                    | Float y -> y
-                            | _ -> 0
+                            | _ -> infinity
+                            // This should be something we never expect the result to be, in order to assert that it
+                            // failed in the case of an error. 
         let expectedValue = match expected with
                             | Ok ((_, x), _) -> match x with
                                                      | Int y -> float y
                                                      | Float y -> y
-                            | _ -> 0
+                            | _ -> -infinity
         Assert.That(actualValue, Is.EqualTo(expectedValue));
             
     [<TestCaseSource("astPlotTestCases")>]
