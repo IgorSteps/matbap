@@ -1,10 +1,12 @@
-﻿using Moq;
+﻿using Engine;
+using Moq;
 using FSharpASTNode = Engine.Types.Node;
 
 namespace app.Test.Unit
 {
     public class ExpressionEvaluatingService_test
     {
+        private Mock<IFSharpASTGetterWrapper> _mockASTGetter;
         private Mock<IValidator> _mockValidator;
         private Mock<ISymbolTableManager> _mockSymbolTableManager;
         private Mock<IFSharpEvaluatorWrapper> _mockExpressionEvaluator;
@@ -15,12 +17,14 @@ namespace app.Test.Unit
         [SetUp]
         public void Setup()
         {
+            _mockASTGetter = new Mock<IFSharpASTGetterWrapper>();
             _mockValidator = new Mock<IValidator>();
             _mockSymbolTableManager = new Mock<ISymbolTableManager>();
             _mockExpressionEvaluator = new Mock<IFSharpEvaluatorWrapper>();
             _mockExpressionManager = new Mock<IExpressionManager>();
             _mockConverter = new Mock<IASTConverter>();
             _service = new ExpressionEvaluatingService(
+                _mockASTGetter.Object,
                 _mockValidator.Object,
                 _mockSymbolTableManager.Object,
                 _mockExpressionEvaluator.Object,

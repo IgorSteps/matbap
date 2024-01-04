@@ -22,7 +22,7 @@ open NUnit.Framework
                 }
             ]
 
-            [<TestCaseSource("GetASTTests")>]
+            [<TestCaseSource("testCases")>]
             member this.Test_GetAST_HappyPath(tc:GetASTTestCaseHappy)=
                 // --------
                 // Assemble
@@ -44,12 +44,12 @@ open NUnit.Framework
 
             static member errorTestCases: GetASTTestCaseUnhappy list = [
                 {
-                    Args = "1a"
-                    Expected = "Error"
+                    Args = "@"
+                    Expected = "Invalid Token at token position 1: @"
                 }
             ]
 
-            [<TestCaseSource("GetASTTests")>]
+            [<TestCaseSource("errorTestCases")>]
             member this.Test_GetAST_UnhappyPath(tc:GetASTTestCaseUnhappy)=
                 // --------
                 // Assemble

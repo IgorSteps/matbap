@@ -13,17 +13,27 @@ namespace app.Test.Functional
             // --------
             // ASSEMBLE
             // --------
+            var expression = "x=5";
+
+            // F# wrappers.
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+
+            // C# wrappers.
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+
             var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
             var validator = new ValidationService();
-            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+
+            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+
             var viewModel = new ExpressionViewModel(service);
-            viewModel.Expression = "x=5";
+            viewModel.Expression = expression;
             string nextExpression = "5+x";
 
             // ---
@@ -50,17 +60,27 @@ namespace app.Test.Functional
             // --------
             // ASSEMBLE
             // --------
+            var expression = "x=5";
+
+            // F# wrappers.
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+
+            // C# wrappers.
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+
             var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
-            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
             var validator = new ValidationService();
-            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+
+            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+
             var viewModel = new ExpressionViewModel(service);
-            viewModel.Expression = "x=5";
+            viewModel.Expression = expression;
             string nextVariable = "y=5";
             string nextExpression = "5+x";
 
@@ -91,17 +111,27 @@ namespace app.Test.Functional
             // --------
             // ASSEMBLE
             // --------
+            var expression = "x=5";
+
+            // F# wrappers.
+            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+
+            // C# wrappers.
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+
             var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
-            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
             var validator = new ValidationService();
-            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+
+            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+
             var viewModel = new ExpressionViewModel(service);
-            viewModel.Expression = "x=5";
+            viewModel.Expression = expression;
             string nextVariable = "x=10";
             string nextExpression = "5+x";
 
