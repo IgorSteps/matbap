@@ -275,7 +275,7 @@ type AstEvaluatorTests () =
 
     [<TestCaseSource("astEvaluatorTestCases")>]
     // Check evaluator test cases
-    member this._Test_Evaluator_Pass(testCase: AstEvaluatorTestCase) =
+    member this._Test_AST_Evaluator_Pass(testCase: AstEvaluatorTestCase) =
         // Assemble
         let args = testCase.Args
         let expected = testCase.Expected
@@ -307,7 +307,7 @@ type AstEvaluatorTests () =
             
     [<TestCaseSource("astPlotTestCases")>]
     // Check evaluator test cases
-    member this._Test_Plot_Pass(testCase: PlotTestCase) =
+    member this.Test_AST_Plot_Pass(testCase: PlotTestCase) =
         // Assemble
         let expected = testCase.Expected
   
