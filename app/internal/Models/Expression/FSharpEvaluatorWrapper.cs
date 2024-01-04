@@ -1,13 +1,17 @@
-﻿namespace app
+﻿using FSharpASTNode = Engine.Types.Node;
+
+namespace app
 {
     public struct FSharpEvaluationResult
     {
-        public string EvaluationResult { get; private set; }
+        public string Answer { get; private set; }
+        public FSharpASTNode FSharpAST { get; private set; }
         public Error Error { get; private set; }
         public readonly bool HasError => Error != null;
-        public FSharpEvaluationResult(string answer, Error err)
+        public FSharpEvaluationResult(string answer, FSharpASTNode ast, Error err)
         {
-            EvaluationResult = answer;
+            Answer = answer;
+            FSharpAST = ast;
             Error = err;
         }
     }
@@ -29,11 +33,10 @@
             var result = _fsharpEvaluator.Eval(expression, symbolTable.Table);
             if (result.IsError)
             {
-                return new FSharpEvaluationResult(null, new Error(result.ErrorValue));
+                return new FSharpEvaluationResult(null, null, new Error(result.ErrorValue));
             }
            
-
-            return new FSharpEvaluationResult(result.ResultValue.Item1, null);
+            return new FSharpEvaluationResult(result.ResultValue.Item1, result.ResultValue.Item3, null);
         }
     }
 }

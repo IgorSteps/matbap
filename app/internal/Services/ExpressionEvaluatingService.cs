@@ -73,7 +73,7 @@ namespace app
 
             expression.FSharpAST = TemporarySetAst(input);
 
-            return new ExpressionEvaluatingServiceResult(result.EvaluationResult, null);
+            return new ExpressionEvaluatingServiceResult(result.Answer, null);
         }
 
         public ExpressionEvaluatingServiceResult Differentiate(string input) 
