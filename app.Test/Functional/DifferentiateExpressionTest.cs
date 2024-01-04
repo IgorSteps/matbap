@@ -43,7 +43,7 @@
             // ASSERT
             // ------ 
             // We check F# engine returns a string to make sure our GUI output is a clear string.
-            Assert.That(viewModel.Answer, Is.EqualTo("2 * x ^ 1"), "Answer doesn't match expected");
+            Assert.That(viewModel.Answer, Is.EqualTo("2*x^1"), "Answer doesn't match expected");
         }
     }
 }
