@@ -1,8 +1,4 @@
-﻿using Microsoft.Msagl.Core.DataStructures;
-using Microsoft.Msagl.Drawing;
-using Microsoft.Msagl.Layout.LargeGraphLayout;
-using System;
-using System.Collections.Generic;
+﻿using Microsoft.Msagl.Drawing;
 using FSharpASTNode = Engine.Types.Node; // Alias F# node type for better readiblity.
 using FSharpNumType = Engine.Types.NumType; // Alias F# num type for better readiblity.
 
