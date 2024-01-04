@@ -1,9 +1,4 @@
-﻿using GraphX.Controls;
-using GraphX.Logic.Models;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Msagl.Drawing;
-
-using QuickGraph;
+﻿using Microsoft.Msagl.Drawing;
 using System.Windows;
 
 
@@ -14,13 +9,11 @@ namespace app
     /// </summary>
     public partial class ASTWindow : Window
     {
-        public ASTWindow()
+        public ASTWindow(Graph graph)
         {
             InitializeComponent();
-            var viewModel = App.Current.Services.GetService<ASTViewModel>();
-            DataContext = viewModel;
 
-            gViewer.Graph = viewModel.Graph;
+            gViewer.Graph = graph;
         }
 
     }

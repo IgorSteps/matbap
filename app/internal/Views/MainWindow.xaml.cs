@@ -14,15 +14,5 @@ namespace app
             InitializeComponent();
             DataContext = App.Current.Services.GetService<ExpressionViewModel>();
         }
-     
-
-        private void OpenASTVisualisationClick(object sender, RoutedEventArgs e)
-        {
-            ASTWindow astWindow = new ASTWindow();
-            astWindow.Show();
-        }
     }
-
-
-
 }

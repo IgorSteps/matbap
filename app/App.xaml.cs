@@ -36,6 +36,7 @@ namespace app
             // F# Evaluator Wrappers.
             services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
             services.AddTransient<Engine.IDifferentiator, Engine.DifferentiatorWrapper>();
+            services.AddTransient<Engine.IASTGetter, Engine.ASTGetterWrapper>();   
 
             // Managers.
             services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
@@ -47,7 +48,8 @@ namespace app
             // C# Wrappers.
             services.AddSingleton<IFSharpFunctionEvaluatorWrapper, FSharpFunctionEvaluatiorWrapper>();
             services.AddSingleton<IFSharpDifferentiatorWrapper, FSharpDifferentiatorWrapper>();
-            
+            services.AddSingleton<IFSharpASTGetterWrapper, FSharpASTGetterWrapper>();
+
             // Services.
             services.AddSingleton<IASTConverter, ASTManager>();
             services.AddSingleton<IPlotter, PlottingService>();
@@ -59,7 +61,6 @@ namespace app
             services.AddTransient<ExpressionViewModel>();
             services.AddTransient<HelpViewModel>();
             services.AddTransient<PlotViewModel>();
-            services.AddTransient<ASTViewModel>();
 
             return services.BuildServiceProvider();
         }

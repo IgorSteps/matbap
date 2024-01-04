@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using Microsoft.Msagl.Drawing;
+using static app.ASTManager;
 using FSharpAST = Engine.Types.Node;
 
 namespace app
@@ -14,8 +15,22 @@ namespace app
             Error = err;
         }
     }
+
+    public struct VisualiseASTResult
+    {
+        public Graph AST { get; private set; }
+        public Error Error { get; private set; }
+        public readonly bool HasError => Error != null;
+        public VisualiseASTResult(Graph ast, Error err)
+        {
+            AST = ast;
+            Error = err;
+        }
+    }
+
     public class ExpressionEvaluatingService : IEvaluator
     {
+        private readonly IFSharpASTGetterWrapper _astGetter;
         private readonly IValidator _validator;
         private readonly ISymbolTableManager _symbolTableManager;
         private readonly IFSharpEvaluatorWrapper _expressionEvaluator;
@@ -23,6 +38,7 @@ namespace app
         private readonly IASTConverter _astConverter;
 
         public ExpressionEvaluatingService(
+                IFSharpASTGetterWrapper astGetter,
                 IValidator validator,
                 ISymbolTableManager symbolTableManager,
                 IFSharpEvaluatorWrapper expressionEvaluator,
@@ -30,6 +46,7 @@ namespace app
                 IASTConverter converter
             )
         {
+            _astGetter = astGetter;
             _validator = validator;
             _symbolTableManager = symbolTableManager;
             _expressionEvaluator = expressionEvaluator;
@@ -78,10 +95,40 @@ namespace app
             }
 
             expression.FSharpAST = result.AST;
-            expression.CSharpAST = _astConverter.Convert(expression.FSharpAST);
-            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
+            var convertionResult = _astConverter.Convert(expression.FSharpAST);
+            if (convertionResult.HasError)
+            {
+                return new ExpressionEvaluatingServiceResult(null, convertionResult.Error);
+            }
+
+            expression.CSharpAST = convertionResult.AST;
+            var derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
             return new ExpressionEvaluatingServiceResult(derivative, null);
+        }
+
+        public VisualiseASTResult VisualiseAST(string expression)
+        {
+            Error err = _validator.ValidateExpressionInputIsNotNull(expression);
+            if (err != null)
+            {
+                return new VisualiseASTResult(null, err);
+            }
+
+            var result = _astGetter.GetAST(expression);
+            if(result.HasError)
+            {
+                return new VisualiseASTResult(null, result.Error);
+            }
+
+            var convetionResult = _astConverter.Convert(result.AST);
+            if (convetionResult.HasError)
+            {
+                return new VisualiseASTResult(null, convetionResult.Error);
+            }
+            var graphAST = _astConverter.ConvertAstToGraph(convetionResult.AST);
+
+            return new VisualiseASTResult(graphAST, null);
         }
 
         // @TODO: Refactor once Evaluator is switched to AST Evaluator.

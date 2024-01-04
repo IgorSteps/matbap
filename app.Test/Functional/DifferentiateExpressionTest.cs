@@ -11,16 +11,26 @@
             // --------
             // ASSEMBLE
             // --------
+            
+            var expression = "x^2";
+            
+            // F# wrappers.
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
             Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+            
+            // C# wrappers.
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
-            var expression = "x^2";
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+
             var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
             var converter = new ASTManager();
             var validator = new ValidationService();
-            var service = new ExpressionEvaluatingService(validator, symTableManager, evaluator, manager, converter);
+
+            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+            
             var viewModel = new ExpressionViewModel(service);
             viewModel.Expression = expression;
 
@@ -33,7 +43,7 @@
             // ASSERT
             // ------ 
             // We check F# engine returns a string to make sure our GUI output is a clear string.
-            Assert.That(viewModel.Answer, Is.EqualTo("2 * x ^ 1"), "Answer doesn't match expected");
+            Assert.That(viewModel.Answer, Is.EqualTo("2*x^1"), "Answer doesn't match expected");
         }
     }
 }
