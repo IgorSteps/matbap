@@ -71,7 +71,7 @@ namespace app
                 return new ExpressionEvaluatingServiceResult(null, result.Error);
             }
 
-            expression.FSharpAST = TemporarySetAst(input);
+            expression.FSharpAST = result.FSharpAST;
 
             return new ExpressionEvaluatingServiceResult(result.Answer, null);
         }
