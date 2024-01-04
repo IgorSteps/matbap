@@ -10,7 +10,7 @@
             // --------
             SymbolTableManager manager = new SymbolTableManager();
             SymbolTable testSymTable = new SymbolTable();
-            testSymTable.Table.Add("test key", Engine.Parser.NumType.NewInt(1));
+            testSymTable.Table.Add("test key", Engine.Types.NumType.NewInt(1));
             manager.UpdateSymbolTable(testSymTable.Table);
 
             // ----
@@ -33,7 +33,7 @@
             SymbolTableManager manager = new SymbolTableManager();
             
             SymbolTable testSymTable = new SymbolTable();
-            testSymTable.Table.Add("test key", Engine.Parser.NumType.NewInt(1));
+            testSymTable.Table.Add("test key", Engine.Types.NumType.NewInt(1));
 
             // ----
             // ACT

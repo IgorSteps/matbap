@@ -4,7 +4,7 @@ namespace app
 {
     public interface ISymbolTableManager
     {
-        public void UpdateSymbolTable(Dictionary<string, Engine.Parser.NumType> newTable);
+        public void UpdateSymbolTable(Dictionary<string, Engine.Types.NumType> newTable);
         public SymbolTable GetSymbolTable();
     }
 }
