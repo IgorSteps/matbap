@@ -14,11 +14,5 @@ namespace app
             InitializeComponent();
             DataContext = App.Current.Services.GetService<ExpressionViewModel>();
         }
-     
-
-       
     }
-
-
-
 }
