@@ -2,23 +2,22 @@
     module ASTEvaluator =
         open Types
         open System.Collections.Generic
-        
         type SymbolTable = Dictionary<string, NumType>
         // Functions for evaluating
-        let rec private startEvalTree (topNode : Node) (symTable : SymbolTable) : Result<Node*SymbolTable, string> =
+        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable, string> =
             match topNode with
             | VariableAssignment (varName, innerNode) -> setVar varName innerNode symTable
-            | _ -> match evalTree topNode symTable with
-                   | Ok node -> Ok (node, symTable)
+            | _ -> match evalNum topNode symTable with
+                   | Ok num -> Ok ("", num, symTable)
                    | Error e -> Error e
             
-        and private setVar (varName : string) (topNode : Node) (symTable : SymbolTable) : Result<Node*SymbolTable, string> =
+        and private setVar (varName : string) (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable, string> =
             match evalNum topNode symTable with
             | Ok num -> match symTable.ContainsKey varName with
                         | true  -> symTable[varName] <- num
-                                   Ok (Number num, symTable)
+                                   Ok (varName, num, symTable)
                         | false -> symTable.Add(varName, num)
-                                   Ok (Number num, symTable)
+                                   Ok (varName, num, symTable)
             | Error e -> Error e
             
         and private evalTree (node : Node) (symTable : SymbolTable) : Result<Node, string> =
@@ -41,13 +40,12 @@
             | _ -> Error "Found an unexpected node in the syntax tree."
          
         and private evalNum (node : Node) (symTable : SymbolTable) : Result<NumType, string> =
-            // Helper function to eval a node and extract a number
+            // Helper function to eval a node and then extract a number
             match evalTree node symTable with
             | Ok node -> match node with
                          | Number num -> Ok num
                          | _ -> Error "Evaluation result wasn't a number!"
             | Error e -> Error e
-            // These errors won't be seen normally since the function that calls this doesn't check the string
          
         and private evalBinaryOp (op : string, a : Node, b : Node) (symTable : SymbolTable) : Result<Node, string> =
             // This can probably be rewritten in a better way, but the NumType returned still needs to be different. We
@@ -101,25 +99,22 @@
                      | _,            Error e      -> Error e
             | _   -> Error "Unknown operator in AST evaluation."
         
-        // Functions for handling evaluation
+        // Helper functions for handling evaluation
         let private getStrFromLexerError (err : Tokeniser.LexicalError) : string =
             match err with
                 | Tokeniser.InvalidFloat str -> str
                 | Tokeniser.InvalidToken str -> str
-
         let private parse (tokens: Tokeniser.Token list) : Result<Node,string> =
             match ASTParser.parse tokens with
             | Error parseError  -> Error parseError
             | Ok tokens         -> Ok tokens
             
-        let debug(exp : string) =
-            match Tokeniser.tokenise exp with
-            | Ok tokens -> Ok (parse tokens)
-            | Error e -> Error e
-
-        let eval (exp : string) (symTable : SymbolTable) =
+        // Evaluation function
+        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
-                           | Ok tree -> evalTree tree symTable
+                           | Ok tree -> match topEvalTree tree symTable with
+                                        | Ok (str, num, symTable) -> Ok ((str, num), symTable, tree)
+                                        | Error e            -> Error e
                            | Error e -> Error e
             | Error e -> Error (getStrFromLexerError e)
