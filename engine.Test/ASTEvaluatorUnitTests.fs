@@ -6,11 +6,11 @@ open System.Collections.Generic
 open Types
 
 type SymbolTable = Dictionary<string, NumType>
-type EvaluatorTestCase = {
+type AstEvaluatorTestCase = {
     Args: string;
     Expected: Result<(string*NumType) * SymbolTable, string>;
 }
-type PlotTestCase = {
+type AstPlotTestCase = {
     Min: float;
     Max: float;
     Step: float;
@@ -18,13 +18,13 @@ type PlotTestCase = {
     Expected: Result<float array array, string>;
 }
 
-module Helper = 
+module AstHelper = 
     let createDictionary (vName: string) (tVal: NumType) = dict [vName, tVal] |> Dictionary
 
 [<TestFixture>]
 [<DefaultFloatingPointTolerance(0.0000000001)>]
-type EvaluatorTests () =
-    static member evaluatorTestCases: EvaluatorTestCase list = [
+type AstEvaluatorTests () =
+    static member evaluatorTestCases: AstEvaluatorTestCase list = [
        {
             // Basic addition
             Args = "2+10"
@@ -201,23 +201,23 @@ type EvaluatorTests () =
        {
             // Basic variable assignment with integer
             Args = "x=3"
-            Expected = Ok (("x", Int 3), (Helper.createDictionary "x" (Int 3)))
+            Expected = Ok (("x", Int 3), (AstHelper.createDictionary "x" (Int 3)))
        }
        {
             // Basic variable assignment with float
             Args = "var1=5.0"
-            Expected = Ok (("var1", Float 5), (Helper.createDictionary "var1" (Float 5)))
+            Expected = Ok (("var1", Float 5), (AstHelper.createDictionary "var1" (Float 5)))
        }
        {
             // Assignment with float and int
             Args = "var2=5.5+2"
-            Expected = Ok (("var2", Float 7.5), (Helper.createDictionary "var2" (Float 7.5)))
+            Expected = Ok (("var2", Float 7.5), (AstHelper.createDictionary "var2" (Float 7.5)))
 
        }
        {
             // Negative brackets assignment
             Args = "y=-(6+11)"
-            Expected = Ok (("y", Int -17), (Helper.createDictionary "y" (Int -17)))
+            Expected = Ok (("y", Int -17), (AstHelper.createDictionary "y" (Int -17)))
 
        }
     ]
@@ -275,7 +275,7 @@ type EvaluatorTests () =
 
     [<TestCaseSource("astEvaluatorTestCases")>]
     // Check evaluator test cases
-    member this._Test_Evaluator_Pass(testCase: EvaluatorTestCase) =
+    member this._Test_Evaluator_Pass(testCase: AstEvaluatorTestCase) =
         // Assemble
         let args = testCase.Args
         let expected = testCase.Expected
