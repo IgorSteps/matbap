@@ -282,7 +282,7 @@ type AstEvaluatorTests () =
         let symTable = Dictionary<string, NumType>()
   
         // Act
-        let actual = ASTEvaluator.eval args symTable
+        let actual = ASTEvaluator.eval args symTable false
 
         // Assert correct non-value returns
         let expectedReturn = match expected with

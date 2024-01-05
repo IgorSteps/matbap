@@ -20,7 +20,7 @@ namespace Engine
                 | (varName, Parser.Int i), symTable     -> Ok((varName + " = " + string i), symTable)
                 | (varName, Parser.Float f), symTable   -> Ok((varName + " = " + string f), symTable)
 
-        let eval(exp : string) (symTable: SymbolTable) : Result<string * SymbolTable, string>  =
+        let eval(exp : string) (symTable: SymbolTable): Result<string * SymbolTable, string>  =
             match Tokeniser.tokenise exp with
             // Must return a result to C# app as the return type is different whether it fails or succeeds.
             | Error e   -> Error (getStrFromLexerError(e))
