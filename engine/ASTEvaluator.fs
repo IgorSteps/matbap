@@ -3,9 +3,9 @@
         open Types
         open System.Collections.Generic
         type SymbolTable = Dictionary<string, NumType>
-        type points = (float * float) list
+        type Points = (float * float) list
         // Functions for evaluating
-        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable*points, string> =
+        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable*Points, string> =
             match topNode with
             | VariableAssignment (varName, innerNode) -> match setVar varName innerNode symTable with
                                                          | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
@@ -29,7 +29,7 @@
                                    Ok (varName, num, symTable)
             | Error e -> Error e
         
-        and private evalForLoop (varName: string) (xmax: Node) (xstep: Node) (expr: Node) (symTable: SymbolTable) (points : points) =
+        and private evalForLoop (varName: string) (xmax: Node) (xstep: Node) (expr: Node) (symTable: SymbolTable) (points : Points) =
             let currentX = match symTable[varName] with
                            | Int   x -> float x
                            | Float x -> x
@@ -67,6 +67,7 @@
             | Variable varName                -> match symTable.ContainsKey varName with
                                                  | true  -> Ok (Number symTable[varName])
                                                  | false -> Error "Evaluation error: variable identifier not found."
+            | Function(funcName, expr)        -> evalFunction funcName expr symTable
             | _ -> Error "Evaluation error: unexpected node found."
          
         and private evalNum (node : Node) (symTable : SymbolTable) : Result<NumType, string> =
@@ -76,7 +77,24 @@
                          | Number num -> Ok num
                          | _ -> Error "Evaluation error: operation result wasn't a number!"
             | Error e -> Error e
-         
+
+        and private evalFunction (funcName: string) (expr: Node) (symTable: SymbolTable) =
+            let num = match evalTree expr symTable with
+                      | Ok (Number (Int n))   -> Ok (float n)
+                      | Ok (Number (Float n)) -> Ok (float n)
+                      | Error err             -> Error err
+                      | _                     -> Error "Evaluation error: unexpected error at function evaluation"
+            match num with
+            | Ok n -> 
+                match funcName with
+                | "sin" -> Ok (Number(Float(sin n)))
+                | "cos" -> Ok (Number(Float(cos n)))
+                | "tan" -> Ok (Number(Float(tan n)))
+                | "log" -> Ok (Number(Float(log n)))
+                | "exp" -> Ok (Number(Float(exp n)))
+                | _     -> Error "Evaluation error: Not a supported function"
+            | Error err                                  -> Error err
+
         and private evalBinaryOp (op : string, a : Node, b : Node) (symTable : SymbolTable) : Result<Node, string> =
             // This can probably be rewritten in a better way, but the NumType returned still needs to be different. We
             // could potentially test whether the value returned by the operator is either int or float, but that might
@@ -148,7 +166,7 @@
             | Error parseError  -> Error parseError
             
         // Evaluation function. Does not return a string for C# - use evalToString for that
-        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*points*SymbolTable*Node, string> =
+        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*Points*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
                            | Ok tree -> match topEvalTree tree symTable with

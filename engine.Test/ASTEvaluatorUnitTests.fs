@@ -6,10 +6,10 @@ open System.Collections.Generic
 open Types
 
 type SymbolTable = Dictionary<string, NumType>
-type points      = (float * float) list
+type Points      = (float * float) list
 type AstEvaluatorTestCase = {
     Args: string;
-    Expected: Result<(string*NumType) * points * SymbolTable, string>;
+    Expected: Result<(string*NumType) * Points * SymbolTable, string>;
 }
 type AstPlotTestCase = {
     Min: float;
@@ -225,6 +225,12 @@ type AstEvaluatorTests () =
             // For loop points
             Args = "for x in range(1,5): 2*x + 1"
             Expected = Ok (("", Int 0), [(1.0, 3.0); (2.0, 5.0); (3.0, 7.0); (4.0,9.0); (5.0, 11.0)], SymbolTable())
+
+       }
+       {
+            // For loop points with function call
+            Args = "for x in range(0,1): sin(x)"
+            Expected = Ok (("", Int 0), [(0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
 
        }
     ]
