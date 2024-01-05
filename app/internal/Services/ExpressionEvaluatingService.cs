@@ -1,4 +1,5 @@
 ﻿using Microsoft.Msagl.Drawing;
+using OxyPlot;
 using static app.ASTManager;
 using FSharpAST = Engine.Types.Node;
 
@@ -7,11 +8,13 @@ namespace app
     public struct ExpressionEvaluatingServiceResult
     {
         public string Result { get; private set; }
+        public Expression Expression { get; private set; }
         public Error Error { get; private set; }
         public readonly bool HasError => Error != null;
-        public ExpressionEvaluatingServiceResult(string res, Error err) 
+        public ExpressionEvaluatingServiceResult(string res, Expression exp, Error err) 
         {
             Result = res;
+            Expression = exp;
             Error = err;
         }
     }
@@ -59,7 +62,7 @@ namespace app
             Error err = _validator.ValidateExpressionInputIsNotNull( input );
             if (err != null)
             {
-                return new ExpressionEvaluatingServiceResult(null, err);
+                return new ExpressionEvaluatingServiceResult(null, null, err);
             }
 
             Expression expression = _expressionManager.CreateExpression(input);
@@ -68,12 +71,17 @@ namespace app
             var result = _expressionEvaluator.Evaluate(expression.Value, symbolTable);
             if (result.HasError)
             {
-                return new ExpressionEvaluatingServiceResult(null, result.Error);
+                return new ExpressionEvaluatingServiceResult(null, null, result.Error);
+            }
+
+            if (result.Points != null)
+            {
+                expression.Points = result.Points;
             }
 
             expression.FSharpAST = result.FSharpAST;
 
-            return new ExpressionEvaluatingServiceResult(result.Answer, null);
+            return new ExpressionEvaluatingServiceResult(result.Answer, expression, null);
         }
 
         public ExpressionEvaluatingServiceResult Differentiate(string input) 
@@ -81,7 +89,7 @@ namespace app
             Error err = _validator.ValidateExpressionInputIsNotNull(input);
             if (err != null)
             {
-                return new ExpressionEvaluatingServiceResult(null, err);
+                return new ExpressionEvaluatingServiceResult(null, null, err);
             }
 
             Expression expression = _expressionManager.CreateExpression(input);
@@ -91,20 +99,20 @@ namespace app
             var result = _expressionManager.Differentiate(expression);
             if (result.HasError)
             {
-                return new ExpressionEvaluatingServiceResult(null, result.Error);
+                return new ExpressionEvaluatingServiceResult(null, null, result.Error);
             }
 
             expression.FSharpAST = result.AST;
             var convertionResult = _astConverter.Convert(expression.FSharpAST);
             if (convertionResult.HasError)
             {
-                return new ExpressionEvaluatingServiceResult(null, convertionResult.Error);
+                return new ExpressionEvaluatingServiceResult(null, null, convertionResult.Error);
             }
 
             expression.CSharpAST = convertionResult.AST;
             string derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
-            return new ExpressionEvaluatingServiceResult(derivative, null);
+            return new ExpressionEvaluatingServiceResult(derivative, expression, null);
         }
 
         public VisualiseASTResult VisualiseAST(string expression)
