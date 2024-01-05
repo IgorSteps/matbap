@@ -1,4 +1,4 @@
-﻿using RawSymTable = System.Collections.Generic.Dictionary<string, Engine.Parser.NumType>;
+﻿using RawSymTable = System.Collections.Generic.Dictionary<string, Engine.Types.NumType>;
 
 namespace app.Test.Unit
 {
@@ -31,7 +31,7 @@ namespace app.Test.Unit
             SymbolTable testSymTable = new SymbolTable();
             RawSymTable rawTable = new RawSymTable()
             {
-                { "test key", Engine.Parser.NumType.NewInt(1) }
+                { "test key", Engine.Types.NumType.NewInt(1) }
             };
 
             // ----

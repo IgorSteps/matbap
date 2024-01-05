@@ -1,7 +1,7 @@
 ﻿using Engine;
 using Microsoft.FSharp.Core;
 using Moq;
-using System;
+using FSharpASTNode = Engine.Types.Node;
 
 namespace app.Test.Unit
 {
@@ -25,8 +25,9 @@ namespace app.Test.Unit
             // --------
             string expression = "1+1";
             SymbolTable sTable = new SymbolTable();
-            var tuple = Tuple.Create("2", sTable.Table);
-            var successResult = FSharpResult<Tuple<string, Dictionary<string, Parser.NumType>>, string>.NewOk(tuple);
+            var sampleAST = FSharpASTNode.NewVariable(expression);
+            var tuple = Tuple.Create("2", sTable.Table, sampleAST);
+            var successResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewOk(tuple);
 
             _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(successResult);
 
@@ -40,7 +41,8 @@ namespace app.Test.Unit
             // ------
             Assert.That(result.HasError, Is.False, "Shouldn't have an error");
             Assert.That(result.Error, Is.Null, "Error must be null");
-            Assert.That(result.EvaluationResult, Is.EqualTo("2"), "Answers don't match");
+            Assert.That(result.Answer, Is.EqualTo("2"), "Answers don't match");
+            Assert.That(result.FSharpAST, Is.EqualTo(sampleAST), "ASTs don't match");
         }
 
         [Test]
@@ -52,9 +54,9 @@ namespace app.Test.Unit
             string expression = "1+1";
             SymbolTable sTable = new SymbolTable();
             string error = "Boom";
-            var errorResult = FSharpResult<Tuple<string, Dictionary<string, Parser.NumType>>, string>.NewError(error);
+            var errorResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewError(error);
 
-            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
+           _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
 
             // -----
             // ACT
@@ -67,7 +69,8 @@ namespace app.Test.Unit
             Assert.That(result.HasError, Is.True, "Error boolean must be true");
             Assert.That(result.Error, Is.Not.Null, "Error must not be null");
             Assert.That(result.Error.Message, Is.EqualTo(error), "Error's don't match");
-            Assert.That(result.EvaluationResult, Is.Null, "Answer must be null");
+            Assert.That(result.Answer, Is.Null, "Answer must be null");
+            Assert.That(result.FSharpAST, Is.Null, "AST must be null");
         }
     }
 }

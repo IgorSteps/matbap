@@ -46,16 +46,5 @@
 
             return new FunctionEvaluationResult(result.Points, null);
         }
-
-        // @TODO: Switch with implementation in F#.
-        public double TakeDerivative(double x, string function) 
-        {
-            double h = 1e-5; // A small number for the central difference calculation
-            // Error checking is missing.
-            double yPlus = Evaluate(function, x + h, x + h, 1).Points[0][1];
-            double yMinus = Evaluate(function, x - h, x - h, 1).Points[0][1];
-
-            return (yPlus - yMinus) / (2 * h);
-        }
     }
 }

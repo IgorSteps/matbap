@@ -1,18 +1,21 @@
 ﻿using Moq;
 using OxyPlot;
+using FSharpAST = Engine.Types.Node;
 
 namespace app.Test.Unit
 {
     public class TangentManager_test
     {
         private Mock<IFSharpFunctionEvaluatorWrapper> _evaluator;
+        private Mock<IEvaluator> _evaluatorService;
         private TangentManager _tangentManager;
 
         [SetUp]
         public void Setup()
         {
             _evaluator = new Mock<IFSharpFunctionEvaluatorWrapper>();
-            _tangentManager = new TangentManager(_evaluator.Object);
+            _evaluatorService = new Mock<IEvaluator>();
+            _tangentManager = new TangentManager(_evaluator.Object, _evaluatorService.Object);
         }
 
         [Test]
@@ -21,7 +24,7 @@ namespace app.Test.Unit
             // --------
             // ASSEMBLE
             // --------
-            double x = 2, y =4, slope = 4;
+            double x = 2, y = 4, slope = 4;
             string function = "x^2";
             double[][] testPoints = new[]
             {
@@ -30,8 +33,13 @@ namespace app.Test.Unit
             var evaluationResult = new FunctionEvaluationResult(testPoints, null);
 
             _evaluator.Setup(e => e.EvaluateAtPoint(x, function)).Returns(evaluationResult);
-            _evaluator.Setup(e => e.TakeDerivative(x, function)).Returns(slope);
 
+            var diffResult = new ExpressionEvaluatingServiceResult("2x", null);
+            _evaluatorService.Setup(e => e.Differentiate(function)).Returns(diffResult);
+
+            var diffEvaluateAtPointResult = new FunctionEvaluationResult(testPoints, null);
+            _evaluator.Setup(e => e.EvaluateAtPoint(x, "2x")).Returns(evaluationResult);
+            
             // --------
             // ACT
             // --------
