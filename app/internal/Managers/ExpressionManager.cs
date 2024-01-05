@@ -1,4 +1,7 @@
-﻿namespace app
+﻿using OxyPlot.Series;
+using OxyPlot;
+
+namespace app
 {
     public class ExpressionManager : IExpressionManager
     {
@@ -22,6 +25,21 @@
             }
 
             return new FSharpDifferentiationResult(result.AST, null);
+        }
+
+        public LineSeries GetLineSeriesFromExpression(Expression expression) 
+        {
+            LineSeries lineSeries = new LineSeries
+            {
+                Title = expression.Value.ToString(),
+            };
+
+            foreach (var point in expression.Points)
+            {
+                lineSeries.Points.Add(new DataPoint(point[0], point[1]));
+            }
+
+            return lineSeries;
         }
     }
 }
