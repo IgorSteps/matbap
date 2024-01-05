@@ -178,10 +178,10 @@
         // Returns evaluation result as a string
         let evalToString (exp : string) (symTable : SymbolTable) : Result<string*SymbolTable*Node, string> =
             match eval exp symTable with
-            | Ok (("", Int num), [], symTable, tree)        -> Ok (string num, symTable, tree)
-            | Ok (("", Float num), [], symTable, tree)      -> Ok (string num, symTable, tree)
-            | Ok ((varName, Int num), [], symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
-            | Ok ((varName, Float num), [], symTable, tree) -> Ok (varName+" = "+string num, symTable, tree)
+            | Ok (("", Int num), _, symTable, tree)        -> Ok (string num, symTable, tree)
+            | Ok (("", Float num), _, symTable, tree)      -> Ok (string num, symTable, tree)
+            | Ok ((varName, Int num), _, symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
+            | Ok ((varName, Float num), _, symTable, tree) -> Ok (varName+" = "+string num, symTable, tree)
             | Error e -> Error e
             
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
