@@ -162,5 +162,7 @@
         // Parse tokens.
         let parse(tokens : Token list) : Result<Node, string> =
             match parseVariableAssignment tokens with
-            | Ok (ast, _)   -> Ok ast
+            | Ok (ast, remainingTokens)   -> match remainingTokens with
+                                             | [] -> Ok(ast)
+                                             | _  -> Error "Unable to parse the end of the expression"
             | Error err     -> Error err
