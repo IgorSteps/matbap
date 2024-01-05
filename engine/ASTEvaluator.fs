@@ -3,12 +3,21 @@
         open Types
         open System.Collections.Generic
         type SymbolTable = Dictionary<string, NumType>
+        type points = (float * float) list
         // Functions for evaluating
-        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable, string> =
+        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable*points, string> =
             match topNode with
-            | VariableAssignment (varName, innerNode) -> setVar varName innerNode symTable
+            | VariableAssignment (varName, innerNode) -> match setVar varName innerNode symTable with
+                                                         | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
+                                                         | Error err              -> Error err
+            | ForLoop(VariableAssignment(varName, innerNode), xmax, step, expr) ->
+                match setVar varName innerNode symTable with
+                | Ok(_, _, symTable) -> match evalForLoop varName xmax step expr symTable [] with
+                                        | Ok(points) -> Ok("", Int(0), SymbolTable(), points)
+                                        | Error err  -> Error err
+                | Error err -> Error err
             | _ -> match evalNum topNode symTable with
-                   | Ok num -> Ok ("", num, symTable)
+                   | Ok num -> Ok ("", num, symTable, [])
                    | Error e -> Error e
             
         and private setVar (varName : string) (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable, string> =
@@ -19,7 +28,29 @@
                         | false -> symTable.Add(varName, num)
                                    Ok (varName, num, symTable)
             | Error e -> Error e
-            
+        
+        and private evalForLoop (varName: string) (xmax: Node) (xstep: Node) (expr: Node) (symTable: SymbolTable) (points : points) =
+            let currentX = match symTable[varName] with
+                           | Int   x -> float x
+                           | Float x -> x
+            // xmax is always an Int number node
+            let max     =  match xmax with
+                           | Number (Int x)   -> float x
+                           | _                -> 0.0
+            // xstep is always a float number node
+            let step    =  match xstep with
+                           | Number (Float x) -> x
+                           | _                -> 0.0
+            match currentX > max with
+            | true  -> Ok(points)
+            | false -> match topEvalTree expr symTable with
+                       | Ok(_, num, _, _) -> let y = match num with
+                                                     | Int x   -> float x
+                                                     | Float x -> x
+                                             symTable[varName] <- Float(currentX + step)
+                                             evalForLoop varName xmax xstep expr symTable (points@[(currentX, y)])
+                       | Error err     -> Error err
+                      
         and private evalTree (node : Node) (symTable : SymbolTable) : Result<Node, string> =
             match node with
             | BinaryOperation (op, a, b)      -> match evalBinaryOp (op, a, b) symTable with
@@ -117,11 +148,11 @@
             | Error parseError  -> Error parseError
             
         // Evaluation function. Does not return a string for C# - use evalToString for that
-        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*SymbolTable*Node, string> =
+        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*points*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
                            | Ok tree -> match topEvalTree tree symTable with
-                                        | Ok (str, num, symTable) -> Ok ((str, num), symTable, tree)
+                                        | Ok (str, num, symTable, points) -> Ok ((str, num), points, symTable, tree)
                                         | Error e            -> Error e
                            | Error e -> Error e
             | Error e -> Error (getStrFromLexerError e)
@@ -129,10 +160,10 @@
         // Returns evaluation result as a string
         let evalToString (exp : string) (symTable : SymbolTable) : Result<string*SymbolTable*Node, string> =
             match eval exp symTable with
-            | Ok (("", Int num), symTable, tree)        -> Ok (string num, symTable, tree)
-            | Ok (("", Float num), symTable, tree)      -> Ok (string num, symTable, tree)
-            | Ok ((varName, Int num), symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
-            | Ok ((varName, Float num), symTable, tree) -> Ok (varName+" = "+string num, symTable, tree)
+            | Ok (("", Int num), [], symTable, tree)        -> Ok (string num, symTable, tree)
+            | Ok (("", Float num), [], symTable, tree)      -> Ok (string num, symTable, tree)
+            | Ok ((varName, Int num), [], symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
+            | Ok ((varName, Float num), [], symTable, tree) -> Ok (varName+" = "+string num, symTable, tree)
             | Error e -> Error e
             
         // Returns a list of points to plot based on a given minimum, maximum, and step. Step is forced to be positive,
@@ -156,7 +187,7 @@
                 let result = eval exp symTable
                 
                 match result with
-                | Ok ((_, y), _, _) -> points.Add([|x; getFloatFromNum y|])
+                | Ok ((_, y), _, _, _) -> points.Add([|x; getFloatFromNum y|])
                 // If we get an error, needs to be returned instead of the list of plots.
                 // gotError holds this and is checked once we leave the loop. X is set to max in order to break the loop
                 // NOTE: if it's division by zero, skips and does not plot the point, to plot equations such as 1/x
