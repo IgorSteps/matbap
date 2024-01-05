@@ -11,11 +11,26 @@
             // --------
             // ASSEMBLE
             // --------
-            Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
-            PlotManager plotManager = new PlotManager(evaluator);
-            TangentManager tangentManager = new TangentManager(evaluator);
-            ValidationService validator = new ValidationService();
+            // F# wrappers.
+            Engine.EvaluatorWrapper engineEvaluatorWrapper = new Engine.EvaluatorWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+
+            // C# wrappers.
+            FSharpFunctionEvaluatiorWrapper functionEvaluatorWrapper = new FSharpFunctionEvaluatiorWrapper(engineEvaluatorWrapper);
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(engineEvaluatorWrapper);
+
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+
+            var expressionEvaluatorService = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+
+            PlotManager plotManager = new PlotManager(functionEvaluatorWrapper);
+            TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, expressionEvaluatorService);
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager);
             PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager);

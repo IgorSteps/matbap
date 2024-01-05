@@ -11,11 +11,26 @@
             // --------
             // ASSEMBLE
             // --------
+            // F# wrappers.
             Engine.EvaluatorWrapper evaluatorWrapper = new Engine.EvaluatorWrapper();
-            FSharpFunctionEvaluatiorWrapper evaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
-            PlotManager plotManager = new PlotManager(evaluator);
-            TangentManager tangentManager = new TangentManager(evaluator);
-            ValidationService validator = new ValidationService();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+
+            // C# wrappers.
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+
+            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var symTableManager = new SymbolTableManager();
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+
+            var expressionEvaluatingService = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+
+            FSharpFunctionEvaluatiorWrapper functionEvaluator = new FSharpFunctionEvaluatiorWrapper(evaluatorWrapper);
+            PlotManager plotManager = new PlotManager(functionEvaluator);
+            TangentManager tangentManager = new TangentManager(functionEvaluator, expressionEvaluatingService);
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager);
             PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager);
