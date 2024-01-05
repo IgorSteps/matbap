@@ -320,7 +320,7 @@ type AstEvaluatorTests () =
         let expected = testCase.Expected
   
         // Act
-        let actual = Evaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp
+        let actual = ASTEvaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp
 
         // Assert
         match expected, actual with
