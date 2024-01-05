@@ -71,9 +71,9 @@ namespace app
                 return new ExpressionEvaluatingServiceResult(null, result.Error);
             }
 
-            expression.FSharpAST = TemporarySetAst(input);
+            expression.FSharpAST = result.FSharpAST;
 
-            return new ExpressionEvaluatingServiceResult(result.EvaluationResult, null);
+            return new ExpressionEvaluatingServiceResult(result.Answer, null);
         }
 
         public ExpressionEvaluatingServiceResult Differentiate(string input) 
@@ -102,7 +102,7 @@ namespace app
             }
 
             expression.CSharpAST = convertionResult.AST;
-            var derivative = _astConverter.ConvertToString(expression.CSharpAST);
+            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
 
             return new ExpressionEvaluatingServiceResult(derivative, null);
         }

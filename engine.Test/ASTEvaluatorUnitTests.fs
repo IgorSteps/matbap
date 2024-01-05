@@ -220,7 +220,7 @@ type AstEvaluatorTests () =
        }
     ]
     
-    static member astPlotTestCases: PlotTestCase list = [
+    static member astPlotTestCases: AstPlotTestCase list = [
         // Plot test cases.
         // Some of these can be rewritten once implicit multiplication is allowed
         {
@@ -315,7 +315,7 @@ type AstEvaluatorTests () =
             
     [<TestCaseSource("astPlotTestCases")>]
     // Check evaluator test cases
-    member this.Test_AST_Plot_Pass(testCase: PlotTestCase) =
+    member this.Test_AST_Plot_Pass(testCase: AstPlotTestCase) =
         // Assemble
         let expected = testCase.Expected
   

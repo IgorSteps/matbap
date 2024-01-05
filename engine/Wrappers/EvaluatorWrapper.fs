@@ -6,8 +6,8 @@
             
             /// Evaluate mathematical expression.
             member this.Eval(exp, symTable) = 
-                Evaluator.eval exp symTable
+                ASTEvaluator.evalToString exp symTable
 
             /// Evaluate plot function.
             member this.PlotPoints(min, max, step, exp) = 
-                Evaluator.plotPoints min max step exp
+                ASTEvaluator.plotPoints min max step exp
