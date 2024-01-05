@@ -4,9 +4,12 @@
         open System.Collections.Generic
         type SymbolTable = Dictionary<string, NumType>
         // Functions for evaluating
-        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable, string> =
+        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) (plot : bool) : Result<string*NumType*SymbolTable, string> =
             match topNode with
-            | VariableAssignment (varName, innerNode) -> setVar varName innerNode symTable
+            | VariableAssignment (varName, innerNode) -> if plot then
+                                                             Error "Evaluation error: can't assign variables while in plot mode."
+                                                         else
+                                                             setVar varName innerNode symTable
             | _ -> match evalNum topNode symTable with
                    | Ok num -> Ok ("", num, symTable)
                    | Error e -> Error e
@@ -117,10 +120,10 @@
             | Error parseError  -> Error parseError
             
         // Evaluation function. Does not return a string for C# - use evalToString for that
-        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*SymbolTable*Node, string> =
+        let eval (exp : string) (symTable : SymbolTable) (plot : bool) : Result<(string*NumType)*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
-                           | Ok tree -> match topEvalTree tree symTable with
+                           | Ok tree -> match topEvalTree tree symTable plot with
                                         | Ok (str, num, symTable) -> Ok ((str, num), symTable, tree)
                                         | Error e            -> Error e
                            | Error e -> Error e
@@ -128,7 +131,7 @@
             
         // Returns evaluation result as a string
         let evalToString (exp : string) (symTable : SymbolTable) : Result<string*SymbolTable*Node, string> =
-            match eval exp symTable with
+            match eval exp symTable false with
             | Ok (("", Int num), symTable, tree)        -> Ok (string num, symTable, tree)
             | Ok (("", Float num), symTable, tree)      -> Ok (string num, symTable, tree)
             | Ok ((varName, Int num), symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
@@ -153,7 +156,7 @@
             while (x <= max) do
                 // Set x and calculate
                 symTable["x"] <- Float x
-                let result = eval exp symTable
+                let result = eval exp symTable true
                 
                 match result with
                 | Ok ((_, y), _, _) -> points.Add([|x; getFloatFromNum y|])
