@@ -212,13 +212,11 @@ type AstEvaluatorTests () =
             // Assignment with float and int
             Args = "var2=5.5+2"
             Expected = Ok (("var2", Float 7.5), (AstHelper.createDictionary "var2" (Float 7.5)))
-
        }
        {
             // Negative brackets assignment
             Args = "y=-(6+11)"
             Expected = Ok (("y", Int -17), (AstHelper.createDictionary "y" (Int -17)))
-
        }
     ]
     
@@ -271,6 +269,14 @@ type AstEvaluatorTests () =
             Min = 2; Max = 2; Step = 0.25; Exp = "x";
             Expected = Ok [|[|2.0; 2.0|]|];
         }
+        {
+            Min = 3; Max = 4; Step = 1; Exp = "y=x+2";
+            Expected = Error "Evaluation error: can't assign variables while in plot mode."
+        }
+        {
+            Min = 3; Max = 4; Step = 1; Exp = "abcd=efgh";
+            Expected = Error "Evaluation error: can't assign variables while in plot mode."
+        }
     ]
 
     [<TestCaseSource("astEvaluatorTestCases")>]
@@ -282,7 +288,7 @@ type AstEvaluatorTests () =
         let symTable = Dictionary<string, NumType>()
   
         // Act
-        let actual = ASTEvaluator.eval args symTable
+        let actual = ASTEvaluator.eval args symTable false
 
         // Assert correct non-value returns
         let expectedReturn = match expected with
@@ -314,13 +320,12 @@ type AstEvaluatorTests () =
         let expected = testCase.Expected
   
         // Act
-        let actual = Evaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp
+        let actual = ASTEvaluator.plotPoints testCase.Min testCase.Max testCase.Step testCase.Exp
 
         // Assert
         match expected, actual with
         | Ok(expectedPoints), Ok(actualPoints) ->
             Assert.AreEqual(expectedPoints, actualPoints, "Points are not equal")
-
         | Error expectedError, Error actualError ->
             Assert.AreEqual(expectedError, actualError, "Errors are not equal")
         | _ ->
