@@ -50,7 +50,7 @@
             // ------
             // ASSERT
             // ------
-            Assert.That(viewModel.Answer, Is.EqualTo("Error: Error while parsing: Identifier not found"), "Errors don't match");
+            Assert.That(viewModel.Answer, Is.EqualTo("Error: Evaluation error: variable identifier not found."), "Errors don't match");
         }
     }
 }

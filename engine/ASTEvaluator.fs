@@ -184,7 +184,7 @@
             while (x <= max) do
                 // Set x and calculate
                 symTable["x"] <- Float x
-                let result = eval exp symTable
+                let result = eval exp symTable true
                 
                 match result with
                 | Ok ((_, y), _, _, _) -> points.Add([|x; getFloatFromNum y|])

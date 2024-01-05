@@ -16,7 +16,7 @@ namespace app
             return Table;
         }
 
-        public void UpdateSymbolTable(Dictionary<string, Engine.Parser.NumType> newTable)
+        public void UpdateSymbolTable(Dictionary<string, Engine.Types.NumType> newTable)
         {
             Table.UpdateTable(newTable);
         }

@@ -7,6 +7,5 @@
     {
         public FunctionEvaluationResult Evaluate(string equation, double min, double max, double step);
         public FunctionEvaluationResult EvaluateAtPoint(double x, string function);
-        public double TakeDerivative(double x, string function);
     }
 }
