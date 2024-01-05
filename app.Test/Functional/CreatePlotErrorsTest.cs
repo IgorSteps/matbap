@@ -278,7 +278,7 @@ namespace app.Test.Functional
             // ASSERT
             // ------
             Assert.That(plotViewModel.Error, Is.Not.Empty, "Must have an error");
-            Assert.That(plotViewModel.Error, Is.EqualTo("Error: Can't use assignment in plotting mode"), "Errors don't match");
+            Assert.That(plotViewModel.Error, Is.EqualTo("Error: Evaluation error: can't assign variables while in plot mode."), "Errors don't match");
             Assert.That(plotViewModel.OxyPlotModel.Series.Count, Is.EqualTo(0), "Must have 0 line series");
             Assert.That(plotViewModel.SelectedPlot, Is.Null, "Selected plot must be null");
             Assert.That(plotViewModel.Plots.Count, Is.EqualTo(0), "Plots collection count must be 0");
