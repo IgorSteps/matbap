@@ -8,20 +8,26 @@ namespace app
     {
         private readonly IEvaluator _evaluator;
         private string _answer;
-        private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd;
+        private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd, _findRootsCmd;
         private string _expressionValue;
-
+        private double _rootXMin, _rootXMax;
         public ExpressionViewModel(IEvaluator evaluator)
         {
             _evaluator = evaluator;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
             _visualiseASTCmd = new RelayCommand(VisualiseAST);
+            _findRootsCmd = new RelayCommand(FindRoots);
+
+            // Defaults.
+            _rootXMax = -10;
+            _rootXMax = 10;
         }
 
         public RelayCommand EvaluateCmd => _evalauteCmd;
         public RelayCommand DifferentiateCmd => _differentiateCmd;
         public RelayCommand VisualiseCmd => _visualiseASTCmd;
+        public RelayCommand FindRootsCmd => _findRootsCmd;
 
         public string Expression
         {
@@ -33,6 +39,18 @@ namespace app
         {
             get => _answer;
             set => SetProperty(ref _answer, value);
+        }
+
+        public double RootXMin
+        {
+            get => _rootXMin;
+            set => SetProperty(ref _rootXMin, value);
+        }
+
+        public double RootXMax
+        {
+            get => _rootXMax;
+            set => SetProperty(ref _rootXMax, value);
         }
 
         public void Evaluate()
@@ -75,6 +93,18 @@ namespace app
 
             var astWindow = new ASTWindow(result.AST);
             astWindow.Show();
+        }
+
+        public void FindRoots()
+        {
+            var result = _evaluator.FindRoots(_expressionValue, RootXMin, RootXMax);
+            if (result.HasError)
+            {
+                Answer = result.Error.ToString();
+                return;
+            }
+
+            Answer = result.Result;
         }
 
         /// <summary>
