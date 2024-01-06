@@ -30,6 +30,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
 
@@ -103,6 +105,24 @@
                 Margin="10"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>
+            
+            <Button 
+                Grid.Row="8"
+                Content="Find roots"
+                FontSize="20"
+                FontWeight="Bold" 
+                Command="{Binding FindRootsCmd}"
+                Margin="10"
+                Background="#FFC7C7C7"
+                BorderThickness="2"/>
+            
+            <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="5">
+                <Label Content="Root X Min:"/>
+                <TextBox Width="50" Text="{Binding RootXMin, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <Label Content="Root X Max:"/>
+                <TextBox Width="50" Text="{Binding RootXMan, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+            </StackPanel>
+            
         </Grid>
 
         <!-- Plotting Column -->
