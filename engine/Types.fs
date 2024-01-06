@@ -1,5 +1,7 @@
 ﻿namespace Engine
     module Types =
+        open System.Collections.Generic
+
         type NumType =
             | Int of int
             | Float of float
@@ -16,3 +18,7 @@
             | ForLoop of Node * Node * Node * Node
             /// Represents a function like sin(x).
             | Function of string * Node
+
+        type Points = (float * float) list
+
+        type SymbolTable = Dictionary<string, NumType>

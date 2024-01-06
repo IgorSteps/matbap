@@ -5,8 +5,6 @@ open NUnit.Framework
 open System.Collections.Generic
 open Types
 
-type SymbolTable = Dictionary<string, NumType>
-type Points      = (float * float) list
 type AstEvaluatorTestCase = {
     Args: string;
     Expected: Result<(string*NumType) * Points * SymbolTable, string>;

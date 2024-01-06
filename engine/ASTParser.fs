@@ -164,5 +164,7 @@
             match parseVariableAssignment tokens with
             | Ok (ast, remainingTokens)   -> match remainingTokens with
                                              | [] -> Ok(ast)
+                                             | Identifier x :: _ ->
+                                                Error (sprintf "Unable to parse token at end of expression: %s" x)
                                              | _  -> Error "Unable to parse the end of the expression"
             | Error err     -> Error err

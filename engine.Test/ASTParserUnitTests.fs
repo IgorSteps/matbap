@@ -4,7 +4,6 @@ open Engine
 open Engine.Types
 open Engine.ASTParser
 open NUnit.Framework
-open System.Collections.Generic
 
 type ASTParserTestCase = {
     Name: string
@@ -399,7 +398,7 @@ type ASTParserTests() =
         {
             Name = "Testing invalid tokens at the end of an expression: 2xx"
             Args = [Tokeniser.Int 2; Tokeniser.Identifier "x"; Tokeniser.Identifier "x"]
-            Expected = "Unable to parse the end of the expression"
+            Expected = "Unable to parse the end of the expression: xx"
         }
     ]
 
