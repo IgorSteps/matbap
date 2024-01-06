@@ -1,6 +1,7 @@
 ﻿using OxyPlot.Series;
 using OxyPlot;
-using System;
+using FSharpPoints = Microsoft.FSharp.Collections.FSharpList<System.Tuple<double, double>>;
+
 
 namespace app
 {

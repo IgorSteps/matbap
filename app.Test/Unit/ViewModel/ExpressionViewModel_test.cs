@@ -1,29 +1,31 @@
 using Moq;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace app.Test.Unit
 {
     public class Tests
     {
         private app.ExpressionViewModel _viewModel;
-        private Mock<IEvaluator> _evaluatorMock;
+        private Mock<IEvaluator> _evaluatorServiceMock;
 
         [SetUp]
         public void Setup()
         {
-            _evaluatorMock = new Mock<IEvaluator>();
-            _viewModel = new ExpressionViewModel(_evaluatorMock.Object);
+            _evaluatorServiceMock = new Mock<IEvaluator>();
+            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object);
         }
 
         [Test]
         public void Test_ExpressionViewModel_EvaluateCmd_ReceiveAnswerFromEvaluator()
         {
-            // --------
+            // --------  
             // ASSEMBLE
             // --------
             var testInput = "123";
-            var mockResponse = new ExpressionEvaluatingServiceResult(testInput, null);
+            Expression expression = new Expression(testInput);
+            var mockResponse = new ExpressionEvaluatingServiceResult(testInput, expression, null);
             _viewModel.Expression = testInput;
-            _evaluatorMock.Setup(i => i.Evaluate(testInput)).Returns(mockResponse);
+            _evaluatorServiceMock.Setup(i => i.Evaluate(testInput)).Returns(mockResponse);
 
             // ---
             // ACT
@@ -43,9 +45,9 @@ namespace app.Test.Unit
             // ASSEMBLE
             // --------
             var testError = new Error("error");
-            var mockResponse = new ExpressionEvaluatingServiceResult(null, testError);
+            var mockResponse = new ExpressionEvaluatingServiceResult(null, null, testError);
             _viewModel.Expression = "123";
-            _evaluatorMock.Setup(i => i.Evaluate(_viewModel.Expression)).Returns(mockResponse);
+            _evaluatorServiceMock.Setup(i => i.Evaluate(_viewModel.Expression)).Returns(mockResponse);
 
             // ---
             // ACT
@@ -56,6 +58,47 @@ namespace app.Test.Unit
             // ASSERT
             // ------
             Assert.That(_viewModel.Answer, Is.EqualTo(testError.ToString()), "Actual response is not equal expected");
+        }
+
+        [Test]
+        public void Test_ExpressionViewModel_SendsPlotExpressionMessage()
+        {
+            // --------  
+            // ASSEMBLE
+            // --------
+            var testInput = "123";
+            var samplePoints = new double[][]
+            {
+                new double [] {1.0, 2.0},
+                new double [] {3.0, 4.0},
+            };
+            Expression expression = new Expression(testInput);
+            expression.Points = samplePoints;
+
+            var mockResponse = new ExpressionEvaluatingServiceResult(testInput, expression, null);
+            _viewModel.Expression = testInput;
+            _evaluatorServiceMock.Setup(i => i.Evaluate(testInput)).Returns(mockResponse);
+
+            // Setup messaging system.
+            var receivedMessage = false;
+            Expression receivedExpression = null;
+            WeakReferenceMessenger.Default.Register<PlotExpressionMessage>(this, (r, m) =>
+            {
+                receivedMessage = true;
+                receivedExpression = m.Expression;
+            });
+
+            // ---
+            // ACT
+            // ---
+            _viewModel.EvaluateCmd.Execute(null);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.That(_viewModel.Answer, Is.Null, "Actual response must be null because we are plotting");
+            Assert.IsTrue(receivedMessage, "Message wasn't received");
+            Assert.That(receivedExpression, Is.EqualTo(expression), "Sent and received expressions are not equal");
         }
     }
 }

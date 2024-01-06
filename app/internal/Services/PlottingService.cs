@@ -1,5 +1,7 @@
 ﻿using OxyPlot;
+using OxyPlot.Series;
 using System.Collections.ObjectModel;
+using static Engine.Types.Node;
 
 namespace app
 {
@@ -35,18 +37,21 @@ namespace app
         private readonly IOxyPlotModelManager _oxyPlotModelManager;
         private readonly IPlotManager _plotManager;
         private readonly ITangentManager _tangentManager;
+        private readonly IExpressionManager _expressionManager;
 
         public PlottingService(
                 IValidator validator,
                 IOxyPlotModelManager modelManager,
                 IPlotManager plotManager,
-                ITangentManager tangentManager
+                ITangentManager tangentManager,
+                IExpressionManager exprManager
             )
         {
             _validator = validator;
             _oxyPlotModelManager = modelManager;
             _plotManager = plotManager;
             _tangentManager = tangentManager;
+            _expressionManager = exprManager;
         }
 
         /// <summary>
@@ -69,6 +74,25 @@ namespace app
             }
 
             _oxyPlotModelManager.AddSeriesToPlotModel(plotModel, result.LineSeries);
+            _oxyPlotModelManager.SetupAxisOnPlotModel(plotModel, xmin, xmax);
+
+            return new CreatePlotResult(newPlot, null);
+        }
+
+        /// <summary>
+        /// Create plot from expression that has Points in it after user
+        /// enter a for-loop with plot function.
+        /// </summary>
+        public CreatePlotResult CreatePlotFromExpression(PlotModel plotModel, Expression expression)
+        {
+            int length = expression.Points.Length;
+            double xmin = expression.Points[0][0];
+            double xmax = expression.Points[length - 1][0];
+            double xstep = xmin - expression.Points[0][1];
+            Plot newPlot = _plotManager.CreatePlot(expression.Value, xmin, xmax, xstep);
+
+            LineSeries lineSeries = _expressionManager.GetLineSeriesFromExpression(expression);
+            _oxyPlotModelManager.AddSeriesToPlotModel(plotModel, lineSeries);
             _oxyPlotModelManager.SetupAxisOnPlotModel(plotModel, xmin, xmax);
 
             return new CreatePlotResult(newPlot, null);

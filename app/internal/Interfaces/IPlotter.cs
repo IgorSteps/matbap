@@ -9,5 +9,6 @@ namespace app
     {
         public CreatePlotResult CreatePlot(PlotModel plotModel, string function, double xmin, double xmax, double xstep);
         public AddTangentResult AddTangent(PlotModel plotModel, double x, string function, double xmin, double xmax, double xstep);
+        public CreatePlotResult CreatePlotFromExpression(PlotModel plotModel, Expression expression);
     }
 }

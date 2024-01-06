@@ -1,6 +1,7 @@
 ﻿using Moq;
 using OxyPlot;
 using OxyPlot.Series;
+using static Engine.Types.Node;
 
 namespace app.Test.Unit
 {
@@ -12,7 +13,7 @@ namespace app.Test.Unit
         private Mock<IOxyPlotModelManager> _plotModelManagerMock;
         private Mock<IPlotManager> _plotManagerMock;
         private Mock<ITangentManager> _tangentManagerMock;
-
+        private Mock<IExpressionManager> _expressionManagerMock;
         [SetUp]
         public void Setup()
         {
@@ -20,12 +21,13 @@ namespace app.Test.Unit
             _plotModelManagerMock = new Mock<IOxyPlotModelManager>();
             _plotManagerMock = new Mock<IPlotManager>();
             _tangentManagerMock = new Mock<ITangentManager>();
-            
+            _expressionManagerMock = new Mock<IExpressionManager>();
             _plottingService = new PlottingService(
                     _validatorMock.Object,
                     _plotModelManagerMock.Object,
                     _plotManagerMock.Object,
-                    _tangentManagerMock.Object
+                    _tangentManagerMock.Object,
+                    _expressionManagerMock.Object
                 );
         }
 
@@ -238,6 +240,59 @@ namespace app.Test.Unit
             // --------
             Assert.That(result.Error, Is.EqualTo(testError), "Errors don't match");
             Assert.That(result.Tangent, Is.Null, "Tangent must be null");
+        }
+
+        [Test]
+        public void Test_PlottingService_CreatePlotFromExpression()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            PlotModel plotModel = new PlotModel();
+            string testFunction = "x";
+            Expression testExpression = new Expression(testFunction);
+            var Points = new double[][]
+            {
+                new double [] {1.0, 2.0},
+                new double [] {3.0, 4.0},
+            };
+            testExpression.Points = Points;
+            int length = testExpression.Points.Length;
+            double xmin = testExpression.Points[0][0];
+            double xmax = testExpression.Points[length - 1][0];
+            double xstep = xmin - testExpression.Points[0][1];
+            Plot testPlot = new Plot(testFunction, xmin, xmax, xstep);
+            _plotManagerMock.Setup(e => e.CreatePlot(testFunction, xmin, xmax, xstep)).Returns(testPlot);
+
+            var testLineSeries = new LineSeries();
+            foreach (var point in testExpression.Points)
+            {
+                testLineSeries.Points.Add(new DataPoint(point[0], point[1]));
+            }
+            _expressionManagerMock.Setup(m => m.GetLineSeriesFromExpression(testExpression)).Returns(testLineSeries);
+            _plotModelManagerMock.
+                Setup(m => m.AddSeriesToPlotModel(plotModel, testLineSeries)).
+                Callback<PlotModel, Series>((plotModel, _) =>
+                {
+                    plotModel.Series.Add(testLineSeries);
+                });
+            _plotModelManagerMock.Setup(m => m.SetupAxisOnPlotModel(plotModel, xmin, xmax));
+
+            // --------
+            // ACT
+            // --------
+            var result = _plottingService.CreatePlotFromExpression(plotModel, testExpression);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(result.HasError, Is.False, "If there is an error should be false");
+            Assert.That(result.Error, Is.Null, "Error must be null");
+            Assert.That(result.Plot, Is.Not.Null, "Plot must not be null");
+            Assert.That(plotModel.Series.Count, Is.EqualTo(1), "Plot Model must have 1 line series");
+            _plotManagerMock.VerifyAll();
+            _plotModelManagerMock.VerifyAll();
+            _expressionManagerMock.VerifyAll();
         }
     }
 }

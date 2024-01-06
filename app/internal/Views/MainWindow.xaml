@@ -234,14 +234,13 @@
             <!-- Plot block -->
             <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="41*"/>
-                    <ColumnDefinition Width="582*"/>
-                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <oxy:PlotView Grid.Column="0" Model="{Binding OxyPlotModel}" x:Name="PlotArea" Grid.ColumnSpan="3" Margin="0,0,156,0" />
+                <oxy:PlotView Grid.Column="0" Model="{Binding OxyPlotModel}" x:Name="PlotArea"/>
 
-                <Grid Grid.Column="2">
+                <Grid Grid.Column="1">
 
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
