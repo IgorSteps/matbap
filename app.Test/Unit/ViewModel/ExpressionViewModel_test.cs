@@ -7,14 +7,12 @@ namespace app.Test.Unit
     {
         private app.ExpressionViewModel _viewModel;
         private Mock<IEvaluator> _evaluatorServiceMock;
-        private Mock<IPlotter> _plottingServiceMock;
 
         [SetUp]
         public void Setup()
         {
             _evaluatorServiceMock = new Mock<IEvaluator>();
-            _plottingServiceMock = new Mock<IPlotter>();
-            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object, _plottingServiceMock.Object);
+            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object);
         }
 
         [Test]

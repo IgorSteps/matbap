@@ -398,7 +398,7 @@ type ASTParserTests() =
         {
             Name = "Testing invalid tokens at the end of an expression: 2xx"
             Args = [Tokeniser.Int 2; Tokeniser.Identifier "x"; Tokeniser.Identifier "x"]
-            Expected = "Unable to parse the end of the expression: xx"
+            Expected = "Unable to parse token at end of expression: x"
         }
     ]
 

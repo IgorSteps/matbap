@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-
+﻿
 namespace app.Test.Functional
 {
     public class Utils
@@ -62,16 +61,16 @@ namespace app.Test.Functional
             // C# wrappers.
             var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
             var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
-            var evaluator = new FSharpEvaluatorWrapper(evaluatorWrapper);
+            var fsharpEvalWrapper = new FSharpEvaluatorWrapper(evaluatorWrapper);
 
-            var manager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var expressionManager = new ExpressionManager(fsharpDifferentiatorWrapper);
             var symTableManager = new SymbolTableManager();
-            var converter = new ASTManager();
+            var astManager = new ASTManager();
             var validator = new ValidationService();
 
-            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, manager, converter);
+            var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, fsharpEvalWrapper, expressionManager, astManager);
 
-            var viewModel = new ExpressionViewModel(service, CreatePlottingService());
+            var viewModel = new ExpressionViewModel(service);
             return viewModel;
         }
 

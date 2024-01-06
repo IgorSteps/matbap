@@ -7,15 +7,13 @@ namespace app
     public class ExpressionViewModel : ObservableObject
     {
         private readonly IEvaluator _evaluator;
-        private readonly IPlotter _plotter;
         private string _answer;
         private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd;
         private string _expressionValue;
 
-        public ExpressionViewModel(IEvaluator evaluator, IPlotter plotter)
+        public ExpressionViewModel(IEvaluator evaluator)
         {
             _evaluator = evaluator;
-            _plotter = plotter;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
             _visualiseASTCmd = new RelayCommand(VisualiseAST);
