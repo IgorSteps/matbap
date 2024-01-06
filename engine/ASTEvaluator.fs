@@ -5,11 +5,14 @@
         type SymbolTable = Dictionary<string, NumType>
         type Points = (float * float) list
         // Functions for evaluating
-        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) : Result<string*NumType*SymbolTable*Points, string> =
+        let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) (plot: bool): Result<string*NumType*SymbolTable*Points, string> =
             match topNode with
-            | VariableAssignment (varName, innerNode) -> match setVar varName innerNode symTable with
-                                                         | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
-                                                         | Error err              -> Error err
+            | VariableAssignment (varName, innerNode) -> if plot then
+                                                             Error "Evaluation error: can't assign variables while in plot mode."
+                                                         else
+                                                             match setVar varName innerNode symTable with
+                                                             | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
+                                                             | Error err              -> Error err
             | ForLoop(VariableAssignment(varName, innerNode), xmax, step, expr) ->
                 match setVar varName innerNode symTable with
                 | Ok(_, _, symTable) -> match evalForLoop varName xmax step expr symTable [] with
@@ -43,7 +46,7 @@
                            | _                -> 0.0
             match currentX > max with
             | true  -> Ok(points)
-            | false -> match topEvalTree expr symTable with
+            | false -> match topEvalTree expr symTable false with
                        | Ok(_, num, _, _) -> let y = match num with
                                                      | Int x   -> float x
                                                      | Float x -> x
@@ -169,7 +172,7 @@
         let eval (exp : string) (symTable : SymbolTable) (plot : bool) : Result<(string*NumType)*Points*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
-                           | Ok tree -> match topEvalTree tree symTable with
+                           | Ok tree -> match topEvalTree tree symTable plot with
                                         | Ok (str, num, symTable, points) -> Ok ((str, num), points, symTable, tree)
                                         | Error e            -> Error e
                            | Error e -> Error e
