@@ -189,7 +189,8 @@
             symTable.Add("x", Float mid)
             let y = evalToFloat exp symTable
                 
-            if (depth > 50 || y = 0) then // If we're in too deep, or if we found the root
+            // 100 depth is a bit of an arbitrary choice, but higher values would be much slower. 
+            if (depth > 100 || y = 0) then // If we're in too deep, or if we found the root
                 mid
             else if (y >= 0) then // If not negative
                 bisectionRoots exp mid neg (depth+1)
@@ -201,8 +202,8 @@
         // Root finding (where y=0) function for expression in form y = <exp>
         // Returns an array containing the estimated x value of each root. 
         let findRoots (min: float) (max: float) (exp: string) : Result<float array, string> =
-            // High accuracy is not required so 0.25 is used as a middling value. 
-            let points = plotPoints min max 0.25 exp
+            // High accuracy is not required so 0.2 is used as a middling value. 
+            let points = plotPoints min max 0.2 exp
             let mutable i = 1
             let mutable roots = ResizeArray<float>()
 
@@ -212,8 +213,12 @@
                         while (i < arr.Length) do
                             // [0] is x and [1] is y
                             let this = arr[i]
-                            // Compare to last point. The pairs we want have one positive and one negative.
-                            if (this[1] >= 0) then // not negative - check if last was negative
+                            // This point COULD be a root, so check if it is
+                            if (this[1] = 0) then
+                                roots.Add (this[0])
+                                i <- i + 1 // Skip next, since they won't form a pair
+                            // Otherwise compare to last point. The pairs we want have one positive and one negative.
+                            else if (this[1] > 0) then // positive - check if last was negative
                                 if (last[1] < 0) then
                                     // Add the root between the two to the array of roots
                                     roots.Add (bisectionRoots exp this[0] last[0] 0)
