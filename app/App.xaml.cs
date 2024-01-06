@@ -34,7 +34,7 @@ namespace app
             var services = new ServiceCollection();
 
             // F# Evaluator Wrappers.
-            //services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
+            services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
             services.AddTransient<Engine.IDifferentiator, Engine.DifferentiatorWrapper>();
             services.AddTransient<Engine.IASTGetter, Engine.ASTGetterWrapper>();   
 

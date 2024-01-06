@@ -74,7 +74,7 @@ namespace app
                 return new ExpressionEvaluatingServiceResult(null, null, result.Error);
             }
 
-            if (result.Points != null)
+            if (result.Points.Length != 0)
             {
                 expression.Points = result.Points;
             }

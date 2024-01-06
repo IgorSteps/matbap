@@ -39,7 +39,7 @@ namespace app
                 return new FSharpEvaluationResult(null, null, null, new Error(result.ErrorValue));
             }
            
-            return new FSharpEvaluationResult(result.ResultValue.Item1, ConvertFSharpPoints(result.ResultValue.Item3), result.ResultValue.Item4, null);
+            return new FSharpEvaluationResult(result.ResultValue.Item1, ConvertFSharpPoints(result.ResultValue.Item2), result.ResultValue.Item4, null);
         }
 
         private double[][] ConvertFSharpPoints(FSharpPoints points)
