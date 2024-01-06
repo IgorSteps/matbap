@@ -1,6 +1,5 @@
 ﻿namespace Engine
     module Types =
-        type Point = (float * float) list
 
         type NumType =
             | Int of int
