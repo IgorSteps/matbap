@@ -39,6 +39,7 @@ namespace app
         private readonly IFSharpEvaluatorWrapper _expressionEvaluator;
         private readonly IExpressionManager _expressionManager;
         private readonly IASTConverter _astConverter;
+        private readonly IFSharpFindRootsWrapper _findRootsWrapper;
 
         public ExpressionEvaluatingService(
                 IFSharpASTGetterWrapper astGetter,
@@ -46,7 +47,8 @@ namespace app
                 ISymbolTableManager symbolTableManager,
                 IFSharpEvaluatorWrapper expressionEvaluator,
                 IExpressionManager manager,
-                IASTConverter converter
+                IASTConverter converter,
+                IFSharpFindRootsWrapper findrootWrapper
             )
         {
             _astGetter = astGetter;
@@ -55,6 +57,7 @@ namespace app
             _expressionEvaluator = expressionEvaluator;
             _expressionManager = manager;
             _astConverter = converter;
+            _findRootsWrapper = findrootWrapper;
         }
 
         public ExpressionEvaluatingServiceResult Evaluate(string input)
@@ -94,15 +97,20 @@ namespace app
 
             Expression expression = _expressionManager.CreateExpression(input);
 
-            expression.FSharpAST = TemporarySetAst(input);
-
-            var result = _expressionManager.Differentiate(expression);
-            if (result.HasError)
+            var getASTResult = _astGetter.GetAST(expression.Value);
+            if (getASTResult.HasError)
             {
-                return new ExpressionEvaluatingServiceResult(null, null, result.Error);
+                return new ExpressionEvaluatingServiceResult(null, null, getASTResult.Error);
+            }
+            expression.FSharpAST = getASTResult.AST;
+
+            var diffResult = _expressionManager.Differentiate(expression);
+            if (diffResult.HasError)
+            {
+                return new ExpressionEvaluatingServiceResult(null, null, diffResult.Error);
             }
 
-            expression.FSharpAST = result.AST;
+            expression.FSharpAST = diffResult.AST;
             var convertionResult = _astConverter.Convert(expression.FSharpAST);
             if (convertionResult.HasError)
             {
@@ -139,11 +147,21 @@ namespace app
             return new VisualiseASTResult(graphAST, null);
         }
 
-        // @TODO: Refactor once Evaluator is switched to AST Evaluator.
-        private FSharpAST TemporarySetAst(string input)
+        public ExpressionEvaluatingServiceResult FindRoots(string expression, double xmin, double xmax)
         {
-            var tokens = Engine.Tokeniser.tokenise(input);
-            return Engine.ASTParser.parse(tokens.ResultValue).ResultValue;
+            Error err = _validator.ValidateFindRootsInput(expression, xmin, xmax);
+            if (err != null)
+            {
+                return new ExpressionEvaluatingServiceResult(null, null, err);
+            }
+
+            var findRootsResult = _findRootsWrapper.FindRoots(expression, xmin, xmax);
+            if (findRootsResult.HasError)
+            {
+                return new ExpressionEvaluatingServiceResult(null, null, findRootsResult.Error);
+            }
+
+            return new ExpressionEvaluatingServiceResult(findRootsResult.Answer, null, null); ;
         }
     }
 }
