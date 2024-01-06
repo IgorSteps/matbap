@@ -7,9 +7,9 @@
         // Functions for evaluating
         let rec private topEvalTree (topNode : Node) (symTable : SymbolTable) (plot: bool): Result<string*NumType*SymbolTable*Points, string> =
             match topNode with
-            | VariableAssignment (varName, innerNode) -> if plot then
-                                                             Error "Evaluation error: can't assign variables while in plot mode."
-                                                         else
+            | VariableAssignment (varName, innerNode) -> match plot with
+                                                         | true  -> Error "Evaluation error: can't assign variables while in plot mode."
+                                                         | false ->
                                                              match setVar varName innerNode symTable with
                                                              | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
                                                              | Error err              -> Error err
