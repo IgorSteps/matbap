@@ -40,8 +40,8 @@ namespace app.Test.Unit
                 new double [] {3.0, 4.0},
             };
 
-            var tuple = Tuple.Create("2", sTable.Table, fsharpPointsList, sampleAST);
-            var successResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpPoints, FSharpASTNode>, string>.NewOk(tuple);
+            var tuple = Tuple.Create("2", fsharpPointsList, sTable.Table, sampleAST);
+            var successResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewOk(tuple);
 
             _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(successResult);
 
@@ -69,7 +69,7 @@ namespace app.Test.Unit
             string expression = "1+1";
             SymbolTable sTable = new SymbolTable();
             string error = "Boom";
-            var errorResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpPoints, FSharpASTNode>, string>.NewError(error);
+            var errorResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewError(error);
 
             _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
 
