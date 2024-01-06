@@ -166,7 +166,7 @@
             | Error parseError  -> Error parseError
             
         // Evaluation function. Does not return a string for C# - use evalToString for that
-        let eval (exp : string) (symTable : SymbolTable) : Result<(string*NumType)*Points*SymbolTable*Node, string> =
+        let eval (exp : string) (symTable : SymbolTable) (plot : bool) : Result<(string*NumType)*Points*SymbolTable*Node, string> =
             match Tokeniser.tokenise exp with
             | Ok tokens -> match parse tokens with
                            | Ok tree -> match topEvalTree tree symTable with
@@ -177,7 +177,7 @@
             
         // Returns evaluation result as a string
         let evalToString (exp : string) (symTable : SymbolTable) : Result<string*SymbolTable*Node, string> =
-            match eval exp symTable with
+            match eval exp symTable false with
             | Ok (("", Int num), _, symTable, tree)        -> Ok (string num, symTable, tree)
             | Ok (("", Float num), _, symTable, tree)      -> Ok (string num, symTable, tree)
             | Ok ((varName, Int num), _, symTable, tree)   -> Ok (varName+" = "+string num, symTable, tree)
