@@ -172,3 +172,38 @@
             match gotError with
             | None -> Ok (points.ToArray())
             | Some e -> Error e
+            
+        // Recursive function implementing bisection method. Stubbed
+        let rec bisectionRoots (exp : string) (a : float) (b : float) : float =
+            0
+            
+        // Root finding (where y=0) function for expression in form y = <exp>
+        // Returns an array containing the estimated x value of each root. 
+        let findRoots (min: float) (max: float) (exp: string) : Result<float array, string> =
+            // High accuracy is not required so 0.25 is used as a middling value. 
+            let points = plotPoints min max 0.25 exp
+            let mutable i = 1
+            let mutable roots = ResizeArray<float>()
+
+            // This is an absolute monstrosity. There is definitely a better way to write this in F#.
+            // I did my best to comment it but I'm sorry for what you're about to read
+            match points with
+            | Ok arr -> let mutable last = arr[0]
+                        // For each point returned in the array - we want pairs of adjacent points.
+                        while (i < arr.Length) do
+                            // [0] is x and [1] is y
+                            let this = arr[i]
+                            // Compare to last point. The pairs we want have one positive and one negative.
+                            if (this[1] >= 0) then // not negative - check if last was negative
+                                if (last[1] < 0) then
+                                    // Add the root between the two to the array of roots
+                                    roots.Add(bisectionRoots exp this[0] last[0])
+                            else // must be negative - check if last was not negative
+                                if (last[1] >= 0) then // not negative
+                                    roots.Add(bisectionRoots exp this[0] last[0])
+                            // Update the last element and increment i
+                            last <- arr[i]
+                            i <- i + 1
+                        Ok (roots.ToArray())
+            // Return error if 
+            | Error e -> Error e
