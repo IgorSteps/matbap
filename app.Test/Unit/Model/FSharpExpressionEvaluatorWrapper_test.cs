@@ -86,6 +86,7 @@ namespace app.Test.Unit
             Assert.That(result.Error.Message, Is.EqualTo(error), "Error's don't match");
             Assert.That(result.Answer, Is.Null, "Answer must be null");
             Assert.That(result.FSharpAST, Is.Null, "AST must be null");
+            Assert.That(result.Points, Is.Null, "Points must be null");
         }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.DependencyInjection;
-using OxyPlot;
-using System.Windows.Forms;
-using static System.Reflection.Metadata.BlobBuilder;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace app
 {
@@ -18,10 +15,10 @@ namespace app
         public ExpressionViewModel(IEvaluator evaluator, IPlotter plotter)
         {
             _evaluator = evaluator;
+            _plotter = plotter;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
             _visualiseASTCmd = new RelayCommand(VisualiseAST);
-            _plotter = plotter;
         }
 
         public RelayCommand EvaluateCmd => _evalauteCmd;
@@ -51,6 +48,7 @@ namespace app
             if (result.Expression.Points != null) 
             {
                 PlotExpression(result.Expression);
+                return;
             }
 
             Answer = result.Result;
@@ -81,17 +79,13 @@ namespace app
             astWindow.Show();
         }
 
+        /// <summary>
+        /// Send a message when user uses for-loop plot function for plotting view model.
+        /// </summary>
         public void PlotExpression(Expression exp)
         {
-            PlotModel plotModel = new PlotModel(); ;
-            var result = _plotter.CreatePlotFromExpression(plotModel, exp);
-
-            var plotViewModel = App.Current.Services.GetService<PlotViewModel>();
-            plotViewModel.OxyPlotModel = plotModel;
-            plotViewModel.Plots.Add(result.Plot);
-            plotViewModel.SelectedPlot = result.Plot;
-
-            plotViewModel.OxyPlotModel.InvalidatePlot(true);
+            var message = new PlotExpressionMessage(exp);
+            WeakReferenceMessenger.Default.Send(message);
         }
     }
 }

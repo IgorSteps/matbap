@@ -27,6 +27,10 @@ namespace app
             return new FSharpDifferentiationResult(result.AST, null);
         }
 
+        /// <summary>
+        /// Get line series from an expression with Points when
+        /// user enters for-loop with plot function expression.
+        /// </summary>
         public LineSeries GetLineSeriesFromExpression(Expression expression) 
         {
             LineSeries lineSeries = new LineSeries

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using OxyPlot;
 using System.Collections.ObjectModel;
 
@@ -40,6 +41,12 @@ namespace app
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
+
+            // Register to listen for PlotExpressionMessage.
+            WeakReferenceMessenger.Default.Register<PlotExpressionMessage>(this, (recipient, msg) =>
+            {
+                HandlePlotExpressionMessage(msg.Expression);
+            });
         }
 
         public ObservableCollection<Plot> Plots
@@ -137,6 +144,14 @@ namespace app
 
             SelectedPlot.Tangent = result.Tangent;
 
+            RefreshPlottingArea();
+        }
+
+        private void HandlePlotExpressionMessage(Expression expression)
+        {
+            var result = _plotter.CreatePlotFromExpression(OxyPlotModel, expression);
+            Plots.Add(result.Plot);
+            SelectedPlot = result.Plot;
             RefreshPlottingArea();
         }
 

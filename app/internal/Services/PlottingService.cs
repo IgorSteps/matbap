@@ -43,13 +43,15 @@ namespace app
                 IValidator validator,
                 IOxyPlotModelManager modelManager,
                 IPlotManager plotManager,
-                ITangentManager tangentManager
+                ITangentManager tangentManager,
+                IExpressionManager exprManager
             )
         {
             _validator = validator;
             _oxyPlotModelManager = modelManager;
             _plotManager = plotManager;
             _tangentManager = tangentManager;
+            _expressionManager = exprManager;
         }
 
         /// <summary>
@@ -77,6 +79,10 @@ namespace app
             return new CreatePlotResult(newPlot, null);
         }
 
+        /// <summary>
+        /// Create plot from expression that has Points in it after user
+        /// enter a for-loop with plot function.
+        /// </summary>
         public CreatePlotResult CreatePlotFromExpression(PlotModel plotModel, Expression expression)
         {
             int length = expression.Points.Length;
