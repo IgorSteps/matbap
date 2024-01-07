@@ -84,42 +84,6 @@ namespace app
             return new ExpressionEvaluatingServiceResult(result.Answer, expression, null);
         }
 
-        public ExpressionEvaluatingServiceResult Differentiate(string input) 
-        {
-            Error err = _validator.ValidateExpressionInputIsNotNull(input);
-            if (err != null)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, err);
-            }
-
-            Expression expression = _expressionManager.CreateExpression(input);
-
-            var getASTResult = _astGetter.GetAST(expression.Value);
-            if (getASTResult.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, getASTResult.Error);
-            }
-            expression.FSharpAST = getASTResult.AST;
-
-            var diffResult = _expressionManager.Differentiate(expression);
-            if (diffResult.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, diffResult.Error);
-            }
-
-            expression.FSharpAST = diffResult.AST;
-            var convertionResult = _astConverter.Convert(expression.FSharpAST);
-            if (convertionResult.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, convertionResult.Error);
-            }
-
-            expression.CSharpAST = convertionResult.AST;
-            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
-
-            return new ExpressionEvaluatingServiceResult(derivative, expression, null);
-        }
-
         public VisualiseASTResult VisualiseAST(string expression)
         {
             Error err = _validator.ValidateExpressionInputIsNotNull(expression);

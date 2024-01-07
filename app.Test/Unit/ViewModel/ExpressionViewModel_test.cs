@@ -8,13 +8,15 @@ namespace app.Test.Unit
         private app.ExpressionViewModel _viewModel;
         private Mock<IEvaluator> _evaluatorServiceMock;
         private Mock<IRootFinder> _mockRootFinder;
+        private Mock<IDifferentiator> _mockDifferentiator;
 
         [SetUp]
         public void Setup()
         {
             _evaluatorServiceMock = new Mock<IEvaluator>();
             _mockRootFinder = new Mock<IRootFinder>();
-            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object, _mockRootFinder.Object);
+            _mockDifferentiator = new Mock<IDifferentiator>();
+            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object, _mockRootFinder.Object, _mockDifferentiator.Object);
         }
 
         [Test]
@@ -101,6 +103,28 @@ namespace app.Test.Unit
             Assert.That(_viewModel.Answer, Is.Null, "Actual response must be null because we are plotting");
             Assert.IsTrue(receivedMessage, "Message wasn't received");
             Assert.That(receivedExpression, Is.EqualTo(expression), "Sent and received expressions are not equal");
+        }
+
+        [Test]
+        public void Test_ExpressionViewModel_DifferentiateCmd_HappyPath()
+        {
+            // --------  
+            // ASSEMBLE
+            // --------
+            var testInput = "123";
+            _viewModel.Expression = testInput;
+            var mockResponse = new DifferentiationServiceResult(testInput, null);
+            _mockDifferentiator.Setup(d => d.Differentiate(testInput)).Returns(mockResponse);
+
+            // --------  
+            // ACT
+            // --------
+            _viewModel.DifferentiateCmd.Execute(null);
+
+            // --------  
+            // ASSERT
+            // --------
+            Assert.That(_viewModel.Answer, Is.EqualTo(testInput), "Answers don't match");
         }
 
         [Test]
