@@ -116,6 +116,7 @@ namespace app
                         return xStepConversion;
                     }
                     return new ConvertionResult(new ForLoopNode(varAssigmentConversion.AST, xMinConversion.AST, xMaxConversion.AST, xStepConversion.AST), null);
+                
                 default:
                     return new ConvertionResult(null, new Error("Failed to convert F# AST - unknown node type."));
             }
