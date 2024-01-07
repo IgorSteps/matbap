@@ -14,7 +14,6 @@ namespace app.Test.Unit
         private Mock<IExpressionManager> _mockExpressionManager;
         private Mock<IASTConverter> _mockConverter;
         private ExpressionEvaluatingService _service;
-
         [SetUp]
         public void Setup()
         {

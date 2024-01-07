@@ -39,7 +39,6 @@ namespace app
         private readonly IFSharpEvaluatorWrapper _expressionEvaluator;
         private readonly IExpressionManager _expressionManager;
         private readonly IASTConverter _astConverter;
-        private readonly IFSharpFindRootsWrapper _findRootsWrapper;
 
         public ExpressionEvaluatingService(
                 IFSharpASTGetterWrapper astGetter,
@@ -47,8 +46,7 @@ namespace app
                 ISymbolTableManager symbolTableManager,
                 IFSharpEvaluatorWrapper expressionEvaluator,
                 IExpressionManager manager,
-                IASTConverter converter,
-                IFSharpFindRootsWrapper findrootWrapper
+                IASTConverter converter
             )
         {
             _astGetter = astGetter;
@@ -57,7 +55,6 @@ namespace app
             _expressionEvaluator = expressionEvaluator;
             _expressionManager = manager;
             _astConverter = converter;
-            _findRootsWrapper = findrootWrapper;
         }
 
         public ExpressionEvaluatingServiceResult Evaluate(string input)
@@ -145,23 +142,6 @@ namespace app
             var graphAST = _astConverter.ConvertAstToGraph(convetionResult.AST);
 
             return new VisualiseASTResult(graphAST, null);
-        }
-
-        public ExpressionEvaluatingServiceResult FindRoots(string expression, double xmin, double xmax)
-        {
-            Error err = _validator.ValidateFindRootsInput(expression, xmin, xmax);
-            if (err != null)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, err);
-            }
-
-            var findRootsResult = _findRootsWrapper.FindRoots(expression, xmin, xmax);
-            if (findRootsResult.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, findRootsResult.Error);
-            }
-
-            return new ExpressionEvaluatingServiceResult(findRootsResult.Answer, null, null); ;
         }
     }
 }
