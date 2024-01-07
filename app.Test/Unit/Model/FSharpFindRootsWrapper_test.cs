@@ -28,7 +28,7 @@ namespace app.Test.Unit
                 1.0, 2.0, 3.0
             };
             var mockedResult = FSharpResult<double[], string>.NewOk(testArray);
-            _rootFinder.Setup(r => r.findRoots(xmin, xmax, testExpression)).Returns(mockedResult);
+            _rootFinder.Setup(r => r.FindRoots(xmin, xmax, testExpression)).Returns(mockedResult);
             var expectedRootsString = "1, 2, 3";
 
             // --------
@@ -54,7 +54,7 @@ namespace app.Test.Unit
             double xmin = 1.0, xmax = 2.0;
             string testError = "boom";
             var mockedResult = FSharpResult<double[], string>.NewError(testError);
-            _rootFinder.Setup(r => r.findRoots(xmin, xmax, testExpression)).Returns(mockedResult);
+            _rootFinder.Setup(r => r.FindRoots(xmin, xmax, testExpression)).Returns(mockedResult);
 
             // --------
             // ACT

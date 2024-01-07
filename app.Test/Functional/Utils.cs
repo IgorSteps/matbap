@@ -95,7 +95,8 @@ namespace app.Test.Functional
         public static FindRootsService CreateFindRootsService()
         {
             var validator = new ValidationService();
-            var FSharpFindRootsWrapper = new FSharpFindRootsWrapper();
+            Engine.RootFinderWrapper rootWrapper = new Engine.RootFinderWrapper();
+            var FSharpFindRootsWrapper = new FSharpFindRootsWrapper(rootWrapper);
 
             var service = new FindRootsService(FSharpFindRootsWrapper, validator);
             return service;
