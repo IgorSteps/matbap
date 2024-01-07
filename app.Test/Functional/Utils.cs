@@ -1,4 +1,6 @@
 ﻿
+using Engine;
+
 namespace app.Test.Functional
 {
     public class Utils
@@ -24,10 +26,26 @@ namespace app.Test.Functional
             var expressionEvaluatorService = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, expessionManager, converter);
 
             PlotManager plotManager = new PlotManager(functionEvaluatorWrapper);
-            TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, expressionEvaluatorService);
+            TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, CreateDifferentiationService());
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager, expessionManager);
             return plotter;
+        }
+        public static DifferentiationService CreateDifferentiationService()
+        {
+            Engine.ASTGetterWrapper astGetter = new Engine.ASTGetterWrapper();
+            Engine.DifferentiatorWrapper differentiatorWrapper = new Engine.DifferentiatorWrapper();
+
+            var fsharpDifferentiatorWrapper = new FSharpDifferentiatorWrapper(differentiatorWrapper);
+            var fSharpASTGetterWrapper = new FSharpASTGetterWrapper(astGetter);
+
+            var expessionManager = new ExpressionManager(fsharpDifferentiatorWrapper);
+            var converter = new ASTManager();
+            var validator = new ValidationService();
+
+            var service = new DifferentiationService(fSharpASTGetterWrapper, validator, expessionManager,converter);
+
+            return service;
         }
 
         public static ExpressionEvaluatingService CreateExpressionEvalutingService()
@@ -69,9 +87,19 @@ namespace app.Test.Functional
             var validator = new ValidationService();
 
             var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, fsharpEvalWrapper, expressionManager, astManager);
-
-            var viewModel = new ExpressionViewModel(service);
+            
+            var viewModel = new ExpressionViewModel(service, CreateFindRootsService(), CreateDifferentiationService());
             return viewModel;
+        }
+
+        public static FindRootsService CreateFindRootsService()
+        {
+            var validator = new ValidationService();
+            Engine.RootFinderWrapper rootWrapper = new Engine.RootFinderWrapper();
+            var FSharpFindRootsWrapper = new FSharpFindRootsWrapper(rootWrapper);
+
+            var service = new FindRootsService(FSharpFindRootsWrapper, validator);
+            return service;
         }
 
         public static PlotViewModel CreaePlotViewModel()
@@ -95,7 +123,7 @@ namespace app.Test.Functional
             var expressionEvaluatorService = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, evaluator, expessionManager, converter);
 
             PlotManager plotManager = new PlotManager(functionEvaluatorWrapper);
-            TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, expressionEvaluatorService);
+            TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, CreateDifferentiationService());
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager, expessionManager);
             PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager);

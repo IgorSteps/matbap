@@ -14,7 +14,6 @@ namespace app.Test.Unit
         private Mock<IExpressionManager> _mockExpressionManager;
         private Mock<IASTConverter> _mockConverter;
         private ExpressionEvaluatingService _service;
-
         [SetUp]
         public void Setup()
         {
@@ -108,74 +107,6 @@ namespace app.Test.Unit
             _mockSymbolTableManager.VerifyAll();
             _mockExpressionEvaluator.VerifyAll();
         }
-
-        [Test]
-        public void Test_ExpressionEvaluatingService_DifferentiateSuccess()
-        {
-            // --------
-            // ASSEMBLE
-            // --------
-            string testInput = "x";
-            Expression expression = new Expression(testInput);
-            var ast = FSharpASTNode.NewVariable(testInput);
-            expression.FSharpAST = ast;
-
-            _mockExpressionManager.Setup(m => m.CreateExpression(testInput)).Returns(expression);
-
-            var mockResult = new FSharpDifferentiationResult(ast, null);
-            _mockExpressionManager.Setup(m => m.Differentiate(expression)).Returns(mockResult);
-            var testCSNode = new VariableNode(testInput);
-            var mockConverterResult = new ConvertionResult(testCSNode, null);
-            _mockConverter.Setup(c => c.Convert(expression.FSharpAST)).Returns(mockConverterResult);
-            _mockConverter.Setup(c => c.ConvertToString(testCSNode)).Returns(testInput);
-
-            // --------
-            // ACT
-            // --------
-            var result = _service.Differentiate(testInput);
-
-            // --------
-            // ASSERT
-            // --------
-            Assert.IsFalse(result.HasError, "Must be false");
-            Assert.That(result.Error, Is.Null, "Error must be null");
-            Assert.That(result.Result, Is.EqualTo(testInput), "Answers don't match");
-            _mockExpressionManager.VerifyAll();
-            _mockSymbolTableManager.VerifyAll();
-            _mockExpressionEvaluator.VerifyAll();
-        }
-
-        [Test]
-        public void Test_ExpressionEvaluatingService_DifferentiateError()
-        {
-            // --------
-            // ASSEMBLE
-            // --------
-            string testInput = "x";
-            Expression expression = new Expression(testInput);
-            var testError = new Error("test");
-
-            _mockExpressionManager.Setup(m => m.CreateExpression(testInput)).Returns(expression);
-
-            var mockResult = new FSharpDifferentiationResult(null, testError);
-            _mockExpressionManager.Setup(m => m.Differentiate(expression)).Returns(mockResult);
-
-            // --------
-            // ACT
-            // --------
-            var result = _service.Differentiate(testInput);
-
-            // --------
-            // ASSERT
-            // --------
-            Assert.IsTrue(result.HasError, "Must be true");
-            Assert.That(result.Error, Is.Not.Null, "Error must not be null");
-            Assert.That(result.Error.Message, Is.EqualTo(testError.Message), "Errors don't match");
-            _mockExpressionManager.VerifyAll();
-            _mockSymbolTableManager.VerifyAll();
-            _mockExpressionEvaluator.VerifyAll();
-        }
-
 
         [Test]
         public void Test_ExpressionEvaluatingService_VisualiseASTHappy()

@@ -6,22 +6,22 @@ namespace app.Test.Unit
     public class TangentManager_test
     {
         private Mock<IFSharpFunctionEvaluatorWrapper> _evaluator;
-        private Mock<IEvaluator> _evaluatorService;
+        private Mock<IDifferentiator> _differentiator;
         private TangentManager _tangentManager;
 
         [SetUp]
         public void Setup()
         {
             _evaluator = new Mock<IFSharpFunctionEvaluatorWrapper>();
-            _evaluatorService = new Mock<IEvaluator>();
-            _tangentManager = new TangentManager(_evaluator.Object, _evaluatorService.Object);
+            _differentiator = new Mock<IDifferentiator>();
+            _tangentManager = new TangentManager(_evaluator.Object, _differentiator.Object);
         }
 
         [Test]
         public void Test_TangentManager_CreateTangent_Sucess()
         {
             // --------
-            // ASSEMBLE
+            // ASSEMBLE 
             // --------
             double x = 2, y = 4, slope = 4;
             string function = "x^2";
@@ -33,8 +33,8 @@ namespace app.Test.Unit
 
             _evaluator.Setup(e => e.EvaluateAtPoint(x, function)).Returns(evaluationResult);
             Expression exp = new Expression(function);
-            var diffResult = new ExpressionEvaluatingServiceResult("2x", exp, null);
-            _evaluatorService.Setup(e => e.Differentiate(function)).Returns(diffResult);
+            var diffResult = new DifferentiationServiceResult("2x", null);
+            _differentiator.Setup(e => e.Differentiate(function)).Returns(diffResult);
 
             var diffEvaluateAtPointResult = new FunctionEvaluationResult(testPoints, null);
             _evaluator.Setup(e => e.EvaluateAtPoint(x, "2x")).Returns(evaluationResult);

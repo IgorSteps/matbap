@@ -75,7 +75,7 @@
         //    // ------
         //    // ASSERT
         //    // ------
-        //    Assert.That(viewModel.Answer, Is.EqualTo("2"), "Expression with new lines has returned wrong answer");
+        //    Assert.That(viewModel.Roots, Is.EqualTo("2"), "Expression with new lines has returned wrong answer");
         //}
     }
 }

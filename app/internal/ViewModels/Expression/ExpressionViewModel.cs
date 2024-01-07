@@ -1,27 +1,39 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Engine;
+using Microsoft.Msagl.Core.Geometry.Curves;
 
 namespace app
 {
     public class ExpressionViewModel : ObservableObject
     {
         private readonly IEvaluator _evaluator;
+        private readonly IRootFinder _rootFinder;
+        private readonly IDifferentiator _differentiator;
         private string _answer;
-        private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd;
+        private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd, _findRootsCmd;
         private string _expressionValue;
-
-        public ExpressionViewModel(IEvaluator evaluator)
+        private double _rootXMin, _rootXMax;
+        public ExpressionViewModel(IEvaluator evaluator, IRootFinder rootFinder, IDifferentiator differentiator)
         {
             _evaluator = evaluator;
+            _rootFinder = rootFinder;
+            _differentiator = differentiator;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
             _visualiseASTCmd = new RelayCommand(VisualiseAST);
+            _findRootsCmd = new RelayCommand(FindRoots);
+
+            // Defaults.
+            _rootXMax = -10;
+            _rootXMax = 10;
         }
 
         public RelayCommand EvaluateCmd => _evalauteCmd;
         public RelayCommand DifferentiateCmd => _differentiateCmd;
         public RelayCommand VisualiseCmd => _visualiseASTCmd;
+        public RelayCommand FindRootsCmd => _findRootsCmd;
 
         public string Expression
         {
@@ -33,6 +45,18 @@ namespace app
         {
             get => _answer;
             set => SetProperty(ref _answer, value);
+        }
+
+        public double RootXMin
+        {
+            get => _rootXMin;
+            set => SetProperty(ref _rootXMin, value);
+        }
+
+        public double RootXMax
+        {
+            get => _rootXMax;
+            set => SetProperty(ref _rootXMax, value);
         }
 
         public void Evaluate()
@@ -54,14 +78,14 @@ namespace app
 
         public void Differentiate()
         {
-            var result = _evaluator.Differentiate(_expressionValue);
+            var result = _differentiator.Differentiate(_expressionValue);
             if (result.HasError)
             {
                 Answer = result.Error.ToString();
                 return;
             }
 
-            Answer = result.Result;
+            Answer = result.Derivative;
         }
 
         public void VisualiseAST()
@@ -75,6 +99,18 @@ namespace app
 
             var astWindow = new ASTWindow(result.AST);
             astWindow.Show();
+        }
+
+        public void FindRoots()
+        {
+            var result = _rootFinder.FindRoots(_expressionValue, RootXMin, RootXMax);
+            if (result.HasError)
+            {
+                Answer = result.Error.ToString();
+                return;
+            }
+
+            Answer = result.Roots;
         }
 
         /// <summary>

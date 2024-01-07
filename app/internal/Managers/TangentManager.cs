@@ -32,12 +32,12 @@ namespace app
     public class TangentManager : ITangentManager
     {
         private readonly IFSharpFunctionEvaluatorWrapper _functionEvaluator;
-        private readonly IEvaluator _expressioneEvaluatorService;
+        private readonly IDifferentiator _differentiator;
 
-        public TangentManager(IFSharpFunctionEvaluatorWrapper functionEvaluator, IEvaluator expressioneEvaluator)
+        public TangentManager(IFSharpFunctionEvaluatorWrapper functionEvaluator, IDifferentiator differentiator)
         {
             _functionEvaluator = functionEvaluator;
-            _expressioneEvaluatorService = expressioneEvaluator;
+            _differentiator = differentiator;
         }
 
         public CreateTangentResult CreateTangent(double x, string function)
@@ -49,13 +49,13 @@ namespace app
             }
             double y = result.Points[0][1];
 
-            var differetiationResult = _expressioneEvaluatorService.Differentiate(function);
+            var differetiationResult = _differentiator.Differentiate(function);
             if (differetiationResult.HasError)
             {
                 return new CreateTangentResult(null, differetiationResult.Error);
             }
 
-            var evaluatorResult = _functionEvaluator.EvaluateAtPoint(x, differetiationResult.Result);
+            var evaluatorResult = _functionEvaluator.EvaluateAtPoint(x, differetiationResult.Derivative);
             if(evaluatorResult.HasError)
             {
                 return new CreateTangentResult(null, evaluatorResult.Error);

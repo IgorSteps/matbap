@@ -84,37 +84,6 @@ namespace app
             return new ExpressionEvaluatingServiceResult(result.Answer, expression, null);
         }
 
-        public ExpressionEvaluatingServiceResult Differentiate(string input) 
-        {
-            Error err = _validator.ValidateExpressionInputIsNotNull(input);
-            if (err != null)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, err);
-            }
-
-            Expression expression = _expressionManager.CreateExpression(input);
-
-            expression.FSharpAST = TemporarySetAst(input);
-
-            var result = _expressionManager.Differentiate(expression);
-            if (result.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, result.Error);
-            }
-
-            expression.FSharpAST = result.AST;
-            var convertionResult = _astConverter.Convert(expression.FSharpAST);
-            if (convertionResult.HasError)
-            {
-                return new ExpressionEvaluatingServiceResult(null, null, convertionResult.Error);
-            }
-
-            expression.CSharpAST = convertionResult.AST;
-            string derivative = _astConverter.ConvertToString(expression.CSharpAST);
-
-            return new ExpressionEvaluatingServiceResult(derivative, expression, null);
-        }
-
         public VisualiseASTResult VisualiseAST(string expression)
         {
             Error err = _validator.ValidateExpressionInputIsNotNull(expression);
@@ -137,13 +106,6 @@ namespace app
             var graphAST = _astConverter.ConvertAstToGraph(convetionResult.AST);
 
             return new VisualiseASTResult(graphAST, null);
-        }
-
-        // @TODO: Refactor once Evaluator is switched to AST Evaluator.
-        private FSharpAST TemporarySetAst(string input)
-        {
-            var tokens = Engine.Tokeniser.tokenise(input);
-            return Engine.ASTParser.parse(tokens.ResultValue).ResultValue;
         }
     }
 }

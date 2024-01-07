@@ -19,7 +19,7 @@ namespace app.Test.Unit
             expression.FSharpAST = ast;
 
             var expected = FSharpResult<FSharpASTNode, string>.NewOk(ast);
-            var wrapper = new Mock<IDifferentiator>();
+            var wrapper = new Mock<Engine.IDifferentiator>();
             var differentiator = new FSharpDifferentiatorWrapper(wrapper.Object);
             wrapper.Setup(w => w.Differentiate(expression.FSharpAST, "x")).Returns(expected);
 
@@ -49,7 +49,7 @@ namespace app.Test.Unit
             string error = "test";
 
             var expected = FSharpResult<FSharpASTNode, string>.NewError(error);
-            var wrapper = new Mock<IDifferentiator>();
+            var wrapper = new Mock<Engine.IDifferentiator>();
             var differentiator = new FSharpDifferentiatorWrapper(wrapper.Object);
             wrapper.Setup(w => w.Differentiate(expression.FSharpAST, "x")).Returns(expected);
 

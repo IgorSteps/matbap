@@ -54,5 +54,19 @@
 
             return null;
         }
+
+        public Error ValidateFindRootsInput(string input, double xmin, double xmax)
+        {
+            if(string.IsNullOrEmpty(input))
+            {
+                return new Error("Expression cannot be null or empty");
+            }
+            if (xmin > xmax)
+            {
+                return xMinGreaterXMax;
+            }
+
+            return null;
+        }
     }
 }

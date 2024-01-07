@@ -7,12 +7,16 @@ namespace app.Test.Unit
     {
         private app.ExpressionViewModel _viewModel;
         private Mock<IEvaluator> _evaluatorServiceMock;
+        private Mock<IRootFinder> _mockRootFinder;
+        private Mock<IDifferentiator> _mockDifferentiator;
 
         [SetUp]
         public void Setup()
         {
             _evaluatorServiceMock = new Mock<IEvaluator>();
-            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object);
+            _mockRootFinder = new Mock<IRootFinder>();
+            _mockDifferentiator = new Mock<IDifferentiator>();
+            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object, _mockRootFinder.Object, _mockDifferentiator.Object);
         }
 
         [Test]
@@ -99,6 +103,79 @@ namespace app.Test.Unit
             Assert.That(_viewModel.Answer, Is.Null, "Actual response must be null because we are plotting");
             Assert.IsTrue(receivedMessage, "Message wasn't received");
             Assert.That(receivedExpression, Is.EqualTo(expression), "Sent and received expressions are not equal");
+        }
+
+        [Test]
+        public void Test_ExpressionViewModel_DifferentiateCmd_HappyPath()
+        {
+            // --------  
+            // ASSEMBLE
+            // --------
+            var testInput = "123";
+            _viewModel.Expression = testInput;
+            var mockResponse = new DifferentiationServiceResult(testInput, null);
+            _mockDifferentiator.Setup(d => d.Differentiate(testInput)).Returns(mockResponse);
+
+            // --------  
+            // ACT
+            // --------
+            _viewModel.DifferentiateCmd.Execute(null);
+
+            // --------  
+            // ASSERT
+            // --------
+            Assert.That(_viewModel.Answer, Is.EqualTo(testInput), "Answers don't match");
+        }
+
+        [Test]
+        public void Test_ExpressionViewModel_FindRootsCmd_HappyPath()
+        {
+            // --------  
+            // ASSEMBLE
+            // --------
+            var testInput = "123";
+            double xmin = -10, xmax = 10;
+            _viewModel.Expression = testInput;
+            _viewModel.RootXMin = xmin;
+            _viewModel.RootXMax = xmax;
+            var mockResponse = new FindRootsServiceResult(testInput, null);
+            _mockRootFinder.Setup(i => i.FindRoots(testInput, xmin, xmax)).Returns(mockResponse);
+
+            // ---
+            // ACT
+            // ---
+            _viewModel.FindRootsCmd.Execute(null);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.That(_viewModel.Answer, Is.EqualTo(mockResponse.Roots), "Actual roots is not equal expected");
+        }
+
+        [Test]
+        public void Test_ExpressionViewModel_FindRootsCmd_UnhappyPath()
+        {
+            // --------  
+            // ASSEMBLE
+            // --------
+            var testInput = "123";
+            double xmin = -10, xmax = 10;
+            _viewModel.Expression = testInput;
+            _viewModel.RootXMin = xmin;
+            _viewModel.RootXMax = xmax;
+            Error testError = new Error("test error");
+            var mockResponse = new FindRootsServiceResult(null, testError);
+            _mockRootFinder.Setup(i => i.FindRoots(testInput, xmin, xmax)).Returns(mockResponse);
+
+            // ---
+            // ACT
+            // ---
+            _viewModel.FindRootsCmd.Execute(null);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.That(_viewModel.Answer, Is.EqualTo(testError.ToString()), "Answer must be the error");
         }
     }
 }
