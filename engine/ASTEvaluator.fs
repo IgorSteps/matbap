@@ -181,7 +181,8 @@
             | Error _ -> infinity // Shouldn't happen! But fails safe if it does.
             
         // Recursive function implementing bisection method.
-        let rec bisectionRoots (exp : string) (pos : float) (neg : float) (depth : int) : float =
+        // Uses accuracy to determine floating point accuracy
+        let rec private bisectionRoots (exp : string) (pos : float) (neg : float) (accuracy : int) (depth : int) : float =
             let mid = (pos+neg) / 2.0
             
             // a = result of pos. b = result of neg. c = result of mid.
@@ -189,23 +190,28 @@
             symTable.Add("x", Float mid)
             let y = evalToFloat exp symTable
                 
-            // 100 depth is a bit of an arbitrary choice, but higher values would be much slower. 
-            if (depth > 100 || y = 0) then // If we're in too deep, or if we found the root
+            // If we're in too deep, or if we found the root (within floating point accuracy)
+            // 1000 depth is a bit of an arbitrary choice, but higher values would be much slower. 
+            if (depth > 1000 || System.Math.Round(y, accuracy) = 0) then
                 mid
             else if (y >= 0) then // If not negative
-                bisectionRoots exp mid neg (depth+1)
+                bisectionRoots exp mid neg accuracy (depth+1)
             else if (y < 0) then // If negative
-                bisectionRoots exp pos mid (depth+1)
+                bisectionRoots exp pos mid accuracy (depth+1)
             else // Never happens if root is in the range somewhere, but returns infinity to fail safe.
                 infinity
             
         // Root finding (where y=0) function for expression in form y = <exp>
         // Returns an array containing the estimated x value of each root. 
         let findRoots (min: float) (max: float) (exp: string) : Result<float array, string> =
-            // High accuracy is not required so 0.2 is used as a middling value. 
-            let points = plotPoints min max 0.2 exp
+            // High calculation accuracy is not required so 0.1 is used as a middling value. 
+            let points = plotPoints min max 0.1 exp
             let mutable i = 1
             let mutable roots = ResizeArray<float>()
+            
+            // Floating point accuracy, could be an argument, user-defined?
+            // Numbers get rounded to this many decimal places when checked against 0
+            let accuracy = 10
 
             match points with
             | Ok arr -> let mutable last = arr[0]
@@ -213,18 +219,18 @@
                         while (i < arr.Length) do
                             // [0] is x and [1] is y
                             let this = arr[i]
-                            // This point COULD be a root, so check if it is
-                            if (this[1] = 0) then
+                            // This point COULD be a root, so check if it is, within floating point accuracy range
+                            if (System.Math.Round(this[1], 14) = 0) then
                                 roots.Add (this[0])
                                 i <- i + 1 // Skip next, since they won't form a pair
                             // Otherwise compare to last point. The pairs we want have one positive and one negative.
                             else if (this[1] > 0) then // positive - check if last was negative
                                 if (last[1] < 0) then
                                     // Add the root between the two to the array of roots
-                                    roots.Add (bisectionRoots exp this[0] last[0] 0)
+                                    roots.Add (bisectionRoots exp this[0] last[0] accuracy 0)
                             else // must be negative - check if last was not negative
                                 if (last[1] >= 0) then // not negative
-                                    roots.Add (bisectionRoots exp last[0] this[0] 0)
+                                    roots.Add (bisectionRoots exp last[0] this[0] accuracy 0)
                             // Update the last element and increment i
                             last <- arr[i]
                             i <- i + 1
