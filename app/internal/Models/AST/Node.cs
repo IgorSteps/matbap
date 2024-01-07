@@ -1,7 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using Microsoft.Msagl.Core.Layout;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+
 
 namespace app
 {
@@ -10,7 +9,11 @@ namespace app
         Number,
         BinaryOperation,
         ParenthesisExpression,
-        Variable
+        Variable,
+        UnaryMinusOperation,
+        Function,
+        VariableAssginemnt,
+        ForLoop
     }
 
     public abstract class ASTNode : ObservableObject
@@ -65,8 +68,8 @@ namespace app
             _operator = oper;
             _left = left;
             _right = right;
-            AddChild(_left);
             AddChild(_right);
+            AddChild(_left);
         }
 
         public override string ToString()
@@ -107,5 +110,83 @@ namespace app
             return _name.ToString();
         }
     }
+
+    public class VariableAssignmentNode : ASTNode
+    {
+        private readonly string _variable;
+        private readonly ASTNode _assignee;
+
+        public VariableAssignmentNode(string variable, ASTNode assigneeNode) : base(ASTNodeType.VariableAssginemnt)
+        {
+            _variable = variable;
+            _assignee = assigneeNode;
+            AddChild(assigneeNode);
+            AddChild(new VariableNode(variable));
+        }
+
+        public override string ToString()
+        {
+            return $"{_variable}={_assignee.ToString()}";
+        }
+    }
+
+    public class UnaryMinusNode : ASTNode 
+    {
+        private readonly ASTNode _expression;
+        
+        public UnaryMinusNode(ASTNode expression) : base(ASTNodeType.UnaryMinusOperation)
+        {
+            _expression = expression;
+        }
+
+        public override string ToString()
+        {
+            return $"-{_expression.ToString()}";
+        }
+    }
+
+    public class FunctionNode : ASTNode
+    {
+        private readonly string _function;
+        private readonly ASTNode _expression;
+
+        public FunctionNode(string function, ASTNode expression) : base(ASTNodeType.Function)
+        { 
+            _function = function;
+            _expression = expression;
+            AddChild(_expression);
+        }
+
+        public override string ToString()
+        {
+            return $"{_function}({_expression.ToString()})";
+        }
+    }
+
+    public class ForLoopNode : ASTNode
+    {
+        private readonly ASTNode _variableAssignment;
+        private readonly ASTNode _xmin;
+        private readonly ASTNode _xmax;
+        private readonly ASTNode _xstep;
+
+        public ForLoopNode(ASTNode variableAssignment, ASTNode xmin, ASTNode xmax, ASTNode xstep) : base(ASTNodeType.ForLoop)
+        {
+            _variableAssignment = variableAssignment;
+            _xmin = xmin;
+            _xmax = xmax;
+            _xstep = xstep;
+            AddChild(xstep);
+            AddChild(xmax);
+            AddChild(xmin);
+            AddChild(variableAssignment);
+        }
+
+        public override string ToString()
+        {
+            return $"for {_variableAssignment.ToString()} in range({_xmin.ToString()},{_xmax.ToString()},{_xstep.ToString()})";
+        }
+    }
+
 
 }
