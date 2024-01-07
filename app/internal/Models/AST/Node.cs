@@ -137,6 +137,7 @@ namespace app
         public UnaryMinusNode(ASTNode expression) : base(ASTNodeType.UnaryMinusOperation)
         {
             _expression = expression;
+            AddChild(expression);
         }
 
         public override string ToString()
