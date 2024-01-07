@@ -1,6 +1,5 @@
 ﻿using Moq;
 using OxyPlot;
-using FSharpAST = Engine.Types.Node;
 
 namespace app.Test.Unit
 {
@@ -33,13 +32,13 @@ namespace app.Test.Unit
             var evaluationResult = new FunctionEvaluationResult(testPoints, null);
 
             _evaluator.Setup(e => e.EvaluateAtPoint(x, function)).Returns(evaluationResult);
-
-            var diffResult = new ExpressionEvaluatingServiceResult("2x", null);
+            Expression exp = new Expression(function);
+            var diffResult = new ExpressionEvaluatingServiceResult("2x", exp, null);
             _evaluatorService.Setup(e => e.Differentiate(function)).Returns(diffResult);
 
             var diffEvaluateAtPointResult = new FunctionEvaluationResult(testPoints, null);
             _evaluator.Setup(e => e.EvaluateAtPoint(x, "2x")).Returns(evaluationResult);
-            
+
             // --------
             // ACT
             // --------
@@ -91,7 +90,7 @@ namespace app.Test.Unit
             Tangent tangent = new Tangent(x, y, slope);
             double xmin = 1, xmax = 3, xstep = 0.1;
 
-            double[][] testPoints = new []
+            double[][] testPoints = new[]
             {
                 new double[] { 1, 2 },
                 new double[] { 3, 4 }

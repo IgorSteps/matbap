@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Moq;
 using OxyPlot;
 using OxyPlot.Series;
 
@@ -134,6 +135,42 @@ namespace app.Test.Unit
             // --------
             Assert.IsEmpty(_viewModel.Error, "There shouldn't be an error");
             Assert.That(_viewModel.SelectedPlot.Tangent, Is.EqualTo(testTangent), "Tangents are not equal");
+        }
+
+        [Test]
+        public void Test_PlotViewModel_HandlePlotExpressionMessage_Success()
+        {
+            // --------
+            // ASSEMBLE
+            // -------- 
+            string testInput = "123";
+            Expression testExpression = new Expression(testInput);
+            var samplePoints = new double[][]
+            {
+                new double [] {1.0, 2.0},
+                new double [] {3.0, 4.0},
+            };
+            testExpression.Points = samplePoints;
+            int length = testExpression.Points.Length;
+            double xmin = testExpression.Points[0][0];
+            double xmax = testExpression.Points[length - 1][0];
+            double xstep = xmin - testExpression.Points[0][1];
+            Plot testPlot = new Plot(testInput, xmin, xmax, xstep);
+
+            var mockedResult = new CreatePlotResult(testPlot, null);
+            _plotterMock.Setup(p => p.CreatePlotFromExpression(_viewModel.OxyPlotModel, testExpression)).Returns(mockedResult);
+
+            // --------
+            // ACT
+            // --------
+            WeakReferenceMessenger.Default.Send(new PlotExpressionMessage(testExpression));
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.IsEmpty(_viewModel.Error, "There shouldn't be an error");
+            Assert.That(_viewModel.Plots.Count, Is.EqualTo(1), "Number of plots in the collection should be 1");
+            Assert.That(_viewModel.SelectedPlot, Is.Not.Null, "Selected plot must not be null");
         }
     }
 }

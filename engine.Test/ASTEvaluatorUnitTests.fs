@@ -5,10 +5,9 @@ open NUnit.Framework
 open System.Collections.Generic
 open Types
 
-type SymbolTable = Dictionary<string, NumType>
 type AstEvaluatorTestCase = {
     Args: string;
-    Expected: Result<(string*NumType) * SymbolTable, string>;
+    Expected: Result<(string*NumType) * Points * SymbolTable, string>;
 }
 type AstPlotTestCase = {
     Min: float;
@@ -34,195 +33,207 @@ type AstEvaluatorTests () =
        {
             // Basic addition
             Args = "2+10"
-            Expected = Ok (("", Int 12), SymbolTable())
+            Expected = Ok (("", Int 12), [], SymbolTable())
        }
        {
             // Basic subtraction
             Args = "7-3"
-            Expected = Ok (("", Int 4), SymbolTable())
+            Expected = Ok (("", Int 4), [], SymbolTable())
        }
        {
             // Basic multiplication
             Args = "5*7"
-            Expected = Ok (("", Int 35), SymbolTable())
+            Expected = Ok (("", Int 35), [], SymbolTable())
        }
        {
             // Basic division, with integer truncation
             Args = "12/8"
-            Expected = Ok (("", Int 1), SymbolTable())
+            Expected = Ok (("", Int 1), [], SymbolTable())
        }  
        {
             // Using integers with floats
             Args = "5+2.3"
-            Expected = Ok (("", Float 7.3), SymbolTable())
+            Expected = Ok (("", Float 7.3), [], SymbolTable())
        }
        {
             Args = "5-2.3"
-            Expected = Ok (("", Float 2.7), SymbolTable())
+            Expected = Ok (("", Float 2.7), [], SymbolTable())
        }
        {
             // As above but for a different grammar
             Args = "4.62*9"
-            Expected = Ok (("", Float 41.58), SymbolTable())
+            Expected = Ok (("", Float 41.58), [], SymbolTable())
        }
        {
             Args = "49/7.0"
-            Expected = Ok (("", Float 7), SymbolTable())
+            Expected = Ok (("", Float 7), [], SymbolTable())
 
        }
        {
             // Using multiple operations together
             Args = "11.53-23+612"
-            Expected = Ok (("", Float 600.53), SymbolTable())
+            Expected = Ok (("", Float 600.53), [], SymbolTable())
        }
        {
             // Testing proper order of operations
             Args = "13.56-6+14*20.1"
-            Expected = Ok (("", Float 288.96), SymbolTable())
+            Expected = Ok (("", Float 288.96), [], SymbolTable())
 
        }
        {
             // Using brackets with an expression inside
             Args = "5*(3+0.5)"
-            Expected = Ok (("", Float 17.5), SymbolTable())
+            Expected = Ok (("", Float 17.5), [], SymbolTable())
 
        }
        {
             // Order of operations using brackets, and operations after brackets
             Args = "5-2.5/(6+6.5)+1"
-            Expected = Ok (("", Float 5.8), SymbolTable())
+            Expected = Ok (("", Float 5.8), [], SymbolTable())
        }
        {
             Args = "2.5+((2.5))*3"
-            Expected = Ok (("", Float 10), SymbolTable())
+            Expected = Ok (("", Float 10), [], SymbolTable())
        }
        {
             // Return a value on its own without operations
             Args = "9999"
-            Expected = Ok (("", Int 9999), SymbolTable())
+            Expected = Ok (("", Int 9999), [], SymbolTable())
 
        }
        {
             // As above, but inside brackets
             Args = "(0)"
-            Expected = Ok (("", Int 0), SymbolTable())
+            Expected = Ok (("", Int 0), [], SymbolTable())
        }
        {
             // Unary minus addition
             Args = "3+-2"
-            Expected = Ok (("", Int 1), SymbolTable())
+            Expected = Ok (("", Int 1), [], SymbolTable())
 
        }
        {
             // Unary minus subtraction
             Args = "4--2"
-            Expected = Ok (("", Int 6), SymbolTable())
+            Expected = Ok (("", Int 6), [], SymbolTable())
        }
        {
             // Unary minus multiplication
             Args = "-3*-9"
-            Expected = Ok (("", Int 27), SymbolTable())
+            Expected = Ok (("", Int 27), [], SymbolTable())
        }
        {
             Args = "6*-10.5"
-            Expected = Ok (("", Float -63), SymbolTable())
+            Expected = Ok (("", Float -63), [], SymbolTable())
        }
        {
             // Unary minus division
             Args = "8/-2"
-            Expected = Ok (("", Int -4), SymbolTable())
+            Expected = Ok (("", Int -4), [], SymbolTable())
        }
        {
             Args = "-320/-64"
-            Expected = Ok (("", Int 5), SymbolTable())
+            Expected = Ok (("", Int 5), [], SymbolTable())
        }
        {
             // Unary minus with brackets
             Args = "-(6+11)"
-            Expected = Ok (("", Int -17), SymbolTable())
+            Expected = Ok (("", Int -17), [], SymbolTable())
        }
        {
             Args = "-(8+(-24))"
-            Expected = Ok (("", Int 16), SymbolTable())
+            Expected = Ok (("", Int 16), [], SymbolTable())
        }
        {
             // Test for exponent
             Args = "2^8"
-            Expected = Ok (("", Int 256), SymbolTable())
+            Expected = Ok (("", Int 256), [], SymbolTable())
        }
        {
             Args = "6^2.3"
-            Expected = Ok (("", Float 61.6237149387), SymbolTable())
+            Expected = Ok (("", Float 61.6237149387), [], SymbolTable())
        }
        {
             Args = "25^0.5"
-            Expected = Ok (("", Float 5), SymbolTable())
+            Expected = Ok (("", Float 5), [], SymbolTable())
        }
        {
             // Testing order of operations with exponent
             Args = "2*3.0^2"
-            Expected = Ok (("", Float 18), SymbolTable())
+            Expected = Ok (("", Float 18), [], SymbolTable())
        }
        {
             // Subsequent exponent
             Args = "4^2^3"
-            Expected = Ok (("", Float 65536), SymbolTable())
+            Expected = Ok (("", Float 65536), [], SymbolTable())
        }
        {
             // Test for modulo
             Args = "5%3"
-            Expected = Ok (("", Int 2), SymbolTable())
+            Expected = Ok (("", Int 2), [], SymbolTable())
        }
        {
             Args = "5216%413"
-            Expected = Ok (("", Int 260), SymbolTable())
+            Expected = Ok (("", Int 260), [], SymbolTable())
        }
        {
             // Subsequent modulo
             Args = "763%129%20"
-            Expected = Ok (("", Int 18), SymbolTable())
+            Expected = Ok (("", Int 18), [], SymbolTable())
        }
        {
             // Negative exponent
             Args = "4^-2"
-            Expected = Ok (("", Float 0.0625), SymbolTable())
+            Expected = Ok (("", Float 0.0625), [], SymbolTable())
        }
        {
             Args = "4^-1"
-            Expected = Ok (("", Float 0.25), SymbolTable())
+            Expected = Ok (("", Float 0.25), [], SymbolTable())
        }
        {
             // Negative modulo
             Args = "71%-15"
-            Expected = Ok (("", Int 11), SymbolTable())
+            Expected = Ok (("", Int 11), [], SymbolTable())
        }
        {
             Args = "-71%15"
-            Expected = Ok (("", Int -11), SymbolTable())
+            Expected = Ok (("", Int -11), [], SymbolTable())
        }
        {
             Args = "-71%-15"
-            Expected = Ok (("", Int -11), SymbolTable())
+            Expected = Ok (("", Int -11), [], SymbolTable())
        }
        {
             // Basic variable assignment with integer
             Args = "x=3"
-            Expected = Ok (("x", Int 3), (AstHelper.createDictionary "x" (Int 3)))
+            Expected = Ok (("x", Int 3), [], (AstHelper.createDictionary "x" (Int 3)))
        }
        {
             // Basic variable assignment with float
             Args = "var1=5.0"
-            Expected = Ok (("var1", Float 5), (AstHelper.createDictionary "var1" (Float 5)))
+            Expected = Ok (("var1", Float 5), [], (AstHelper.createDictionary "var1" (Float 5)))
        }
        {
             // Assignment with float and int
             Args = "var2=5.5+2"
-            Expected = Ok (("var2", Float 7.5), (AstHelper.createDictionary "var2" (Float 7.5)))
+            Expected = Ok (("var2", Float 7.5), [], (AstHelper.createDictionary "var2" (Float 7.5)))
        }
        {
             // Negative brackets assignment
             Args = "y=-(6+11)"
-            Expected = Ok (("y", Int -17), (AstHelper.createDictionary "y" (Int -17)))
+            Expected = Ok (("y", Int -17), [], (AstHelper.createDictionary "y" (Int -17)))
+
+       }
+       {
+            // For loop points
+            Args = "for x in range(1,5): 2*x + 1"
+            Expected = Ok (("", Int 0), [(1.0, 3.0); (2.0, 5.0); (3.0, 7.0); (4.0,9.0); (5.0, 11.0)], SymbolTable())
+       }
+       {
+            // For loop points with function call
+            Args = "for x in range(0,1): sin(x)"
+            Expected = Ok (("", Int 0), [(0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
+
        }
     ]
     
@@ -322,22 +333,22 @@ type AstEvaluatorTests () =
 
         // Assert correct non-value returns
         let expectedReturn = match expected with
-                             | Ok ((var, _), symTable) -> Ok (var, symTable)
+                             | Ok ((var, _), points, symTable) -> Ok (var, points, symTable)
                              | Error e -> Error e
         let actualReturn   = match actual with
-                             | Ok ((var, _), symTable, _) -> Ok (var, symTable)
+                             | Ok ((var, _), points, symTable, _) -> Ok (var, points, symTable)
                              | Error e -> Error e
         Assert.That(actualReturn, Is.EqualTo(expectedReturn))
         // Assert correct value (within tolerance to the 10th decimal place, for floating point errors)
         let actualValue =   match actual with
-                            | Ok ((_, x), _, _) -> match x with
-                                                   | Int y -> float y
-                                                   | Float y -> y
+                            | Ok ((_, x),_, _, _) -> match x with
+                                                     | Int y -> float y
+                                                     | Float y -> y
                             | _ -> infinity
                             // This should be something we never expect the result to be, in order to assert that it
                             // failed in the case of an error. 
         let expectedValue = match expected with
-                            | Ok ((_, x), _) -> match x with
+                            | Ok ((_, x), _, _) -> match x with
                                                      | Int y -> float y
                                                      | Float y -> y
                             | _ -> -infinity

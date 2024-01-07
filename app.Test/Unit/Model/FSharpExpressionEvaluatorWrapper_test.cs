@@ -1,7 +1,9 @@
 ﻿using Engine;
+using Microsoft.FSharp.Collections;
 using Microsoft.FSharp.Core;
 using Moq;
 using FSharpASTNode = Engine.Types.Node;
+using FSharpPoints = Microsoft.FSharp.Collections.FSharpList<System.Tuple<double, double>>;
 
 namespace app.Test.Unit
 {
@@ -26,8 +28,20 @@ namespace app.Test.Unit
             string expression = "1+1";
             SymbolTable sTable = new SymbolTable();
             var sampleAST = FSharpASTNode.NewVariable(expression);
-            var tuple = Tuple.Create("2", sTable.Table, sampleAST);
-            var successResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewOk(tuple);
+            var pointTuples = new List<Tuple<double, double>>
+            {
+                new Tuple<double, double>(1.0, 2.0),
+                new Tuple<double, double>(3.0, 4.0),
+            };
+            FSharpPoints fsharpPointsList = ListModule.OfSeq(pointTuples);
+            var expectedPoints = new double[][]
+            {
+                new double [] {1.0, 2.0},
+                new double [] {3.0, 4.0},
+            };
+
+            var tuple = Tuple.Create("2", fsharpPointsList, sTable.Table, sampleAST);
+            var successResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewOk(tuple);
 
             _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(successResult);
 
@@ -43,6 +57,7 @@ namespace app.Test.Unit
             Assert.That(result.Error, Is.Null, "Error must be null");
             Assert.That(result.Answer, Is.EqualTo("2"), "Answers don't match");
             Assert.That(result.FSharpAST, Is.EqualTo(sampleAST), "ASTs don't match");
+            Assert.That(result.Points, Is.EqualTo(expectedPoints), "Points are not equal");
         }
 
         [Test]
@@ -54,9 +69,9 @@ namespace app.Test.Unit
             string expression = "1+1";
             SymbolTable sTable = new SymbolTable();
             string error = "Boom";
-            var errorResult = FSharpResult<Tuple<string, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewError(error);
+            var errorResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewError(error);
 
-           _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
+            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
 
             // -----
             // ACT
@@ -71,6 +86,7 @@ namespace app.Test.Unit
             Assert.That(result.Error.Message, Is.EqualTo(error), "Error's don't match");
             Assert.That(result.Answer, Is.Null, "Answer must be null");
             Assert.That(result.FSharpAST, Is.Null, "AST must be null");
+            Assert.That(result.Points, Is.Null, "Points must be null");
         }
     }
 }

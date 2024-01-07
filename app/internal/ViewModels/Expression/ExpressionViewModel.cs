@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace app
 {
@@ -19,7 +20,6 @@ namespace app
         }
 
         public RelayCommand EvaluateCmd => _evalauteCmd;
-
         public RelayCommand DifferentiateCmd => _differentiateCmd;
         public RelayCommand VisualiseCmd => _visualiseASTCmd;
 
@@ -41,6 +41,11 @@ namespace app
             if(result.HasError)
             {
                 Answer = result.Error.ToString();
+                return;
+            }
+            if (result.Expression.Points != null) 
+            {
+                PlotExpression(result.Expression);
                 return;
             }
 
@@ -70,6 +75,15 @@ namespace app
 
             var astWindow = new ASTWindow(result.AST);
             astWindow.Show();
+        }
+
+        /// <summary>
+        /// Send a message when user uses for-loop plot function for plotting view model.
+        /// </summary>
+        public void PlotExpression(Expression exp)
+        {
+            var message = new PlotExpressionMessage(exp);
+            WeakReferenceMessenger.Default.Send(message);
         }
     }
 }
