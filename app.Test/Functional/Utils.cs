@@ -69,9 +69,18 @@ namespace app.Test.Functional
             var validator = new ValidationService();
 
             var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, fsharpEvalWrapper, expressionManager, astManager);
-
-            var viewModel = new ExpressionViewModel(service);
+            
+            var viewModel = new ExpressionViewModel(service, CreateFindRootsService());
             return viewModel;
+        }
+
+        public static FindRootsService CreateFindRootsService()
+        {
+            var validator = new ValidationService();
+            var FSharpFindRootsWrapper = new FSharpFindRootsWrapper();
+
+            var service = new FindRootsService(FSharpFindRootsWrapper, validator);
+            return service;
         }
 
         public static PlotViewModel CreaePlotViewModel()
