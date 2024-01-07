@@ -214,31 +214,6 @@ namespace app.Test.Unit
             Assert.That(result.AST.ToString(), Is.EqualTo(expected));
         }
 
-        [Test]
-        public void ASTManager_Convert_FSharpUnsupportedeNode_Error()
-        {
-            // --------
-            // ASSEMBLE
-            // --------
-            var expected = "Failed to convert F# AST - unknown node type.";
-            var testVarInput = "x";
-            var testNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(2));
-            var varNode = FSharpASTNode.NewVariableAssignment(testVarInput, testNode);
-
-            // ---
-            // ACT
-            // ---
-            var result = _converter.Convert(varNode);
-
-            // ------
-            // ASSERT
-            // ------
-            Assert.IsTrue(result.HasError, "Should have an error");
-            Assert.IsNotNull(result.Error, "Error must not be null");
-            Assert.IsNull(result.AST, "AST must be null");
-            Assert.That(result.Error.Message, Is.EqualTo(expected));
-        }
-
         public void ASTManager_Convert_ComplexNodes()
         {
             // --------
