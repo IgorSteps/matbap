@@ -117,15 +117,14 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void ASTManager_Convert_FSharpUnsupportedeNode_Error()
+        public void ASTManager_Convert_FSharpVariableAssignemntNode_CreatesCorrectCSharpNode()
         {
             // --------
             // ASSEMBLE
             // --------
-            var expected = "Failed to convert F# AST - unknown node type.";
-            var testVarInput = "x";
-            var testNode = FSharpASTNode.NewNumber(Engine.Types.NumType.NewInt(2));
-            var varNode = FSharpASTNode.NewVariableAssignment(testVarInput, testNode);
+            var expected = "x=10";
+
+            var varNode = FSharpASTNode.NewVariableAssignment("x", FSharpASTNode.NewNumber(FSharpNumType.NewInt(10)));
 
             // ---
             // ACT
@@ -135,10 +134,84 @@ namespace app.Test.Unit
             // ------
             // ASSERT
             // ------
-            Assert.IsTrue(result.HasError, "Should have an error");
-            Assert.IsNotNull(result.Error, "Error must not be null");
-            Assert.IsNull(result.AST, "AST must be null");
-            Assert.That(result.Error.Message, Is.EqualTo(expected));
+            Assert.IsFalse(result.HasError, "Shouldn't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<VariableAssignmentNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ASTManager_Convert_FSharpFunctionNode_CreatesCorrectCSharpNode()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var expected = "sin(x)";
+
+            var varNode = FSharpASTNode.NewFunction("sin", FSharpASTNode.NewVariable("x"));
+
+            // ---
+            // ACT
+            // ---
+            var result = _converter.Convert(varNode);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.IsFalse(result.HasError, "Shouldn't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<FunctionNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ASTManager_Convert_FSharpUnaryMinusOperationNode_CreatesCorrectCSharpNode()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var expected = "-1";
+
+            var varNode = FSharpASTNode.NewUnaryMinusOperation("-", FSharpASTNode.NewNumber(FSharpNumType.NewInt(1)));
+
+            // ---
+            // ACT
+            // ---
+            var result = _converter.Convert(varNode);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.IsFalse(result.HasError, "Shouldn't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<UnaryMinusNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
+        }
+
+        [Test]
+        public void ASTManager_Convert_FSharpForLoopNode_CreatesCorrectCSharpNode()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var expected = "for x=1 in range(1,1,1)";
+            var numberNode = FSharpASTNode.NewNumber(FSharpNumType.NewInt(1));
+            var varAssignmentNode = FSharpASTNode.NewVariableAssignment("x", numberNode);
+
+            var varNode = FSharpASTNode.NewForLoop(varAssignmentNode, numberNode, numberNode, numberNode);
+
+            // ---
+            // ACT
+            // ---
+            var result = _converter.Convert(varNode);
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.IsFalse(result.HasError, "Shouldn't have an error");
+            Assert.IsNull(result.Error, "Error must be null");
+            Assert.IsInstanceOf<ForLoopNode>(result.AST);
+            Assert.That(result.AST.ToString(), Is.EqualTo(expected));
         }
 
         public void ASTManager_Convert_ComplexNodes()

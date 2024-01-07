@@ -61,6 +61,62 @@ namespace app
                     var variableNode = new VariableNode(node.Item);
                     return new ConvertionResult(variableNode, null);
 
+                case FSharpASTNode.VariableAssignment node:
+                    var variableName = node.Item1;
+                    var assigneConversion = Convert(node.Item2);
+                    if (assigneConversion.HasError)
+                    {
+                        return assigneConversion;
+                    }
+
+                    var variableAssignmentNode = new VariableAssignmentNode(variableName, assigneConversion.AST);
+                    return new ConvertionResult(variableAssignmentNode, null);
+
+                case FSharpASTNode.UnaryMinusOperation node:
+                    var expressionConversion = Convert(node.Item2);
+                    if (expressionConversion.HasError)
+                    {
+                        return expressionConversion;
+                    }
+
+                    return new ConvertionResult(new UnaryMinusNode(expressionConversion.AST), null);
+
+                case FSharpASTNode.Function node:
+                    var function = node.Item1;
+                    var functionExpressionConversion = Convert(node.Item2);
+                    if (functionExpressionConversion.HasError)
+                    {
+                        return functionExpressionConversion;
+                    }
+
+                    return new ConvertionResult(new FunctionNode(function, functionExpressionConversion.AST), null);
+
+                case FSharpASTNode.ForLoop node:
+                    var varAssigmentConversion = Convert(node.Item1);
+                    if (varAssigmentConversion.HasError)
+                    {
+                        return varAssigmentConversion;
+                    }
+
+                    var xMinConversion = Convert(node.Item2);
+                    if (xMinConversion.HasError)
+                    {
+                        return xMinConversion;
+                    }
+
+                    var xMaxConversion = Convert(node.Item3);
+                    if(xMaxConversion.HasError)
+                    {
+                        return xMaxConversion;
+                    }
+
+                    var xStepConversion = Convert(node.Item4);
+                    if (xStepConversion.HasError)
+                    {
+                        return xStepConversion;
+                    }
+                    return new ConvertionResult(new ForLoopNode(varAssigmentConversion.AST, xMinConversion.AST, xMaxConversion.AST, xStepConversion.AST), null);
+                
                 default:
                     return new ConvertionResult(null, new Error("Failed to convert F# AST - unknown node type."));
             }

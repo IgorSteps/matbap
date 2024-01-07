@@ -1,4 +1,6 @@
-﻿namespace app.Test.Unit
+﻿using NuGet.Frameworks;
+
+namespace app.Test.Unit
 {
     public class ASTNodes_test
     {
@@ -66,6 +68,95 @@
             Assert.That(parenNode.NodeType, Is.EqualTo(ASTNodeType.ParenthesisExpression));
             Assert.That(parenNode.ToString(), Is.EqualTo(expected));
             Assert.That(numberNode.Parent, Is.SameAs(parenNode));
+        }
+
+        [Test]
+        public void ASTNode_TestUnaryMinusOperationNode_ToString()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var numberNode = new NumberNode<int>(1);
+
+            // --------
+            // ACT
+            // --------
+            var unaryMinusNode = new UnaryMinusNode(numberNode);
+
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(unaryMinusNode.NodeType, Is.EqualTo(ASTNodeType.UnaryMinusOperation));
+            Assert.That(unaryMinusNode.ToString(), Is.EqualTo("-1"));
+            Assert.That(numberNode.Parent, Is.SameAs(unaryMinusNode));
+        }
+
+        [Test]
+        public void ASTNode_TestVarAssignmentNode_ToString()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var numberNode = new NumberNode<int>(1);
+
+            // --------
+            // ACT
+            // --------
+            var varAssignmentNode = new VariableAssignmentNode("x", numberNode);
+
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(varAssignmentNode.NodeType, Is.EqualTo(ASTNodeType.VariableAssginemnt));
+            Assert.That(varAssignmentNode.ToString(), Is.EqualTo("x=1"));
+            Assert.That(numberNode.Parent, Is.SameAs(varAssignmentNode));
+        }
+
+        [Test]
+        public void ASTNode_TestFunctionNode_ToString()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var variableNode = new VariableNode("x");
+
+            // --------
+            // ACT
+            // --------
+            var functionNode = new FunctionNode("sin", variableNode);
+
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(functionNode.NodeType, Is.EqualTo(ASTNodeType.Function));
+            Assert.That(functionNode.ToString(), Is.EqualTo("sin(x)"));
+            Assert.That(variableNode.Parent, Is.SameAs(functionNode));
+        }
+
+        [Test]
+        public void ASTNode_TestForLoopNode_ToString()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            var numberNode = new NumberNode<int>(1);
+            var varAssignmentNode = new VariableAssignmentNode("x", numberNode);
+
+            // --------
+            // ACT
+            // --------
+            var forLoopNode = new ForLoopNode(varAssignmentNode, numberNode, numberNode, numberNode);
+
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(forLoopNode.NodeType, Is.EqualTo(ASTNodeType.ForLoop));
+            Assert.That(forLoopNode.ToString(), Is.EqualTo("for x=1 in range(1,1,1)"));
+            Assert.That(varAssignmentNode.Parent, Is.SameAs(forLoopNode));
         }
 
         [Test]
