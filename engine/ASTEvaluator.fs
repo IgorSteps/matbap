@@ -224,11 +224,11 @@
             match eval exp symTable true with
             | Ok ((_, Int int), _, _, _) -> float int
             | Ok ((_, Float float), _, _, _) -> float
-            | Error _ -> infinity // Possible to happen if we get a division by zero.
+            | Error _ -> infinity // Happens if division by 0
             
         // Recursive function implementing bisection method.
         // Uses accuracy to determine floating point accuracy
-        let rec private bisectionRoots (exp : string) (pos : float) (neg : float) (accuracy : int) (depth : int) : float =
+        let rec private bisectionRoots (exp : string) (pos : float) (neg : float) (accuracy : int) (depth : int) : Result<float,string> =
             let mid = (pos+neg) / 2.0
             
             // a = result of pos. b = result of neg. c = result of mid.
@@ -239,13 +239,13 @@
             // If we're in too deep, or if we found the root (within floating point accuracy)
             // 1000 depth is a bit of an arbitrary choice, but higher values would be much slower. 
             if (depth > 1000 || System.Math.Round(y, accuracy) = 0) then
-                mid
+                Ok mid
             else if (y >= 0) then // If not negative
                 bisectionRoots exp mid neg accuracy (depth+1)
             else if (y < 0) then // If negative
                 bisectionRoots exp pos mid accuracy (depth+1)
-            else // Never happens if root is in the range somewhere, but returns infinity to fail safe.
-                infinity
+            else // Should never happen if root is in the range somewhere
+                Error "Unknown error during root finding"
             
         // Root finding (where y=0) function for expression in form y = <exp>
         // Returns an array containing the estimated x value of each root. 
@@ -260,7 +260,8 @@
             let accuracy = 10
 
             match points with
-            | Ok arr -> let mutable last = arr[0]
+            | Ok arr -> let mutable gotError = None
+                        let mutable last = arr[0]
                         // For each point returned in the array - we want pairs of adjacent points.
                         while (i < arr.Length) do
                             // [0] is x and [1] is y
@@ -273,13 +274,21 @@
                             else if (this[1] > 0) then // positive - check if last was negative
                                 if (last[1] < 0) then
                                     // Add the root between the two to the array of roots
-                                    roots.Add (bisectionRoots exp this[0] last[0] accuracy 0)
+                                    let root = bisectionRoots exp this[0] last[0] accuracy 0
+                                    match root with
+                                    | Ok float -> roots.Add float
+                                    | Error e -> gotError <- Some e
                             else // must be negative - check if last was not negative
                                 if (last[1] >= 0) then // not negative
-                                    roots.Add (bisectionRoots exp last[0] this[0] accuracy 0)
+                                    let root = bisectionRoots exp last[0] this[0] accuracy 0
+                                    match root with
+                                    | Ok float -> roots.Add float
+                                    | Error e -> gotError <- Some e
                             // Update the last element and increment i
                             last <- arr[i]
                             i <- i + 1
-                        Ok (roots.ToArray())
+                        match gotError with
+                        | None   -> Ok (roots.ToArray())
+                        | Some e -> Error e
             // Return error if point list is an error
             | Error e -> Error e

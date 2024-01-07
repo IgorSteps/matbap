@@ -300,23 +300,55 @@ type AstEvaluatorTests () =
         // Root finding test cases (up to 5 d.p. accuracy should be accepted)
         {
             Min = -5; Max = 5; Exp = "x^2";
-            Expected = Ok [|0|];
+            Expected = Ok [| 0 |];
         }
         {
             Min = -214; Max = 193; Exp = "(x^3)+(3*x^2)-2";
-            Expected = Ok [|-2.73205; -1; 0.73205|];
+            Expected = Ok [| -2.73205; -1; 0.73205 |];
         }
         {
             Min = -30; Max = 54; Exp = "(6*x^2)-3.2";
-            Expected = Ok [|-0.73030; 0.73030|];
+            Expected = Ok [| -0.73030; 0.73030 |];
         }
         {
             Min = -10; Max = 10; Exp = "x^2+3";
-            Expected = Ok [||];
+            Expected = Ok [| |];
         }
         {
             Min = 0; Max = 200; Exp = "x^4-50";
-            Expected = Ok [|2.65915|];
+            Expected = Ok [| 2.65915 |];
+        }
+        {
+            Min = -5; Max = 5; Exp = "sin(x)";
+            Expected = Ok [| -3.14159; 0; 3.14159 |];
+        }
+        
+        // Edge cases
+        // Min and max identical
+        {
+            Min = -1; Max = -1; Exp = "x";
+            Expected = Ok [| |];
+        }
+        // Large range with no roots
+        {
+            Min = -50000; Max = 50000; Exp = "-1";
+            Expected = Ok [| |];
+        }
+        // Function with asymptotes, and no real roots.
+        // Correct behaviour is to return an empty array but if it does... worth investigating!
+        {
+            Min = -10; Max = 10; Exp = "1/x";
+            Expected = Ok [| 0 |];
+        }
+        // Rapidly changing function: should find more but not calculated at a high enough accuracy to
+        {
+            Min = -1; Max = -1; Exp = "1/sin(x)";
+            Expected = Ok [| -0.31831; 0.07968; 0.31831 |];
+        }
+        // Non-polynomial
+        {
+            Min = -3; Max = 3; Exp = "3*x+2";
+            Expected = Ok [| -0.66667 |];
         }
     ]
 
