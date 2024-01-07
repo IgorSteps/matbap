@@ -1,22 +1,41 @@
-﻿namespace app
+﻿using System;
+
+namespace app
 {
     public struct FSharpFindRootResult
     {
-        public string Answer { get; private set; }
+        public string Roots { get; private set; }
         public Error Error { get; private set; }
         public readonly bool HasError => Error != null;
         public FSharpFindRootResult(string answer, Error err)
         {
-            Answer = answer;
+            Roots = answer;
             Error = err;
         }
     }
     public class FSharpFindRootsWrapper : IFSharpFindRootsWrapper
     {
-        public FSharpFindRootResult FindRoots(string expression, double xmin, double xmax)
+        private readonly Engine.IRootFinder _rootFinder;
+
+        public FSharpFindRootsWrapper(Engine.IRootFinder rootFinder)
         {
-            return new FSharpFindRootResult(null, null);
+            _rootFinder = rootFinder;
         }
 
+        public FSharpFindRootResult FindRoots(string expression, double xmin, double xmax)
+        {
+            var result = _rootFinder.findRoots(xmin, xmax, expression);
+            if (result.IsError)
+            {
+                return new FSharpFindRootResult(null, new Error(result.ErrorValue));
+            }
+
+            return new FSharpFindRootResult(ConvertArrayToString(result.ResultValue), null);
+        }
+
+        private string ConvertArrayToString(double[] doubleArray)
+        {
+            return string.Join(", ", doubleArray);
+        }
     }
 }

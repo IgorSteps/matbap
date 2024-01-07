@@ -38,7 +38,7 @@
                 return new FindRootsServiceResult(null, findRootsResult.Error);
             }
 
-            return new FindRootsServiceResult(findRootsResult.Answer, null); ;
+            return new FindRootsServiceResult(findRootsResult.Roots, null); ;
         }
     }
 }

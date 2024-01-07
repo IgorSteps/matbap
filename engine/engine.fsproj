@@ -11,6 +11,7 @@
     <Compile Include="ASTGetter.fs" />
     <Compile Include="ASTEvaluator.fs" />
     <Compile Include="Differentiation.fs" />
+    <Compile Include="Interfaces\IRootFinder.fs" />
     <Compile Include="Interfaces\IEvaluator.fs" />
     <Compile Include="Interfaces\IDifferentiator.fs" />
     <Compile Include="Interfaces\IASTGetter.fs" />
