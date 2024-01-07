@@ -10,9 +10,9 @@
                                                              match setVar varName innerNode symTable with
                                                              | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
                                                              | Error err              -> Error err
-            | ForLoop(VariableAssignment(varName, innerNode), xmax, step, expr) ->
+            | ForLoop(VariableAssignment(varName, innerNode), xMax, step, expr) ->
                 match setVar varName innerNode symTable with
-                | Ok(_, _, symTable) -> match evalForLoop varName xmax step expr symTable [] with
+                | Ok(_, _, symTable) -> match evalForLoop varName xMax step expr symTable [] with
                                         | Ok(points) -> Ok("", Int(0), SymbolTable(), points)
                                         | Error err  -> Error err
                 | Error err -> Error err
@@ -29,16 +29,16 @@
                                    Ok (varName, num, symTable)
             | Error e -> Error e
         
-        and private evalForLoop (varName: string) (xmax: Node) (xstep: Node) (expr: Node) (symTable: SymbolTable) (points : Points) =
+        and private evalForLoop (varName: string) (xMax: Node) (xStep: Node) (expr: Node) (symTable: SymbolTable) (points : Points) =
             let currentX = match symTable[varName] with
                            | Int   x -> float x
                            | Float x -> x
-            // xmax is always an Int number node
-            let max     =  match xmax with
+            // xMax is always an Int number node
+            let max     =  match xMax with
                            | Number (Int x)   -> float x
                            | _                -> 0.0
-            // xstep is always a float number node
-            let step    =  match xstep with
+            // xStep is always a float number node
+            let step    =  match xStep with
                            | Number (Float x) -> x
                            | _                -> 0.0
             match currentX > max with
@@ -48,7 +48,7 @@
                                                      | Int x   -> float x
                                                      | Float x -> x
                                              symTable[varName] <- Float(currentX + step)
-                                             evalForLoop varName xmax xstep expr symTable (points@[(currentX, y)])
+                                             evalForLoop varName xMax xStep expr symTable (points@[(currentX, y)])
                        | Error err     -> Error err
                       
         and private evalTree (node : Node) (symTable : SymbolTable) : Result<Node, string> =
@@ -219,12 +219,12 @@
             | None -> Ok (points.ToArray())
             | Some e -> Error e
             
-        // Helper function
+        // Helper function for root finding
         let private evalToFloat (exp : string) (symTable : SymbolTable) : float =
             match eval exp symTable true with
-            | Ok ((_, Int int), _, _) -> float int
-            | Ok ((_, Float float), _, _) -> float
-            | Error _ -> infinity // Shouldn't happen! But fails safe if it does.
+            | Ok ((_, Int int), _, _, _) -> float int
+            | Ok ((_, Float float), _, _, _) -> float
+            | Error _ -> infinity // Possible to happen if we get a division by zero.
             
         // Recursive function implementing bisection method.
         // Uses accuracy to determine floating point accuracy
