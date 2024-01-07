@@ -24,10 +24,15 @@ namespace app
 
         public FSharpFindRootResult FindRoots(string expression, double xmin, double xmax)
         {
-            var result = _rootFinder.findRoots(xmin, xmax, expression);
+            var result = _rootFinder.FindRoots(xmin, xmax, expression);
             if (result.IsError)
             {
                 return new FSharpFindRootResult(null, new Error(result.ErrorValue));
+            }
+
+            if(result.ResultValue.Length == 0)
+            {
+                return new FSharpFindRootResult(null, new Error("No real roots found"));
             }
 
             return new FSharpFindRootResult(ConvertArrayToString(result.ResultValue), null);

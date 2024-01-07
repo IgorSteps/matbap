@@ -15,6 +15,7 @@
     <Compile Include="Interfaces\IEvaluator.fs" />
     <Compile Include="Interfaces\IDifferentiator.fs" />
     <Compile Include="Interfaces\IASTGetter.fs" />
+    <Compile Include="Wrappers\RootFinderWrapper.fs" />
     <Compile Include="Wrappers\EvaluatorWrapper.fs" />
     <Compile Include="Wrappers\DifferentiatorWrappers.fs" />
     <Compile Include="Wrappers\ASTGetterWrapper.fs" />

@@ -37,6 +37,7 @@ namespace app
             services.AddTransient<Engine.IEvaluator, Engine.EvaluatorWrapper>();
             services.AddTransient<Engine.IDifferentiator, Engine.DifferentiatorWrapper>();
             services.AddTransient<Engine.IASTGetter, Engine.ASTGetterWrapper>();   
+            services.AddTransient<Engine.IRootFinder, Engine.RootFinderWrapper>();  
 
             // Managers.
             services.AddSingleton<IOxyPlotModelManager, OxyPlotModelManager>();
