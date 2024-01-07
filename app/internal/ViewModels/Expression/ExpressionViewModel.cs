@@ -1,19 +1,22 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Msagl.Core.Geometry.Curves;
 
 namespace app
 {
     public class ExpressionViewModel : ObservableObject
     {
         private readonly IEvaluator _evaluator;
+        private readonly IRootFinder _rootFinder;
         private string _answer;
         private RelayCommand _evalauteCmd, _differentiateCmd, _visualiseASTCmd, _findRootsCmd;
         private string _expressionValue;
         private double _rootXMin, _rootXMax;
-        public ExpressionViewModel(IEvaluator evaluator)
+        public ExpressionViewModel(IEvaluator evaluator, IRootFinder rootFinder)
         {
             _evaluator = evaluator;
+            _rootFinder = rootFinder;
             _evalauteCmd = new RelayCommand(Evaluate);
             _differentiateCmd = new RelayCommand(Differentiate);
             _visualiseASTCmd = new RelayCommand(VisualiseAST);
@@ -97,14 +100,14 @@ namespace app
 
         public void FindRoots()
         {
-            var result = _evaluator.FindRoots(_expressionValue, RootXMin, RootXMax);
+            var result = _rootFinder.FindRoots(_expressionValue, RootXMin, RootXMax);
             if (result.HasError)
             {
                 Answer = result.Error.ToString();
                 return;
             }
 
-            Answer = result.Result;
+            Answer = result.Roots;
         }
 
         /// <summary>
