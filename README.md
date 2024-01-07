@@ -20,11 +20,11 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Dynamic typing
   - [ ] Static typing
 - [ ] Statement for control flow
-  - [ ] Iteration
+  - [x] Iteration
   - [ ] Condition
 - [ ] Maths toolbox
    - [x] Derivatives
-   - [ ] Root finding
+   - [x] Root finding
    - [ ] Integration
    - [ ] Matrix and Vector library
 - [ ] Turn into a Compiler
