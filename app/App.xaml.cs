@@ -44,18 +44,21 @@ namespace app
             services.AddSingleton<IExpressionManager, ExpressionManager>();
             services.AddSingleton<IPlotManager, PlotManager>();
             services.AddSingleton<ITangentManager, TangentManager>();
+            services.AddSingleton<IASTConverter, ASTManager>();
 
             // C# Wrappers.
             services.AddSingleton<IFSharpFunctionEvaluatorWrapper, FSharpFunctionEvaluatiorWrapper>();
             services.AddSingleton<IFSharpDifferentiatorWrapper, FSharpDifferentiatorWrapper>();
             services.AddSingleton<IFSharpASTGetterWrapper, FSharpASTGetterWrapper>();
+            services.AddSingleton<IFSharpEvaluatorWrapper, FSharpEvaluatorWrapper>();
+            services.AddSingleton<IFSharpFindRootsWrapper, FSharpFindRootsWrapper>();
 
             // Services.
-            services.AddSingleton<IASTConverter, ASTManager>();
             services.AddSingleton<IPlotter, PlottingService>();
+            services.AddSingleton<IDifferentiator, DifferentiationService>();
             services.AddSingleton<IValidator, ValidationService>();
-            services.AddSingleton<IFSharpEvaluatorWrapper, FSharpEvaluatorWrapper>();
             services.AddSingleton<IEvaluator, ExpressionEvaluatingService>(); 
+            services.AddSingleton<IRootFinder, FindRootsService>();
 
             // ViewModels.
             services.AddTransient<ExpressionViewModel>();
