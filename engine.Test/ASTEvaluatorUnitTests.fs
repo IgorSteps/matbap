@@ -342,7 +342,7 @@ type AstEvaluatorTests () =
         }
         // Rapidly changing function: should find more but not calculated at a high enough accuracy to
         {
-            Min = -1; Max = -1; Exp = "1/sin(x)";
+            Min = -1; Max = -1; Exp = "sin(1/x)";
             Expected = Ok [| -0.31831; 0.07968; 0.31831 |];
         }
         // Non-polynomial
