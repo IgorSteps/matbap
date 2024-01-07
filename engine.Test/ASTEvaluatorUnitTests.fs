@@ -16,6 +16,12 @@ type AstPlotTestCase = {
     Exp: string;
     Expected: Result<float array array, string>;
 }
+type rootTestCase = {
+    Min: float;
+    Max: float;
+    Exp: string;
+    Expected: Result<float array, string>;
+}
 
 module AstHelper = 
     let createDictionary (vName: string) (tVal: NumType) = dict [vName, tVal] |> Dictionary
@@ -289,6 +295,62 @@ type AstEvaluatorTests () =
             Expected = Error "Evaluation error: can't assign variables while in plot mode."
         }
     ]
+    
+    static member rootTestCases: rootTestCase list = [
+        // Root finding test cases (up to 5 d.p. accuracy should be accepted)
+        {
+            Min = -5; Max = 5; Exp = "x^2";
+            Expected = Ok [| 0 |];
+        }
+        {
+            Min = -214; Max = 193; Exp = "(x^3)+(3*x^2)-2";
+            Expected = Ok [| -2.73205; -1; 0.73205 |];
+        }
+        {
+            Min = -30; Max = 54; Exp = "(6*x^2)-3.2";
+            Expected = Ok [| -0.73030; 0.73030 |];
+        }
+        {
+            Min = -10; Max = 10; Exp = "x^2+3";
+            Expected = Ok [| |];
+        }
+        {
+            Min = 0; Max = 200; Exp = "x^4-50";
+            Expected = Ok [| 2.65915 |];
+        }
+        {
+            Min = -5; Max = 5; Exp = "sin(x)";
+            Expected = Ok [| -3.14159; 0; 3.14159 |];
+        }
+        
+        // Edge cases
+        // Min and max identical
+        {
+            Min = -1; Max = -1; Exp = "x";
+            Expected = Ok [| |];
+        }
+        // Large range with no roots
+        {
+            Min = -50000; Max = 50000; Exp = "-1";
+            Expected = Ok [| |];
+        }
+        // Function with asymptotes, and no real roots.
+        // Correct behaviour is to return an empty array but if it does... worth investigating!
+        {
+            Min = -10; Max = 10; Exp = "1/x";
+            Expected = Ok [| 0 |];
+        }
+        // Rapidly changing function: should find more but not calculated at a high enough accuracy to
+        {
+            Min = -1; Max = 1; Exp = "sin(1/x)";
+            Expected = Ok [| -0.31831; 0.07957; 0.31831 |];
+        }
+        // Non-polynomial
+        {
+            Min = -3; Max = 3; Exp = "3*x+2";
+            Expected = Ok [| -0.66667 |];
+        }
+    ]
 
     [<TestCaseSource("astEvaluatorTestCases")>]
     // Check evaluator test cases
@@ -337,6 +399,25 @@ type AstEvaluatorTests () =
         match expected, actual with
         | Ok(expectedPoints), Ok(actualPoints) ->
             Assert.AreEqual(expectedPoints, actualPoints, "Points are not equal")
+        | Error expectedError, Error actualError ->
+            Assert.AreEqual(expectedError, actualError, "Errors are not equal")
+        | _ ->
+            Assert.Fail("Expected and actual have different result types")
+            
+    [<TestCaseSource("rootTestCases")>]
+    [<DefaultFloatingPointTolerance(0.00001)>]
+    // Check evaluator test cases (with 5 d.p. accuracy)
+    member this.Test_Root_Pass(testCase: rootTestCase) =
+        // Assemble
+        let expected = testCase.Expected
+  
+        // Act
+        let actual = ASTEvaluator.findRoots testCase.Min testCase.Max testCase.Exp
+
+        // Assert
+        match expected, actual with
+        | Ok(expectedRoots), Ok(actualRoots) ->
+            Assert.AreEqual(expectedRoots, actualRoots, "Roots found are not equal")
         | Error expectedError, Error actualError ->
             Assert.AreEqual(expectedError, actualError, "Errors are not equal")
         | _ ->

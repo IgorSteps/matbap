@@ -10,9 +10,9 @@
                                                              match setVar varName innerNode symTable with
                                                              | Ok(str, num, symTable) -> Ok(str, num, symTable, [])
                                                              | Error err              -> Error err
-            | ForLoop(VariableAssignment(varName, innerNode), xmax, step, expr) ->
+            | ForLoop(VariableAssignment(varName, innerNode), xMax, step, expr) ->
                 match setVar varName innerNode symTable with
-                | Ok(_, _, symTable) -> match evalForLoop varName xmax step expr symTable [] with
+                | Ok(_, _, symTable) -> match evalForLoop varName xMax step expr symTable [] with
                                         | Ok(points) -> Ok("", Int(0), SymbolTable(), points)
                                         | Error err  -> Error err
                 | Error err -> Error err
@@ -29,16 +29,16 @@
                                    Ok (varName, num, symTable)
             | Error e -> Error e
         
-        and private evalForLoop (varName: string) (xmax: Node) (xstep: Node) (expr: Node) (symTable: SymbolTable) (points : Points) =
+        and private evalForLoop (varName: string) (xMax: Node) (xStep: Node) (expr: Node) (symTable: SymbolTable) (points : Points) =
             let currentX = match symTable[varName] with
                            | Int   x -> float x
                            | Float x -> x
-            // xmax is always an Int number node
-            let max     =  match xmax with
+            // xMax is always an Int number node
+            let max     =  match xMax with
                            | Number (Int x)   -> float x
                            | _                -> 0.0
-            // xstep is always a float number node
-            let step    =  match xstep with
+            // xStep is always a float number node
+            let step    =  match xStep with
                            | Number (Float x) -> x
                            | _                -> 0.0
             match currentX > max with
@@ -48,7 +48,7 @@
                                                      | Int x   -> float x
                                                      | Float x -> x
                                              symTable[varName] <- Float(currentX + step)
-                                             evalForLoop varName xmax xstep expr symTable (points@[(currentX, y)])
+                                             evalForLoop varName xMax xStep expr symTable (points@[(currentX, y)])
                        | Error err     -> Error err
                       
         and private evalTree (node : Node) (symTable : SymbolTable) : Result<Node, string> =
@@ -218,3 +218,77 @@
             match gotError with
             | None -> Ok (points.ToArray())
             | Some e -> Error e
+            
+        // Helper function for root finding
+        let private evalToFloat (exp : string) (symTable : SymbolTable) : float =
+            match eval exp symTable true with
+            | Ok ((_, Int int), _, _, _) -> float int
+            | Ok ((_, Float float), _, _, _) -> float
+            | Error _ -> infinity // Happens if division by 0
+            
+        // Recursive function implementing bisection method.
+        // Uses accuracy to determine floating point accuracy
+        let rec private bisectionRoots (exp : string) (pos : float) (neg : float) (accuracy : int) (depth : int) : Result<float,string> =
+            let mid = (pos+neg) / 2.0
+            
+            // a = result of pos. b = result of neg. c = result of mid.
+            let symTable = SymbolTable()
+            symTable.Add("x", Float mid)
+            let y = evalToFloat exp symTable
+                
+            // If we're in too deep, or if we found the root (within floating point accuracy)
+            // 1000 depth is a bit of an arbitrary choice, but higher values would be much slower. 
+            if (depth > 1000 || System.Math.Round(y, accuracy) = 0) then
+                Ok mid
+            else if (y >= 0) then // If not negative
+                bisectionRoots exp mid neg accuracy (depth+1)
+            else if (y < 0) then // If negative
+                bisectionRoots exp pos mid accuracy (depth+1)
+            else // Should never happen if root is in the range somewhere
+                Error "Unknown error during root finding"
+            
+        // Root finding (where y=0) function for expression in form y = <exp>
+        // Returns an array containing the estimated x value of each root. 
+        let findRoots (min: float) (max: float) (exp: string) : Result<float array, string> =
+            // High calculation accuracy is not required so 0.1 is used as a middling value. 
+            let points = plotPoints min max 0.1 exp
+            let mutable i = 1
+            let mutable roots = ResizeArray<float>()
+            
+            // Floating point accuracy, could be an argument, user-defined?
+            // Numbers get rounded to this many decimal places when checked against 0
+            let accuracy = 10
+
+            match points with
+            | Ok arr -> let mutable gotError = None
+                        let mutable last = arr[0]
+                        // For each point returned in the array - we want pairs of adjacent points.
+                        while (i < arr.Length) do
+                            // [0] is x and [1] is y
+                            let this = arr[i]
+                            // This point COULD be a root, so check if it is, within floating point accuracy range
+                            if (System.Math.Round(this[1], 14) = 0) then
+                                roots.Add (this[0])
+                                i <- i + 1 // Skip next, since they won't form a pair
+                            // Otherwise compare to last point. The pairs we want have one positive and one negative.
+                            else if (this[1] > 0) then // positive - check if last was negative
+                                if (last[1] < 0) then
+                                    // Add the root between the two to the array of roots
+                                    let root = bisectionRoots exp this[0] last[0] accuracy 0
+                                    match root with
+                                    | Ok float -> roots.Add float
+                                    | Error e -> gotError <- Some e
+                            else // must be negative - check if last was not negative
+                                if (last[1] >= 0) then // not negative
+                                    let root = bisectionRoots exp last[0] this[0] accuracy 0
+                                    match root with
+                                    | Ok float -> roots.Add float
+                                    | Error e -> gotError <- Some e
+                            // Update the last element and increment i
+                            last <- arr[i]
+                            i <- i + 1
+                        match gotError with
+                        | None   -> Ok (roots.ToArray())
+                        | Some e -> Error e
+            // Return error if point list is an error
+            | Error e -> Error e
