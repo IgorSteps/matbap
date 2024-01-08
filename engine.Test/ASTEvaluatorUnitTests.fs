@@ -237,8 +237,8 @@ type AstEvaluatorTests () =
        }
        {
             // For loop points with function call, negative xmin
-            Args = "for x in range(-0,1): sin(x)"
-            Expected = Ok (("", Int 0), [(-1.0, -0.841470985); (0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
+            Args = "for x in range(-1,1): sin(x)"
+            Expected = Ok (("", Int 0), [(-1.0, -0.8414709848); (0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
                 
        }
     ]
