@@ -34,12 +34,12 @@
                            | Int   x -> float x
                            | Float x -> x
             // xmax is a node to be evaluated
-            let max     =  match evalNum xmax symTable with
+            let max     =  match evalNum xMax symTable with
                            | Ok(Int (x))   -> float x
                            | Ok(Float (x)) -> x
                            | _                    -> 0.0
             // xstep is always a positive float number node
-            let step    =  match xstep with
+            let step    =  match xStep with
                            | Number (Float x) -> x
                            | _                -> 0.0
             match currentX > max with
