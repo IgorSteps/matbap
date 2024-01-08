@@ -119,33 +119,35 @@
 
         and parseForLoop(tokens: Token list) : Result<(Node * Token list), string> =
             match tokens with
-            | For :: Identifier varName :: In :: Range :: LeftBracket :: Int xmin :: Comma :: Int xmax :: tail->
-                match tail with
-                | Comma :: Int step :: RightBracket :: Colon :: tail   -> 
-                    match parseExpression tail with
-                    | Ok(expr, remainingTokens) -> 
-                        Ok(
-                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(float step)), expr),
-                        remainingTokens)
-                    | Error err -> Error err
-                | Comma :: Float step :: RightBracket :: Colon :: tail ->
-                    match parseExpression tail with
-                    | Ok(expr, remainingTokens) -> 
-                        Ok(
-                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(step)), expr),
-                        remainingTokens)
-                    | Error err -> Error err
-                | RightBracket :: Colon :: tail                        ->
-                    match parseExpression tail with
-                    | Ok(expr, remainingTokens) -> 
-                        Ok(
-                        ForLoop(VariableAssignment(varName, Number(NumType.Int(xmin))), Number(NumType.Int(xmax)), Number(NumType.Float(1.0)), expr),
-                        remainingTokens)
-                    | Error err -> Error err
-                | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
-                
+            | For :: Identifier varName :: In :: Range :: LeftBracket :: tail ->
+                match parseNumber tail with
+                | Ok (xmin, remainingTokens) ->
+                     match remainingTokens with
+                        | Comma :: tail -> 
+                            match parseNumber tail with
+                            | Ok (xmax, remainingTokens) ->  
+                                match remainingTokens with
+                                | Comma :: Int step :: RightBracket :: Colon :: tail   -> 
+                                    match parseExpression tail with
+                                    | Ok(expr, remainingTokens) -> 
+                                        Ok(ForLoop(VariableAssignment(varName, xmin), xmax, Number(NumType.Float(float step)), expr), remainingTokens)
+                                    | Error err -> Error err
+                                | Comma :: Float step :: RightBracket :: Colon :: tail ->
+                                    match parseExpression tail with
+                                    | Ok(expr, remainingTokens) -> 
+                                        Ok(ForLoop(VariableAssignment(varName, xmin), xmax, Number(NumType.Float(step)), expr), remainingTokens)
+                                    | Error err -> Error err
+                                | RightBracket :: Colon :: tail                        ->
+                                    match parseExpression tail with
+                                    | Ok(expr, remainingTokens) -> 
+                                        Ok(ForLoop(VariableAssignment(varName, xmin), xmax, Number(NumType.Float(1.0)), expr), remainingTokens)
+                                    | Error err -> Error err
+                                | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
+                            | Error err -> Error err
+                        | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+                | Error err -> Error "error parsing xmin value in range"
             | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
-
+               
         /// Parses a potential variable assignment, if not it will default to parse an expression
         and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
             match tokens with
