@@ -235,6 +235,12 @@ type AstEvaluatorTests () =
             Expected = Ok (("", Int 0), [(0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
 
        }
+       {
+            // For loop points with function call, negative xmin
+            Args = "for x in range(-0,1): sin(x)"
+            Expected = Ok (("", Int 0), [(-1.0, -0.841470985); (0.0, 0.0); (1.0, 0.8414709848);], SymbolTable())
+                
+       }
     ]
     
     static member astPlotTestCases: AstPlotTestCase list = [
