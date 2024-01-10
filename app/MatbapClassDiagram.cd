@@ -1,0 +1,519 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="NameAndType">
+  <Class Name="app.ASTManager" BaseTypeListCollapsed="true">
+    <Position X="46.25" Y="29.75" Width="3" />
+    <NestedTypes>
+      <Struct Name="app.ASTManager.ConvertionResult" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>internal\Managers\ASTManager.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Struct>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAgAAAIEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\ASTManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.ExpressionManager" BaseTypeListCollapsed="true">
+    <Position X="32.25" Y="29.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAABABAAAAAAQAAAAAA=</HashCode>
+      <FileName>internal\Managers\ExpressionManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.OxyPlotModelManager" BaseTypeListCollapsed="true">
+    <Position X="39.25" Y="29.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAEAAAAAAAEAACAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\OxyPlotModelManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.PlotManager" BaseTypeListCollapsed="true">
+    <Position X="42" Y="29.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAIAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>internal\Managers\PlotManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.SymbolTableManager" BaseTypeListCollapsed="true">
+    <Position X="36" Y="29.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\SymbolTableManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.TangentManager" BaseTypeListCollapsed="true">
+    <Position X="49.5" Y="29.75" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAQIAAAAA=</HashCode>
+      <FileName>internal\Managers\TangentManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.PlotExpressionMessage">
+    <Position X="48.5" Y="38.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Messages\PlotExpressionMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.FSharpASTGetterWrapper" BaseTypeListCollapsed="true">
+    <Position X="32.5" Y="36.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\FSharpASTGetterWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.ASTNode">
+    <Position X="62.25" Y="35" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAEAAEAAAEQAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.NumberNode&lt;T&gt;">
+    <Position X="58.5" Y="38.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.BinaryOperationNode">
+    <Position X="60.75" Y="38.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAEAQgACACAAAAAIAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.ParenthesisExpressionNode">
+    <Position X="63.5" Y="38.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.VariableNode">
+    <Position X="66.5" Y="38.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.VariableAssignmentNode">
+    <Position X="68.75" Y="38.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAEAAAAAAAAAAAAAAIAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.UnaryMinusNode">
+    <Position X="71.75" Y="38.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.FunctionNode">
+    <Position X="52.5" Y="38.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAABAAAAgAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.ForLoopNode">
+    <Position X="55.25" Y="38.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEABAEAAAAAAAAAAAAAAAAQAAEAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.Expression">
+    <Position X="46" Y="35.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAgAAAAAAAAAAAAAAAAAAAAAAgAAAAAAI=</HashCode>
+      <FileName>internal\Models\Expression\Expression.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.FSharpDifferentiatorWrapper" BaseTypeListCollapsed="true">
+    <Position X="23.75" Y="36.5" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpDifferentiatorWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.FSharpEvaluatorWrapper" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="36.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAwAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpEvaluatorWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.FSharpFindRootsWrapper" BaseTypeListCollapsed="true">
+    <Position X="36" Y="36.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAACAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpFindRootsWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.HelpContentModel">
+    <Position X="45.75" Y="38.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAABAAAAAAA=</HashCode>
+      <FileName>internal\Models\Help\HelpModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.FSharpFunctionEvaluatiorWrapper" BaseTypeListCollapsed="true">
+    <Position X="28.5" Y="36.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Plot\FSharpFunctionEvaluatiorWrapper.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.Plot">
+    <Position X="43.75" Y="35.25" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAACAACAIAAAAAAAACAAAAAAAEAAA=</HashCode>
+      <FileName>internal\Models\Plot\Plot.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.Tangent">
+    <Position X="48.25" Y="35.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAYEA=</HashCode>
+      <FileName>internal\Models\Plot\Tangent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.SymbolTable">
+    <Position X="42" Y="38.25" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\SymbolTable\SymbolTable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.Error">
+    <Position X="42" Y="35.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>internal\Models\Error.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.DifferentiationService" BaseTypeListCollapsed="true">
+    <Position X="32.25" Y="23.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAABAAABAAAAAAAgAAIAA=</HashCode>
+      <FileName>internal\Services\DifferentiationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.ExpressionEvaluatingService" BaseTypeListCollapsed="true">
+    <Position X="47" Y="23.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAAAAAAAAAAAAAAgAAABAAACAAAAAAAoAAIAA=</HashCode>
+      <FileName>internal\Services\ExpressionEvaluatingService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.FindRootsService" BaseTypeListCollapsed="true">
+    <Position X="39.25" Y="23.5" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAAAAABAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>internal\Services\FindRootsService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.PlottingService" BaseTypeListCollapsed="true">
+    <Position X="42.75" Y="23.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAEAGAAAAAABAgAAAAAQAAAAAAIAA=</HashCode>
+      <FileName>internal\Services\PlottingService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.ValidationService" BaseTypeListCollapsed="true">
+    <Position X="35.5" Y="23.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAIAAAAAAAAAAAAAAgAAAABBCAAAAAQABAA=</HashCode>
+      <FileName>internal\Services\ValidationService.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.ExpressionViewModel">
+    <Position X="41.5" Y="11.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAECAAAEMAQAAAAQAAAAJgAABCAACFCQBAAAQgEEAAA=</HashCode>
+      <FileName>internal\ViewModels\Expression\ExpressionViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.HelpViewModel">
+    <Position X="44.5" Y="12" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>internal\ViewModels\Help\HelpViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.PlotViewModel">
+    <Position X="37.75" Y="11.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>EBEAhBCEAALAAQAgEBAEACACAIAWAAJAUAAEACBUAAA=</HashCode>
+      <FileName>internal\ViewModels\Plot\PlotViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.ViewModelLocator">
+    <Position X="40.75" Y="9.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAIAAAAAAAAABAACAAAAAAAAAA=</HashCode>
+      <FileName>internal\ViewModels\ViewModelLocator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="app.ASTWindow" BaseTypeListCollapsed="true">
+    <Position X="40.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Views\ASTWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.MainWindow" BaseTypeListCollapsed="true">
+    <Position X="43" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Views\MainWindow.xaml.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="app.App">
+    <Position X="41" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>gAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>App.xaml.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="app.GetLineSeriesResult">
+    <Position X="85.25" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAIAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\PlotManager.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.CreateTangentResult">
+    <Position X="80" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAKAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\TangentManager.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.GetTangentLineSeriesResult">
+    <Position X="75.25" Y="17.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAIAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Managers\TangentManager.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FSharpASTGetterResult">
+    <Position X="75.25" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAIAAAAAAAABAA=</HashCode>
+      <FileName>internal\Models\AST\FSharpASTGetterWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FSharpDifferentiationResult">
+    <Position X="77.75" Y="15" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAIAAAAAAAABAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpDifferentiatorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FSharpEvaluationResult">
+    <Position X="80.25" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAgQAAAAAAAAAAAAAAAAAIAAAAAgAAAAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpEvaluatorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FSharpFindRootResult">
+    <Position X="82.5" Y="15" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAABAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Expression\FSharpFindRootsWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FunctionEvaluationResult">
+    <Position X="83.5" Y="17.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgQAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Models\Plot\FSharpFunctionEvaluatiorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.DifferentiationServiceResult">
+    <Position X="82.5" Y="12.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAQAAAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Services\DifferentiationService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.ExpressionEvaluatingServiceResult">
+    <Position X="80.25" Y="17.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAQAAAAAAAAYAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Services\ExpressionEvaluatingService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.VisualiseASTResult">
+    <Position X="78" Y="17.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAIAAAAAAAABAA=</HashCode>
+      <FileName>internal\Services\ExpressionEvaluatingService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.FindRootsServiceResult">
+    <Position X="84.75" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAABAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Services\FindRootsService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.CreatePlotResult">
+    <Position X="77.75" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAIAAAEAAAAAAA=</HashCode>
+      <FileName>internal\Services\PlottingService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="app.AddTangentResult">
+    <Position X="75.25" Y="12.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAKAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Services\PlottingService.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="app.IASTConverter">
+    <Position X="46.25" Y="28" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAACAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IASTConvereter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IDifferentiator">
+    <Position X="32.25" Y="22" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IDifferentiator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IEvaluator">
+    <Position X="47" Y="21.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IEvaluator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IExpressionManager">
+    <Position X="32.25" Y="28" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAABABAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IExpressionManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IFSharpASTGetterWrapper">
+    <Position X="32.5" Y="35" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IFSharpASTGetterWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IFSharpDifferentiatorWrapper">
+    <Position X="23.75" Y="35" Width="3.75" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IFSharpDifferentiatorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IFSharpEvaluatorWrapper">
+    <Position X="20.25" Y="35" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IFSharpEvaluatorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IFSharpFindRootsWrapper">
+    <Position X="36" Y="35" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IFSharpFindRootsWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IFSharpFunctionEvaluatorWrapper">
+    <Position X="28.5" Y="34.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IFSharpFunctionEvaluatorWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IOxyPlotModelManager">
+    <Position X="39.25" Y="27.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAEAAAAAAAEAACAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IOxyPlotModelManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IPlotManager">
+    <Position X="42" Y="28" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IPlotManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IPlotter">
+    <Position X="42.75" Y="21.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IPlotter.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IRootFinder">
+    <Position X="39.25" Y="22" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\IRootFinder.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.ISymbolTableManager">
+    <Position X="36" Y="28" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>internal\Interfaces\ISymbolTableManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.ITangentManager">
+    <Position X="49.5" Y="28" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>internal\Interfaces\ITangentManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="app.IValidator">
+    <Position X="35.5" Y="21.5" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAAAAAAAAAAAAAAAAABBAAAAAAAABAA=</HashCode>
+      <FileName>internal\Interfaces\IValidator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="app.ASTNodeType">
+    <Position X="65" Y="35.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAABAAAAAEACAAIBAAAACAAAAAQAAAAAAAA=</HashCode>
+      <FileName>internal\Models\AST\Node.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
