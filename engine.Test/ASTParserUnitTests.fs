@@ -383,7 +383,7 @@ type ASTParserTests() =
         {
             Name = "Testing incorrect for loop declaration: for(1,10) : sin(x)"
             Args = [Tokeniser.For; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
-            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<E>,<E>): <E>\""
         }
         {
             Name = "Testing incorrect for loop declaration: for x in range(1,10, 4 : sin(x)"
@@ -397,8 +397,18 @@ type ASTParserTests() =
         }
         {
             Name = "Testing invalid tokens at the end of an expression: 2xx"
-            Args = [Tokeniser.Int 2; Tokeniser.Identifier "x"; Tokeniser.Identifier "x"]
-            Expected = "Unable to parse token at end of expression: x"
+            Args = [Tokeniser.Int 2; Tokeniser.Identifier "xx"]
+            Expected = "Unable to parse token at end of expression: xx"
+        }
+        {
+            Name = "Testing incorrect xMin in for loop declaration: for in range(/,10): 2*x"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range;Tokeniser.LeftBracket;Tokeniser.Divide;Tokeniser.Comma;Tokeniser.Int 10; Tokeniser.RightBracket;Tokeniser.Colon; Tokeniser.Int 2; Tokeniser.Multiply;Tokeniser.Identifier "x" ]
+            Expected = "Error parsing xMin value in range: Expected number, '(' or '-'."
+        }
+        {
+            Name = "Testing incorrect xMax in for loop declaration: for in range(1,*): 2*x"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range;Tokeniser.LeftBracket;Tokeniser.Int 1;Tokeniser.Comma;Tokeniser.Multiply; Tokeniser.RightBracket;Tokeniser.Colon; Tokeniser.Int 2; Tokeniser.Multiply;Tokeniser.Identifier "x" ]
+            Expected = "Error parsing xMax value in range: Expected number, '(' or '-'."
         }
     ]
 
