@@ -383,7 +383,7 @@ type ASTParserTests() =
         {
             Name = "Testing incorrect for loop declaration: for(1,10) : sin(x)"
             Args = [Tokeniser.For; Tokeniser.LeftBracket; Tokeniser.Int 1; Tokeniser.Comma; Tokeniser.Int 10; Tokeniser.Colon; Tokeniser.Sin; Tokeniser.LeftBracket; Tokeniser.Identifier "x"; Tokeniser.RightBracket]
-            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+            Expected = "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<E>,<E>): <E>\""
         }
         {
             Name = "Testing incorrect for loop declaration: for x in range(1,10, 4 : sin(x)"
