@@ -160,14 +160,14 @@ Furthermore, we added support for modulo (\%) and power (\textasciicircum) opera
 The GUI was updated with a Help window, that showed all supported tokens. This addition improved user accessibility. The connection of our GUI to our interpreter allowed for real time calculations. The screenshot of updated GUI can be seen in TODO \ref{helpgui}.
 
 \subsection{Testing}
-We updated our unit tests to validate new features and fixed bugs. They can be seen under TODO\ref{}
+We updated our unit tests to validate new features and fixed bugs. They can be seen under Appendix \ref{app:test}.
 
 \subsection{Conclusion}
 Sprint 2 has made good progress in developing our maths interpreter. The introduction of new operators and the correction of behaviour around integer and floats improved our app's versatility and better matched requirements. The lexer's errors and updated GUI improved user experience.
 
 
 % https://liamfarese.atlassian.net/browse/AP-42
-\section{Sprint 3: Unary minus, Assign variables, Plotting lines and polynomials}
+\section{Sprint 3: Unary minus, Assign variables, Functions, Plotting lines and polynomials}
 In the third sprint we focused on extending our app’s functionality to support unary minus, variable assignments, and basic plotting functionality. These improvements aimed to increase app’s versatility, aligning with our goal to build a Maths Interpreter.
 
 \subsection{Lexer}
@@ -177,11 +177,14 @@ We have updated our Lexer to recognise an assignment operator. The addition was 
 (WIP: Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed)
 To allow the parser to assign and interpret variables, a symbol table had to be used. It is effectively a dictionary, where each unique variable (key) has a single associated value. This symbol table is passed to the evaluation function; any variable assignments are stored in the symbol table, and their value is taken from the symbol table when references to them are made. 
 
+\subsection{Evaluator}
+(Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed, include the Lyra's plotPoints function)
+
 \subsection{Updated GUI}
-To allow for basic plotting, we introduced a new Plotting Mode in the GUI. User could input equations, define x range and step. As a result of this change, we introduced new plotting ViewModel and View. We decided to use OxyPlot(TODO reference) - a popular plotting library in C\#, because of its ease of use. The ViewModel was full of code interacting with F\# engine, setting up OxyPlot plot model and generating line series for the function. However, we later realised that this design was flawed due to its scalability limitations and maintainability struggle, which we will fix in the future sprints. You can see new GUI in TODO
+To allow for basic plotting, we introduced a new Plotting Mode in the GUI. User could input equations, define x range and step. As a result of this change, we introduced new plotting ViewModel and View. We decided to use OxyPlot\cite{Oxyplot} - a popular plotting library in C\#, because of its ease of use. The ViewModel was full of code interacting with F\# engine, setting up OxyPlot plot model and generating line series for the function. However, we later realised that this design was flawed due to its scalability limitations and maintainability struggle, which we will fix in the future sprints. You can see new GUI under Appendix \ref{app:gui}.
 
 \subsection{Testing}
-Unit tests were added too cover all aspects of new features. These tests ensured correct implementations of unary minus, variable assignment and ViewModel’s interactions with F\# engine and View. These tests are in the table that can be found TODO: add appendix table ref and tests.
+Unit tests were added to cover all aspects of new features. These tests ensured correct implementations of unary minus, variable assignment and ViewModel’s interactions with F\# engine and View. These tests are in the table that can be found under Appendix \ref{app:test}.
 
 
 \subsection{Conclusion}
@@ -191,7 +194,7 @@ This sprint has made great progress towards meeting all compulsory objectives ta
 
 % https://liamfarese.atlassian.net/browse/AP-50
 \section{Sprint 4: AST Parser and AST Evaluator}
-While researching advanced features, we quickly realised we are very limited to what we can with our F\# engine because it doesn’t create an Abstract Syntax Tree (AST) and as a result we would struggle to add advanced features. In this sprint, we decided to refactor our Parser and Evaluator to construct and evaluate an AST.
+While researching advanced features, we quickly realised we are very limited to what we can do with our F\# engine because it does not create an Abstract Syntax Tree (AST) and as a result we would struggle to add advanced features. In this sprint, we decided to refactor our Parser and Evaluator to construct and evaluate an AST.
 
 \subsection{Parser}
 Our strategy was to incrementally build a new parser. We started with integrating simple grammar from our existing BNF. Next we have implemented operators like power, modulo and unary minus. The last addition was variable assignment. This resulted in a fully functional parser that builds an AST of the expression. One of the crucial things we have almost missed was that the requirement for power operations to be right-associative. We were able to catch that using our extensive unit tests framework.
@@ -218,21 +221,57 @@ One difficulty in doing this was moving the evaluation logic from the old parser
 
 \subsection{Testing}
 Our unit tests written for the Parser were extensive to ensure correct AST is generated. They included testing for
-correct integer and float nodes are created, 
-accurate nodes for simple and combined arithmetic operations, and nested parenthesis,
-accurate handling of power, modulo, and unary minus operations, 
-variables and variable assignment. 
-TODO add table with unit tests
+\begin{itemize}
+    \item correct integer and float nodes are created, 
+    \item accurate nodes for simple and combined arithmetic operations, and nested parenthesis,
+    \item accurate handling of power, modulo, and unary minus operations, 
+    \item variables and variable assignment. 
+\end{itemize}
+The tests can be seen under Appendix \ref{app:test}.
 
 (TODO: Lyra to add unit tests table to appendix and description for AST Evaluator unit tests.)
 
 \subsection{Conclusion}
 In this sprint we have made a massive refactor to transition to an AST architecture for parsing and evaluating stages. This not only solved our limitation issue, but also opened the doors to implement several advanced features.
 
+\section{Sprint 5: Visualise parse tree, Multiple plots, Plotted functions table}
+During this sprint, we continued to focus on improving our app's functionality. With introduction of the Abstract Syntax Tree Parser we set out to complete several optional objectives, such as visualising the parse tree, enabling users to plot multiple graphs and displaying all plotted function in a user-friendly table.
 
-\section{Sprint 5: Differentiation, Adding tangents, Multiple Plots}
-\section{Sprint 6: Visualise AST}
-\section{Sprint 7: Root finding}
+\subsection{Visualising parse tree}
+Introduction of the Abstract Syntax Tree parser resulted in implementation of a converter between F\# and C\# for visualisation. We have introduced an abstract class $ASTNode$ and a converter class $ASTManager$. For the visualisation, we opted for Microsoft Automatic Graph Layout\cite{MSAGL} - a popular library used to display graph data structures, which we have adapted to display our Abstract Syntax Tree. The visualisation provides clarity for developers and users about the underlying parsing process. The resulting GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Adding multiple plots, Clearing plot area, Displaying plotted functions}
+Anticipating more complex plotting functionality like adding tangents, we decided to extend our plotting mode to support adding multiple plots. The key change was refactoring our PlotViewModel to store a single instance of the OxyPlot's plot model. We also added a button to clear the plotting area to improve interface's flexibility and user experience. 
+
+The ability to add multiple plots to the plot area introduced potential user confusion. To solve this issue, we implemented a feature to display all plotted functions, allowing users to select a plot to perform an operation like adding a tangent. This features involved storing all plots in a map, that could be displayed in the GUI using WPF's powerful data template and data binding features. The resulted GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Testing}
+In this sprint, we concentrated our testing on new functionalities like $ASTManager$ class correctly converting F\# nodes to C\# nodes. The tests can be found under Appendix \ref{app:test}.
+
+\subsection{Conclusion}
+In this sprint we have added an advanced feature like Visualising the parse tree and laid a solid foundation for future work by enabling plotting multiple functions.
+
+\section{Sprint 6: Differentiation, Adding tangents, Plotted function table}
+In this sprint, we tackled maths toolbox objective, specifically Differentiation. This addition aimed at expanding our app's functionality by allowing us to implement features that use differentiation.
+
+\subsection{Differentiation}
+From our first year maths module we recalled simple differentiation, but needed guidance on how to handle more complex expression. We started researching on how to perform differentiation on expressions with binary operations, trigonometric and logarithmic functions. Using Derivative rules\cite{Derivatives} we outlined Sum, Difference, Product, Quotient, Power and Chain rules. The resulting algorithm would recursively traverse the Abstract Syntax Tree and apply appropriate rule on the node it encountered. It can be seen under Appendix \ref{app:algorithms}. An important decision was whether to allow non-constant powers. We decided against it, because supporting them would introduce a level of complexity we wasn't sure we would have time to implement and test properly.
+
+\subsection{Adding tangents and refactoring GUI architecture}
+With the addition of differentiation we were able to implement functionality to add a tangent to a graph, because the derivative tells us a slope of any function. This feature highlighted the scalability issue as all the interaction code with F\# engine and OxyPlot's plot model was in the PlotViewModel, which was complicating adding anything new to it. Our solution was to introduce a variation of a Service Layer design pattern \cite{ServiceLayer:Wiki}. It involved separating logic into tangent and OxyPlot plot model managers and a plotting service - an API that utilises several managers to provide some functionality for the consumer. This is discussed in more depth in Chapter \ref{code-arch}. This refactor improved code modularity and testability by separating concerns, and allowing for easier addition of new features like Tangents. Reworked GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Testing}
+During this sprint, our unit tests focused on ensuring our differentiation function was producing a correct Abstract Syntax Tree. They included a unit test for each derivative rule. In our GUI, our unit tests had to be expanded to cover new abstractions and interactions, but thanks to Dependency Injection pattern and mocking, we were able to achieve this smoothly. They can be seen under Appendix \ref{app:test}. 
+
+After adding several new features, it became hard to manually test our apps functionality. Solution involved implementing functional tests that would simulate user behaviour and assert answer returned/displayed. We would run them in our GitHub Actions CI to avoid trouble of manually executing the shell command. They can be seen under Appendix \ref{app:test}.
+
+\subsection{Conclusion}
+This sprint was a significant improvement in our app's mathematical and architectural sides. The addition of differentiation and tangents improved app's functionality and provided a valuable lesson in software architecture. These features have set the course for future additions and refactors.
+
+
+\section{Sprint 7: For Loop with plot function and Root finding}
+(TODO: Lyra and Liam please write about your work)
+
 \section{Sprint n: And whatever we complete before we submit this}
 
 
@@ -246,6 +285,7 @@ In this chapter you cover the final or ``ultimate'' version of your project. It 
 \section{Final GUI}
 
 \section{Code architecture}
+\label{code-arch}
 
 \section{Algorithms}
 
@@ -365,23 +405,140 @@ sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation         
 \end{tabular}
 \end{table}
 
-
-
 \newpage
-\section{C\# GUI unit testing}
 
 \begin{table}[h]
-\caption{Sprint 1, GUI unit test}
-\label{sprint1-gui-test}
+\caption{Sprint 5, Differentiation Unit test}
+\label{sprint5-differentiation-unit-test}
 \begin{tabular}{|l|l|l|}
 \hline
-\textbf{Input} & \textbf{Pass/Fail} & \textbf{Comment}                 \\ \hline
-123            & Pass               & Updates the View with user input \\ \hline
+\textbf{Expression}       & \textbf{Pass/Fail} & \textbf{Comment}                         \\ \hline
+5                         & Pass               & Testing number differentiation           \\ \hline
+x                         & Pass               & Testing variable differentiation         \\ \hline
+x+y                       & Pass               & Testing polynomial differentiation       \\ \hline
+x*y                       & Pass               & Testing product rule                     \\ \hline
+x/y                       & Pass               & Testing quotient rule                    \\ \hline
+x\textasciicircum{}2      & Pass               & Testing power rule                       \\ \hline
+sin(cos(x))               & Pass               & Testing chain rule                       \\ \hline
+sin(x\textasciicircum{}2) & Pass               & Testing polynomial with chain rule       \\ \hline
+sin(cos(log(x)))          & Pass               & Testing chain rule with nested functions \\ \hline
+1@1                       & Pass               & Test error: unsupported operation type   \\ \hline
+x=1                       & Pass               & Test error: unsupported node type        \\ \hline
+x\textasciicircum{}(1+2)  & Pass               & Test error: non-constant power           \\ \hline
+ln(x)                     & Pass               & Test error: unsupported function         \\ \hline
 \end{tabular}
 \end{table}
 
+\newpage
+\section{C\# GUI unit  and functional testing}
 
-\section{Plot testing}
+\begin{table}[H]
+\caption{C\# app unit tests}
+\label{test:sharpapp}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Test name}                                                                   & \textbf{Pass/Fail} & \textbf{Comment}                                         \\ \hline
+Test PlotManager CreatePlot Success                                                  & Pass               & Test plot creation in plot manager                       \\ \hline
+Test PlotManager GetLineSeriesForPlot Success                                        & Pass               & Test that plot manager gets the line series from points. \\ \hline
+Test PlotManager GetLineSeriesForPlot Error                                          & Pass               & Test plot manager errors when getting line series.       \\ \hline
+Test\_ExpressionManager\_CreateExpression                                            & Pass               & Test expression manager creates expression.              \\ \hline
+Test\_ExpressionManager\_DifferentiateSuccess                                        & Pass               & Test expression manager differentiates successfuly       \\ \hline
+Test\_ExpressionManager\_DifferentiateError                                          & Pass               & Test expression manager differentiate errors             \\ \hline
+Test\_OxyPlotModelManager\_AddSeriesToPlotModel                                      & Pass               & Test OxyPlot manager adds series to the plot model       \\ \hline
+Test\_OxyPlotModelManager\_SetupAxisOnPlotModel                                      & Pass               & Test OxyPlot manager sets up axis                        \\ \hline
+Test\_OxyPlotModelManager\_ClearPlotModel                                            & Pass               & Test OxyPlot creates a plot model                        \\ \hline
+Test\_PlotManager\_CreatePlot\_Success                                               & Pass               & Test Plot manager creates a plot successfuly             \\ \hline
+Test\_PlotManager\_GetLineSeriesForPlot\_Success                                     & Pass               & Test Plot manager gets line series for a plot            \\ \hline
+Test\_PlotManager\_GetLineSeriesForPlot\_Error                                       & Pass               & Test Plot manager gets line series for a plot with error \\ \hline
+ASTManager\_Convert\_\textless{}WhateverNode\textgreater{}\_CreatesCorrectCSharpNode & Pass               & Test AST manager creates a correct C\# node              \\ \hline
+ASTManager\_Convert\_ASTtoGraph                                                      & Pass               & Test AST manager converts AST to graph                   \\ \hline
+Test\_SymbolTableManager\_GetSymbolTable                                             & Pass               & Test symbol table manager gets a symbol table            \\ \hline
+Test\_SymbolTableManager\_UpdateSymbolTable                                          & Pass               & Test symbol table manager updates a table                \\ \hline
+Test\_TangentManager\_CreateTangent\_Sucess                                          & Pass               & Test tangent manager creates a tangent                   \\ \hline
+Test\_TangentManager\_CreateTangent\_Error                                           & Pass               & Test tangent manager creates a tangent error             \\ \hline
+Test\_TangentManager\_GetTangentLineSeries\_Success                                  & Pass               & Test tangent manager gets a line series                  \\ \hline
+ASTNodeModel\_Test\textless{}WhateverNode\textgreater{}\_ToString                    & Pass               & Test C\# AST node to string                              \\ \hline
+Test\_Expression\_Create                                                             & Pass               & Test expression creation                                 \\ \hline
+Test\_FSharpASTGetterWrapper\_GetAST\_HappyPath                                      & Pass               & Test wrapper for F\# GetAst call                         \\ \hline
+Test\_FSharpDifferentiatorWrapper\_DifferetiateSuccess                               & Pass               & Test wrapper for F\# Differentiate call                  \\ \hline
+Test\_FSharpDifferentiatorWrapper\_DifferetiateError                                 & Pass               & Test wrapper for F\# Differentiate call error            \\ \hline
+Test\_FSharpExpressionEvaluatiorWrapper\_Evaluate\_EvaluatesSuccessfully             & Pass               & Test wrapper for F\# Evaluate call                       \\ \hline
+Test\_FSharpExpressionEvaluatiorWrapper\_Evaluate\_EvaluatesError                    & Pass               & Test wrapper for F\# Evaluate call error                 \\ \hline
+Test\_FSharpFindRootsWrapper\_HappyPath                                              & Pass               & Test wrapper for F\# FindRoots call                      \\ \hline
+Test\_FSharpFindRootsWrapper\_UnhappyPath                                            & Pass               & Test wrapper for F\# FindRoots call error                \\ \hline
+Test\_FSharpFunctionEvaluatiorWrapper\_Evaluate\_EvaluatesSuccessfully               & Pass               & Test wrapper for F\# PlotPoints call                     \\ \hline
+Test\_FSharpFunctionEvaluatiorWrapper\_Evaluate\_Error                               & Pass               & Test wrapper for F\# PlotPoints call error               \\ \hline
+Test\_FSharpFunctionEvaluatiorWrapper\_EvaluateAtPoint\_Success                      & Pass               & Test wrapper for F\# Evaluate At call                    \\ \hline
+Test\_FSharpFunctionEvaluatiorWrapper\_EvaluateAtPoint\_Error                        & Pass               & Test wrapper for F\# Evaluate At call error              \\ \hline
+Test\_SymbolTable\_CreateSymbolTable                                                 & Pass               & Test symbol table is created                             \\ \hline
+Test\_SymbolTable\_UpdateSymbolTable                                                 & Pass               & Test symbol table is updated                             \\ \hline
+Test\_Tangent\_GetTangentEquation                                                    & Pass               & Test getting tangent equation                            \\ \hline
+Test\_DifferentiatonService\_DifferentiateHappyPath                                  & Pass               & Test differentiation service differentiate               \\ \hline
+Test\_DifferentiationService\_DifferentiateError                                     & Pass               & Test differentiation service differentiate error         \\ \hline
+Test\_DifferentiationService\_ValidateError                                          & Pass               & Test differentiation service validate error              \\ \hline
+Test\_DifferentiationService\_GetASTError                                            & Pass               & Test differentiation service GetAst errro                \\ \hline
+Test\_DifferentiationService\_ConvertASTError                                        & Pass               & Test differentiation service ConvertAst error            \\ \hline
+Test\_ExpressionEvaluatingService\_EvaluatesSuccessfuly                              & Pass               & Test evaluating service Evaluate                         \\ \hline
+Test\_ExpressionEvaluatingService\_EvaluatesError                                    & Pass               & Test evaluating service Evaluate error                   \\ \hline
+Test\_ExpressionEvaluatingService\_VisualiseASTHappy                                 & Pass               & Test evaluating service visualise ast                    \\ \hline
+Test\_ExpressionEvaluatingService\_VisualiseASTError                                 & Pass               & Test evaluating service visualise ast error              \\ \hline
+Test\_FindRootsService\_HappyPath                                                    & Pass               & Test Find roots service finds roots successfully         \\ \hline
+Test\_FindRootsService\_ValidorUnhappyPath                                           & Pass               & Test Find roots service validator error                  \\ \hline
+Test\_FindRootsService\_FSharpWrapperUnhappyPath                                     & Pass               & Test Find Roots service F\# wrapper error                \\ \hline
+Test\_PlottingService\_CreatePlot\_Success                                           & Pass               & Test Plotting service create plot successfully           \\ \hline
+Test\_PlottingService\_CreatePlot\_ValidatorError                                    & Pass               & Test Plotting Service create plot validator error        \\ \hline
+Test\_PlottingService\_CreatePlot\_PlotManagerError                                  & Pass               & Test Plotting Service create plot plot manager error     \\ \hline
+Test\_PlottingService\_AddTangent\_Success                                           & Pass               & Test Plotting Service adds a tangent successfully        \\ \hline
+Test\_PlottingService\_AddTangent\_ValidatorError                                    & Pass               & Test Plotting Service Add tangent validator error        \\ \hline
+Test\_PlottingService\_AddTangent\_EvaluatorError                                    & Pass               & Test Plotting Service add tangent evaluator error        \\ \hline
+Test\_PlottingService\_CreatePlotFromExpression                                      & Pass               & Test Plotting Service create plot from expression        \\ \hline
+Test\_ValidationService\_Validate\textless{}Some\textgreater{}Input                  & Pass               & Test Validation service validates different input        \\ \hline
+Test\_ExpressionViewModel\_EvaluateCmd\_ReceiveAnswerFromEvaluator                   & Pass               & Test ViewModel gets an answer from service               \\ \hline
+Test\_ExpressionViewModel\_EvaluateCmd\_ReceiveErrorFromEvaluator                    & Pass               & Test ViewModel gets an error from service                \\ \hline
+Test\_ExpressionViewModel\_SendsPlotExpressionMessage                                & Pass               & Test ViewModel sends a message                           \\ \hline
+Test\_ExpressionViewModel\_DifferentiateCmd\_HappyPath                               & Pass               & Test ViewModel gets an answer from service               \\ \hline
+Test\_ExpressionViewModel\_FindRootsCmd\_HappyPath                                   & Pass               & Test ViewModel gets an answer from service               \\ \hline
+Test\_ExpressionViewModel\_FindRootsCmd\_UnhappyPath                                 & Pass               & Test ViewModel gets an error from service                \\ \hline
+Test\_PlotViewModel\_PlotCmd\_CreatePlot\_Successfully                               & Pass               & Test ViewModel gets an answer from service               \\ \hline
+Test\_PlotViewModel\_PlotCmd\_CreatesPlot\_Error                                     & Pass               & Test ViewModel gets an error from service                \\ \hline
+Test\_PlotViewModel\_PlotCmd\_CreatesPlot\_Error                                     & Pass               & Test ViewModel gets an error from service                \\ \hline
+Test\_PlotViewModel\_AddtangentCmd\_AddTangent\_SelectedPlotNullError                & Pass               & Test ViewModel gets an error adding tangent              \\ \hline
+Test\_PlotViewModel\_AddtangentCmd\_AddsTangent\_Sucess                              & Pass               & Test ViewModel gets an answer from service               \\ \hline
+Test\_PlotViewModel\_HandlePlotExpressionMessage\_Success                            & Pass               & Test ViewModel handles message                           \\ \hline
+\end{tabular}%
+}
+\end{table}
+
+\begin{table}[H]
+\caption{Functional tests}
+\label{test:functional}
+\resizebox{\textwidth}{!}
+{%
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Test Name}                       & \textbf{Pass/Fail} & \textbf{Comment}                                                                                           \\ \hline
+AddMultipleTangentsTest                  & Pass               & Test to simulate user creating a Plot and adding several Tangents to it.                                   \\ \hline
+AddTangentErrorsTest                     & Pass               & Tests to simulate user creating a Plot and adding a Tangent but inputting invalid data.                    \\ \hline
+AddTangentTest                           & Pass               & Test to simulate user creating a Plot and adding a Tangent to it.                                          \\ \hline
+ClearPlotsTest                           & Pass               & Test to simulate user adding a plot and then clicking the Clear button.                                    \\ \hline
+CreateMultiplePlotsTest                  & Pass               & Test to simulate user creating multiple plots.                                                             \\ \hline
+CreatePlotErrorsTest                     & Pass               & Tests to simulate entering equation, xmin, xmax, xstep with invalid data.                                  \\ \hline
+CreatePlotTest                           & Pass               & Test to simulate user inputing equation, xmin, xmax, xstep and clicking Plot button.                       \\ \hline
+DifferentiateExpressionErrorsTest        & Pass               & Test to simulate user entering a math expression and differentiating it errors.                            \\ \hline
+DifferentiateExpressionTest              & Pass               & Test to simulate user entering a math expression and differentiating it.                                   \\ \hline
+DisplayMultiplePlottedFunctions          & Pass               & Test to simulate user adding 3 plots and GUI displaying their functions in the "Plotted Functions:" panel. \\ \hline
+DisplayPlottedFunctionTest               & Pass               & Test to simulate user adding a plot and it displaying its function in the "Plotted Functions" panel.       \\ \hline
+EvaluateExpressionTest                   & Pass               & Test to simulate user entering a math expression and getting an answer back.                               \\ \hline
+EvaluateExpressionWithVariablesTest      & Pass               & Test to simulate user entering math expression with variables.                                             \\ \hline
+EvaluateExpressionWithVariablesErrorTest & Pass               & Test to simulate user entering math expression that causes errors in Lexer and Parser.                     \\ \hline
+EvaluateForLoopPlottingFunctionTest      & Pass               & Test to simulate user entering for loop with plot function and it plots in the plot window.                \\ \hline
+FindRootsTest                            & Pass               & Simulate user entering an expression and clicking Find roots button. Gets success response or error.       \\ \hline
+VisualiseASTTest                         & Fail               & Cannot be tested. Because WPF Windows are not globally accessible, hence we cannot track if it was opened. \\ \hline
+\end{tabular}
+}
+\end{table}
+
 
 \chapter{GUI}
 \label{app:gui}
@@ -396,6 +553,78 @@ sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation         
 
 \section{Updated GUI with Help Window}
 \label{helpgui}
+
+\section{Visualise parse tree GUI}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{VisualuseASTGUI.png}
+\caption{AST visualistion}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{GUI with multiple plots, clear and plotted functions table}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{MultiplePlotsGUI.png}
+\caption{Reworked GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{GUI with adding tangents}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{AddTangentsGUI.png}
+\caption{Adding tangent GUI GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+
+\chapter{Algorithms}
+\label{app:algorithms}
+
+\begin{algorithm}
+\begin{algorithmic}[1]
+\caption{Recursively differentiate an AST}
+\label{algorithm-differentiate}
+\STATE An AST node.
+\STATE A variable with respect to differentiate to.
+\STATE A Lookup Table(LUT) for trigonometric and logarithmic functions.
+    \IF {$node$ is a constant}
+        \STATE \Return 0
+    \ELSIF {$node$ is a variable}
+        \STATE \Return 1
+    \ELSIF {$node$ is a not variable we differentiate with respect to}
+        \STATE \Return 0
+    \ELSIF {$node$ is a binary operation}
+        \IF {$node$ is addition or subtraction}
+            \STATE $u \gets$ {Differentiate}({$node.left$})
+            \STATE $v \gets$ {Differentiate}({$node.right$})
+            \STATE \RETURN u $\pm$ v
+        \ELSIF {$node$ is multiplication}
+            \STATE $u \gets$ {Differentiate}({$node.left$})
+            \STATE $v \gets$ {Differentiate}({$node.right$})
+            \STATE \RETURN u $\times$ $node.right$ + v $\times$ $node.left$ 
+        \ELSIF {$node$ is division}
+            \STATE $u \gets$ {Differentiate}({$node.left$})
+            \STATE $v \gets$ {Differentiate}({$node.right$})
+            \STATE \RETURN $(u \times node.right - v \times node.left) / (node.right)^2$
+        \ELSIF {$node$ is a power}
+            \STATE $u \gets$ {Differentiate}({$node.left$})
+            \STATE $v \gets$ {Differentiate}({$node.right$})
+            \STATE \RETURN $node.right$ $\times$ $node.base^{node.right-1}$ $\times$ {Differentiate}({$node.base$})
+        \ENDIF
+    \ELSIF {$node$ is a trigonometric or logarithmic function}
+        \STATE $u \gets node.innerNode$
+        \STATE $du \gets$ {Differentiate}({$u$})
+        \STATE $outerDerivative \gets$ {LUT}({$node.function$})
+        \STATE \RETURN $outerDerivative(u) \times du$
+    \ENDIF
+    
+\end{algorithmic}
+\end{algorithm}
 
 \chapter{Links}
 \label{app:links}
