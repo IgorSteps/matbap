@@ -1,7 +1,7 @@
 ﻿namespace Engine
     // Grammar:
-    // ForLoop ::= "for" <varID> "in" "range(<int>,<int>)" ":" <E>
-    //           | "for" <varID> "in" "range(<int>,<int>,<float>)" ":" <E>
+    // ForLoop ::= "for" <varID> "in" "range(<E>,<E>)" ":" <E>
+    //           | "for" <varID> "in" "range(<E>,<E>,<float>)" ":" <E>
     // <varA> ::= <varID> = <E>
     // <E>    ::= <T> <Eopt>
     // <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
@@ -144,9 +144,9 @@
                                     | Error err -> Error err
                                 | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
                             | Error err -> Error (sprintf "Error parsing xMax value in range: %s" err)
-                        | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+                        | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<E>,<E>): <E>\""
                 | Error err -> Error (sprintf "Error parsing xMin value in range: %s" err)
-            | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
+            | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<E>,<E>): <E>\""
                
         /// Parses a potential variable assignment, if not it will default to parse an expression
         and parseVariableAssignment(tokens: Token list) : Result<(Node * Token list), string> = 
