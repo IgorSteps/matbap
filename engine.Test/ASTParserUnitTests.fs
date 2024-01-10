@@ -400,6 +400,16 @@ type ASTParserTests() =
             Args = [Tokeniser.Int 2; Tokeniser.Identifier "xx"]
             Expected = "Unable to parse token at end of expression: xx"
         }
+        {
+            Name = "Testing incorrect xMin in for loop declaration: for in range(/,10): 2*x"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range;Tokeniser.LeftBracket;Tokeniser.Divide;Tokeniser.Comma;Tokeniser.Int 10; Tokeniser.RightBracket;Tokeniser.Colon; Tokeniser.Int 2; Tokeniser.Multiply;Tokeniser.Identifier "x" ]
+            Expected = "Error parsing xMin value in range: Expected number, '(' or '-'."
+        }
+        {
+            Name = "Testing incorrect xMax in for loop declaration: for in range(1,*): 2*x"
+            Args = [Tokeniser.For; Tokeniser.Identifier "x"; Tokeniser.In; Tokeniser.Range;Tokeniser.LeftBracket;Tokeniser.Int 1;Tokeniser.Comma;Tokeniser.Multiply; Tokeniser.RightBracket;Tokeniser.Colon; Tokeniser.Int 2; Tokeniser.Multiply;Tokeniser.Identifier "x" ]
+            Expected = "Error parsing xMax value in range: Expected number, '(' or '-'."
+        }
     ]
 
     [<TestCaseSource("AstParserTestCases")>]

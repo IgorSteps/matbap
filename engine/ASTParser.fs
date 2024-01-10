@@ -143,9 +143,9 @@
                                         Ok(ForLoop(VariableAssignment(varName, xmin), xmax, Number(NumType.Float(1.0)), expr), remainingTokens)
                                     | Error err -> Error err
                                 | _ -> Error "Incorrect for-loop declaration, either the step or closing bracket is missing"
-                            | Error err -> Error (sprintf "error parsing xMax value in range: %s" err)
+                            | Error err -> Error (sprintf "Error parsing xMax value in range: %s" err)
                         | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
-                | Error err -> Error (sprintf "error parsing xMin value in range: %s" err)
+                | Error err -> Error (sprintf "Error parsing xMin value in range: %s" err)
             | _ -> Error "Incorrect for-loop declaration, must be in form: \"for <varID> in range(<int>,<int>): <E>\""
                
         /// Parses a potential variable assignment, if not it will default to parse an expression
