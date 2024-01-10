@@ -177,10 +177,10 @@ We have updated our Lexer to recognise an assignment operator. The addition was 
 (Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed)
 
 \subsection{Updated GUI}
-To allow for basic plotting, we introduced a new Plotting Mode in the GUI. User could input equations, define x range and step. As a result of this change, we introduced new plotting ViewModel and View. We decided to use OxyPlot(TODO reference) - a popular plotting library in С#, because of its ease of use. The ViewModel was full of code interacting with F# engine, setting up OxyPlot plot model and generating line series for the function. However, we later realised that this design was flawed due to its scalability limitations and maintainability struggle, which we will fix in the future sprints. You can see new GUI in TODO
+To allow for basic plotting, we introduced a new Plotting Mode in the GUI. User could input equations, define x range and step. As a result of this change, we introduced new plotting ViewModel and View. We decided to use OxyPlot\cite{Oxyplot} - a popular plotting library in C\#, because of its ease of use. The ViewModel was full of code interacting with F\# engine, setting up OxyPlot plot model and generating line series for the function. However, we later realised that this design was flawed due to its scalability limitations and maintainability struggle, which we will fix in the future sprints. You can see new GUI under Appendix \ref{app:gui}.
 
 \subsection{Testing}
-Unit tests were added too cover all aspects of new features. These tests ensured correct implementations of unary minus, variable assignment and ViewModel’s interactions with F# engine and View. These tests are in the table that can be found TODO: add appendix table ref and tests.
+Unit tests were added to cover all aspects of new features. These tests ensured correct implementations of unary minus, variable assignment and ViewModel’s interactions with F\# engine and View. These tests are in the table that can be found under Appendix \ref{app:test}.
 
 
 \subsection{Conclusion}
@@ -190,7 +190,7 @@ This sprint has made great progress towards meeting all compulsory objectives ta
 
 % https://liamfarese.atlassian.net/browse/AP-50
 \section{Sprint 4: AST Parser and AST Evaluator}
-While researching advanced features, we quickly realised we are very limited to what we can do with our F\# engine because it doesn’t create an Abstract Syntax Tree (AST) and as a result we would struggle to add advanced features. In this sprint, we decided to refactor our Parser and Evaluator to construct and evaluate an AST.
+While researching advanced features, we quickly realised we are very limited to what we can do with our F\# engine because it does not create an Abstract Syntax Tree (AST) and as a result we would struggle to add advanced features. In this sprint, we decided to refactor our Parser and Evaluator to construct and evaluate an AST.
 
 \subsection{Parser}
 Our strategy was to incrementally build a new parser. We started with integrating simple grammar from our existing BNF. Next we have implemented operators like power, modulo and unary minus. The last addition was variable assignment. This resulted in a fully functional parser that builds an AST of the expression. One of the crucial things we have almost missed was that the requirement for power operations to be right-associative. We were able to catch that using our extensive unit tests framework.
@@ -215,39 +215,54 @@ The AST Node type looked like this:
 
 \subsection{Testing}
 Our unit tests written for the Parser were extensive to ensure correct AST is generated. They included testing for
-correct integer and float nodes are created, 
-accurate nodes for simple and combined arithmetic operations, and nested parenthesis,
-accurate handling of power, modulo, and unary minus operations, 
-variables and variable assignment. 
-TODO add table with unit tests
+\begin{itemize}
+    \item correct integer and float nodes are created, 
+    \item accurate nodes for simple and combined arithmetic operations, and nested parenthesis,
+    \item accurate handling of power, modulo, and unary minus operations, 
+    \item variables and variable assignment. 
+\end{itemize}
+The tests can be seen under Appendix \ref{app:test}.
 
 (Lyra to add unit tests table to appendix and description for AST Evaluator unit tests.)
 
 \subsection{Conclusion}
 In this sprint we have made a massive refactor to transition to an AST architecture for parsing and evaluating stages. This not only solved our limitation issue, but also opened the doors to implement several advanced features.
 
+\section{Sprint 5: Visualise parse tree, Multiple plots, Plotted functions table}
+During this sprint, we continued to focus on improving our app's functionality. With introduction of the Abstract Syntax Tree Parser we set out to complete several optional objectives, such as visualising the parse tree, enabling users to plot multiple graphs and displaying all plotted function in a user-friendly table.
 
-\section{Sprint 5: Differentiation, Adding tangents, Plotted function table}
+\subsection{Visualising parse tree}
+Introduction of the Abstract Syntax Tree parser resulted in implementation of a converter between F\# and C\# for visualisation. We have introduced an abstract class $ASTNode$ and a converter class $ASTManager$. For the visualisation, we opted for Microsoft Automatic Graph Layout\cite{MSAGL} - a popular library used to display graph data structures, which we have adapted to display our Abstract Syntax Tree. The visualisation provides clarity for developers and users about the underlying parsing process. The resulting GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Adding multiple plots, Clearing plot area, Displaying plotted functions}
+Anticipating more complex plotting functionality like adding tangents, we decided to extend our plotting mode to support adding multiple plots. The key change was refactoring our PlotViewModel to store a single instance of the OxyPlot's plot model. We also added a button to clear the plotting area to improve interface's flexibility and user experience. 
+
+The ability to add multiple plots to the plot area introduced potential user confusion. To solve this issue, we implemented a feature to display all plotted functions, allowing users to select a plot to perform an operation like adding a tangent. This features involved storing all plots in a map, that could be displayed in the GUI using WPF's powerful data template and data binding features. The resulted GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Testing}
+In this sprint, we concentrated our testing on new functionalities like $ASTManager$ class correctly converting F\# nodes to C\# nodes. The tests can be found under Appendix \ref{app:test}.
+
+\subsection{Conclusion}
+In this sprint we have added an advanced feature like Visualising the parse tree and laid a solid foundation for future work by enabling plotting multiple functions.
+
+\section{Sprint 6: Differentiation, Adding tangents, Plotted function table}
 In this sprint, we tackled maths toolbox objective, specifically Differentiation. This addition aimed at expanding our app's functionality by allowing us to implement features that use differentiation.
 
 \subsection{Differentiation}
-From our first year maths module we recalled simple differentiation, but needed guidance on how to handle more complex expression. We started researching on how to perform differentiation on expressions with binary operations, trigonometric and logarithmic functions. Using Derivative rules\cite{Derivatives} we outlined Sum, Difference, Product, Quotient, Power and Chain rules. The resulting algorithm would recursively traverse the AST and apply appropriate rule on the node it encountered. It can be seen under Appendix \ref{app:algorithms}. An important decision was whether to allow non-constant powers. We decided against it, because supporting them would introduce a level of complexity we wasn't sure we would have time to implement and test properly.
+From our first year maths module we recalled simple differentiation, but needed guidance on how to handle more complex expression. We started researching on how to perform differentiation on expressions with binary operations, trigonometric and logarithmic functions. Using Derivative rules\cite{Derivatives} we outlined Sum, Difference, Product, Quotient, Power and Chain rules. The resulting algorithm would recursively traverse the Abstract Syntax Tree and apply appropriate rule on the node it encountered. It can be seen under Appendix \ref{app:algorithms}. An important decision was whether to allow non-constant powers. We decided against it, because supporting them would introduce a level of complexity we wasn't sure we would have time to implement and test properly.
 
 \subsection{Adding tangents and refactoring GUI architecture}
-With the addition of differentiation we were able to implement functionality to add a tangent to a graph, because the derivative tells us a slope of any function. This feature highlighted the scalability issue as all the interaction code with F\# engine and OxyPlot's plot model was in the plot ViewModel, which was complicating adding anything new to it. Our solution was to introduce a variation of a Service Layer design pattern \cite{ServiceLayer:Wiki}. It involved separating logic into tangent and OxyPlot plot model managers and a plotting service that uses them. This is discussed in more depth in Chapter \ref{code-arch}. This refactor improved code modularity and testability by separating concerns, and allowing for easier addition of new features like Tangents.
-
-\subsection{Adding multiple plots, Clearing plots, Displaying plotted functions}
-The ability to add multiple plots to the plot area introduced potential user confusion. To solve this issue, we implemented a feature to display all plotted functions, allowing users to select a plot to perform an operation like adding a tangent. This features involved storing all plots in a map, that could be displayed in the GUI using WPF's powerful data template and data binding functionalities.
+With the addition of differentiation we were able to implement functionality to add a tangent to a graph, because the derivative tells us a slope of any function. This feature highlighted the scalability issue as all the interaction code with F\# engine and OxyPlot's plot model was in the PlotViewModel, which was complicating adding anything new to it. Our solution was to introduce a variation of a Service Layer design pattern \cite{ServiceLayer:Wiki}. It involved separating logic into tangent and OxyPlot plot model managers and a plotting service - an API that utilises several managers to provide some functionality for the consumer. This is discussed in more depth in Chapter \ref{code-arch}. This refactor improved code modularity and testability by separating concerns, and allowing for easier addition of new features like Tangents.
 
 \subsection{Testing}
-During this sprint, our unit tests focused on ensuring our differentiation function was producing a correct AST. They included a unit test for each derivative rule. In our GUI, our unit tests had to be expanded to cover new abstractions and interactions, but thanks to Dependency Injection pattern and mocking, we were able to achieve this smoothly. They can be seen under Appendix \ref{app:test}. 
+During this sprint, our unit tests focused on ensuring our differentiation function was producing a correct Abstract Syntax Tree. They included a unit test for each derivative rule. In our GUI, our unit tests had to be expanded to cover new abstractions and interactions, but thanks to Dependency Injection pattern and mocking, we were able to achieve this smoothly. They can be seen under Appendix \ref{app:test}. 
 
 After adding several new features, it became hard to manually test our apps functionality. Solution involved implementing functional tests that would simulate user behaviour and assert answer returned/displayed. We would run them in our GitHub Actions CI to avoid trouble of manually executing the shell command. They can be seen under Appendix \ref{app:test}.
 
 \subsection{Conclusion}
 This sprint was a significant improvement in our app's mathematical and architectural sides. The addition of differentiation and tangents improved app's functionality and provided a valuable lesson in software architecture. These features have set the course for future additions and refactors.
 
-\section{Sprint 6: Visualise AST}
+
 \section{Sprint 7: Root finding}
 \section{Sprint n: And whatever we complete before we submit this}
 
@@ -530,6 +545,24 @@ VisualiseASTTest                         & Fail               & Cannot be tested
 
 \section{Updated GUI with Help Window}
 \label{helpgui}
+
+\section{Visualise parse tree GUI}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{VisualuseASTGUI.png}
+\caption{AST visualistion}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{GUI with multiple plots, clear and plotted functions table}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.3 ]{MultiplePlotsGUI.png}
+\caption{Reworked GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
 
 
 \chapter{Algorithms}
