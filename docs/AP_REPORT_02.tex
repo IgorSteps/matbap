@@ -284,7 +284,7 @@ However, we ran into issues testing negative values defined in the range such as
         2*x + 1
 \end{verbatim}
 
-This was due to the initial BNF for our for-loop taking int values as parameters, not taking into account that "-10" is infact a unary minus operations between '-' and '10' and not just an $<int>$.
+This was due to the initial BNF for our for-loop taking int values as parameters, not taking into account that $-10$ is infact a unary minus operations between $-$ and $10$ and not just an $<int>$.
 
 \begin{verbatim}
     // ForLoop ::= "for" <varID> "in" "range(<int>,<int>)" ":" <E>
@@ -302,7 +302,7 @@ We updated our BNF to become more robust, enabling expressions to be passed as p
 
 \subsection{Function Evaluation}
 
-Now that plotting was possible programmatically, we wanted to re-implement function evaluation from our old combined parser and evaluator in order to plot lines such as $sin(x)$. The initial step was updating the lexer to recognise reserved keywords such as "sin", "cos", "tan" using a map.
+Now that plotting was possible programmatically, we wanted to re-implement function evaluation from our old combined parser and evaluator in order to plot lines such as $sin(x)$. The initial step was updating the lexer to recognise reserved keywords such as $sin$, $cos$, $tan$ using a map.
 
 \begin{verbatim}
     let private keywords = Map.empty.Add("sin", Sin)
