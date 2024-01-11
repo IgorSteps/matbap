@@ -180,7 +180,19 @@ Unary minus was simple, as it could simply be detected as a grammar rule with an
 \subsection{Evaluator}
 (Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed, include the Lyra's plotPoints function)
 To assign and interpret variables, a symbol table had to be used. It is effectively a dictionary, where each unique variable (key) has a single associated value. This symbol table is passed to the evaluation function; any variable assignments are stored in the symbol table, and their value is taken from the symbol table when references to them are made.
-A function was created, separate from regular evaluation, to return a list of points for an expression in a given range within a certain step between them. To do this it leveraged the evaluator using a symbol table containing x as a variable, repeating this for every x per step in the given range. 
+A function was created, separate from regular evaluation, to return a list of points for an expression in a given range within a certain step between them. To do this it leveraged the evaluator using a symbol table containing x as a variable, repeating this for every x per step in the given range.
+
+\begin{algorithm}[th]
+\caption{ Point calculating function }
+\begin{algorithmic}[1]
+\STATE Define a starting value (x), an end value, and a step
+\STATE Create a list of points
+\WHILE {x < end value}
+    \STATE Let y = f(x)
+    \STATE Add the point (x,y) to the list of points
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Updated GUI}
 To allow for basic plotting, we introduced a new Plotting Mode in the GUI. User could input equations, define x range and step. As a result of this change, we introduced new plotting ViewModel and View. We decided to use OxyPlot\cite{Oxyplot} - a popular plotting library in C\#, because of its ease of use. The ViewModel was full of code interacting with F\# engine, setting up OxyPlot plot model and generating line series for the function. However, we later realised that this design was flawed due to its scalability limitations and maintainability struggle, which we will fix in the future sprints. You can see new GUI under Appendix \ref{app:gui}.
@@ -277,6 +289,37 @@ Root finding was implemented based on the F\# engine's previous point plotting f
     \item The step size of the points generated is hard-coded, meaning many points are skipped in rapidly changing functions such as sin(1/x). The decision was made to simplify user input, however it could be a possible improvement to allow the user to specify it, or to make it adaptive based on the inputted function.
     \item Floating point accuracy is a big issue. It is hard-coded to accept a point as a root if it's y is accurate to 0 within 10 decimal places, but for some functions it is difficult to even find such a point, so many iterations are necessary. However for most functions it is relatively accurate to the root, within a few decimal places.
 \end{itemize}
+
+\begin{algorithm}[th]
+\caption{ Root finding algorithm }
+\begin{algorithmic}[1]
+\STATE Compute a list of points for y=f(x) in the given range
+\FOR {each point after the first}
+    \IF {its y value is positive/negative, and the previous point's y value is the opposite sign}
+        \STATE Find the root of f(x) between the two points' x values, using the bisection method
+    \ENDIF
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[th]
+\caption{ The bisection method }
+\begin{algorithmic}[1]
+\STATE Define two values of x near the root where f(x) is positive for one and negative for the other
+\STATE Set a limit for the number of iterations
+\WHILE {within the iteration limit}
+	\STATE Let m be the midpoint between the two values of x
+    \STATE Compute f(m) - this is the new estimate of the root
+    \IF {f(m) is zero}
+        \STATE Break the while loop: root has been found at x = m
+	\ELSIF {f(m) is positive}
+        \STATE Define m as the new positive x
+	\ELSIF {f(m) is negative}
+        \STATE Define m as the new negative x
+    \ENDIF
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \section{Sprint n: And whatever we complete before we submit this}
 
