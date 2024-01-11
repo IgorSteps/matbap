@@ -197,7 +197,7 @@ While researching advanced features, we quickly realised we are very limited to 
 
 \subsection{Parser}
 Our strategy was to incrementally build a new parser. We started with integrating simple grammar from our existing BNF. Next we have implemented operators like power, modulo and unary minus. The last addition was variable assignment. This resulted in a fully functional parser that builds an AST of the expression. One of the crucial things we have almost missed was that the requirement for power operations to be right-associative. We were able to catch that using our extensive unit tests framework.
-(Liam, please expand on the variable assignment parsing challenges and solutions.)
+Variable assignment was straightforward to implement as we had already defined the BNF and produced an implementation for the old parser and evaluator, however one improvement over the old version is the inclusion of more robust error messages, the new AST parser checks for an empty right hand side of an assignment ($x = $) and for an assignment without a variable name ($= 2/3$). Additionally, we have moved away from exceptions for error handling used in the old parser in favor for the Result monad which is more idiomatic for the functional programming paradigm.
 \begin{verbatim}
     
 The AST Node type looked like this:
