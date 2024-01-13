@@ -13,9 +13,9 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Interger
   - [x] Float
   - [x] Functions
+  - [x] Parse Tree
   - [ ] Rational
   - [ ] Complex
-  - [x] Parse Tree
 - [ ] Assignment
   - [x] Dynamic typing
   - [ ] Static typing
@@ -25,7 +25,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Maths toolbox
    - [x] Derivatives
    - [x] Root finding
-   - [ ] Integration
+   - [x] Integration
    - [ ] Matrix and Vector library
 - [ ] Turn into a Compiler
 
@@ -37,13 +37,13 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Advanced Plotting
   - [x] Trig and logarithmic functions
   - [x] Plotting multiple plots
-  - [ ] Rational equations
   - [x] Tangents
-  - [ ] Areas under the curve for numerical integration
+  - [x] Show areas under the curve
+  - [ ] Rational equations
 - [ ] Advanced GUI
+  - [x] Display Plotted Equations
   - [x] Visualise Parse Tree
   - [ ] Visualise Symbol Table
-  - [x] Display Plotted Equations
 
 
 
