@@ -17,8 +17,32 @@ namespace app
         public void SetupAxisOnPlotModel(PlotModel plotModel, double min, double max)
         {
             plotModel.Axes.Clear();
-            plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Minimum = min, Maximum = max });
-            plotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Minimum = min, Maximum = max });
+            plotModel.Axes.Add(new LinearAxis {
+                Position = AxisPosition.Bottom, 
+                Minimum = min, 
+                Maximum = max, 
+
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromRgb(210, 210, 210),
+                MajorGridlineThickness = 1,
+
+                MinorGridlineStyle = LineStyle.Dot,
+                MinorGridlineColor = OxyColor.FromRgb(210, 210, 210),
+                MinorGridlineThickness = 0.5
+            });
+            plotModel.Axes.Add(new LinearAxis { 
+                Position = AxisPosition.Left,
+                Minimum = min,
+                Maximum = max,
+
+                MajorGridlineStyle = LineStyle.Solid,
+                MajorGridlineColor = OxyColor.FromRgb(210, 210, 210),
+                MajorGridlineThickness = 1,
+
+                MinorGridlineStyle = LineStyle.Dot,
+                MinorGridlineColor = OxyColor.FromRgb(210, 210, 210),
+                MinorGridlineThickness = 0.5
+            });
         }
 
         /// <summary>
