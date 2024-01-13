@@ -68,5 +68,23 @@
 
             return null;
         }
+
+        public Error ValidateShowAreaUnderCurveInput(string input, double min, double max, double step)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return new Error("Input expression cannot be null or empty");
+            }
+            if(min > max)
+            {
+                return xMinGreaterXMax;
+            }
+            if(step == 0 )
+            {
+                return xStepZeroMsg;
+            }
+
+            return null;
+        }
     }
 }

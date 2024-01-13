@@ -9,14 +9,15 @@ namespace app.Test.Unit
     {
         private PlotViewModel _viewModel;
         private Mock<IPlotter> _plotterMock;
+        private Mock<IAreaUnderCurveShower> _areaUnderCurveShowerMock;
         private Mock<IOxyPlotModelManager> _plotModelManager;
-
         [SetUp]
         public void Setup()
         {
             _plotterMock = new Mock<IPlotter>();
             _plotModelManager = new Mock<IOxyPlotModelManager>();
-            _viewModel = new PlotViewModel(_plotterMock.Object, _plotModelManager.Object);
+            _areaUnderCurveShowerMock = new Mock<IAreaUnderCurveShower>();
+            _viewModel = new PlotViewModel(_plotterMock.Object, _plotModelManager.Object, _areaUnderCurveShowerMock.Object);
         }
 
         [Test]
@@ -171,6 +172,76 @@ namespace app.Test.Unit
             Assert.IsEmpty(_viewModel.Error, "There shouldn't be an error");
             Assert.That(_viewModel.Plots.Count, Is.EqualTo(1), "Number of plots in the collection should be 1");
             Assert.That(_viewModel.SelectedPlot, Is.Not.Null, "Selected plot must not be null");
+        }
+
+        [Test]
+        public void Test_PlotViewModel_ShowAreaUnderTheCurveCmd_HappyPath()
+        {
+            // --------
+            // ASSEMBLE
+            // -------- 
+            Plot testPlot = new Plot(_viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep);
+            _viewModel.SelectedPlot = testPlot;
+
+            double area = 100;
+            var mockResult = new CalculateAreaUnderCurveResult(area, null);
+            _areaUnderCurveShowerMock.Setup(p => p.ShowAreaUnderCurve(_viewModel.OxyPlotModel, testPlot, _viewModel.IntegrationStep)).
+                Returns(mockResult);
+            _plotModelManager.Setup(p => p.RefreshPlotModel(_viewModel.OxyPlotModel));
+
+            // --------
+            // ACT
+            // --------
+            _viewModel.ShowAreaUnderCurveCmd.Execute(null);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(_viewModel.Error, Is.EqualTo("Area under the curve = " + area.ToString()), "The error is used to display Area, so it can't be empty");
+        }
+
+        [Test]
+        public void Test_PlotViewModel_ShowAreaUnderTheCurveCmd_UnhappyPath_ServiceError()
+        {
+            // --------
+            // ASSEMBLE
+            // -------- 
+            Plot testPlot = new Plot(_viewModel.InputEquation, _viewModel.XMinimum, _viewModel.XMaximum, _viewModel.XStep);
+            _viewModel.SelectedPlot = testPlot;
+
+            Error testError = new Error("Boom");
+            var mockResult = new CalculateAreaUnderCurveResult(0, testError);
+            _areaUnderCurveShowerMock.Setup(p => p.ShowAreaUnderCurve(_viewModel.OxyPlotModel, testPlot, _viewModel.IntegrationStep)).
+                Returns(mockResult);
+            _plotModelManager.Setup(p => p.RefreshPlotModel(_viewModel.OxyPlotModel));
+
+            // --------
+            // ACT
+            // --------
+            _viewModel.ShowAreaUnderCurveCmd.Execute(null);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(_viewModel.Error, Is.EqualTo(testError.ToString()), "The errors don't match");
+        }
+
+        [Test]
+        public void Test_PlotViewModel_ShowAreaUnderTheCurveCmd_UnhappyPath_NullSelectedPlot()
+        {
+            // --------
+            // ASSEMBLE
+            // -------- 
+
+            // --------
+            // ACT
+            // --------
+            _viewModel.ShowAreaUnderCurveCmd.Execute(null);
+
+            // --------
+            // ASSERT
+            // --------
+            Assert.That(_viewModel.Error, Is.EqualTo("You must select the plot to show area under it."), "The errors don't match");
         }
     }
 }
