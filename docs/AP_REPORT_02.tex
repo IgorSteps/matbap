@@ -457,6 +457,23 @@ sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation         
 \newpage
 
 \begin{table}[h]
+\caption{Sprint 3, plotting tests}
+\label{sprint3-plotting-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression} & \textbf{Pass/Fail} & \textbf{Comment}                                                                     \\ \hline
+2*x+6               & Pass               & Basic linear equation                                                                \\ \hline
+x/2                 & Pass               & Linear equation with smaller gradient                                                \\ \hline
+(x\^{}2)+(4*x)+4    & Pass               & Basic polynomial                                                                     \\ \hline
+x\^{}3+x\^{}2       & Pass               & Third degree polynomial                                                             \\ \hline
+2-x\^{}2            & Pass               & Polynomial with negative term                                                       \\ \hline
+y=x+2               & Pass               & Cannot assign variables in plot mode                                                \\ \hline
+\end{tabular}
+\end{table}
+
+\newpage
+
+\begin{table}[h]
 \caption{Sprint 4, AST evaluator unit tests}
 \label{sprint4-ast-evaluator-test}
 \begin{tabular}{|l|l|l|}
@@ -471,8 +488,8 @@ sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation         
 5-2.5/(6.0+6.5)+1   & Pass               & Order of operations using brackets                                                   \\ \hline
 8/-2                & Pass               & Unary minus                                                                          \\ \hline
 -(6+11)             & Pass               & Unary minus with brackets                                                            \\ \hline
-25^0.5              & Pass               & Exponentiation                                                                       \\ \hline
-2*3.0^2             & Pass               & Order of operations with exponent                                                    \\ \hline
+25\^{}0.5           & Pass               & Exponentiation                                                                       \\ \hline
+2*3.0\^{}2          & Pass               & Order of operations with exponent                                                    \\ \hline
 763\%129\%20        & Pass               & Modulus                                                                              \\ \hline
 x=5.5+2             & Pass               & Variable assignment                                                                  \\ \hline
 1\&                 & Pass               & Operators without an operand between                                                 \\ \hline
@@ -505,6 +522,21 @@ sin(cos(log(x)))          & Pass               & Testing chain rule with nested 
 x=1                       & Pass               & Test error: unsupported node type        \\ \hline
 x\textasciicircum{}(1+2)  & Pass               & Test error: non-constant power           \\ \hline
 ln(x)                     & Pass               & Test error: unsupported function         \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\caption{Sprint 7, root finding unit tests}
+\label{sprint7-root-unit-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression} & \textbf{Pass/Fail} & \textbf{Comment}                                                                     \\ \hline
+3*x+2                 & Pass               & Basic linear equation                                                                \\ \hline
+x\^{}2+3              & Pass               & Basic polynomial                                                                     \\ \hline
+(6*x\^{}2)-3.  2      & Pass               & More complex polynomial                                                             \\ \hline
+(x\^{}3)+(3*x\^{}2)-2 & Pass               & Polynomial with three roots                                                         \\ \hline
+sin(x)                & Pass               & Trigonometric function                                                              \\ \hline
+sin(1/x)              & Fail               & Rapidly changing function - not accurate enough                                     \\ \hline
 \end{tabular}
 \end{table}
 
