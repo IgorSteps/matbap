@@ -137,6 +137,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
@@ -234,15 +235,28 @@
                     Padding="10,0,10,0"
                     ToolTipService.InitialShowDelay="0" 
                     ToolTipService.ToolTip="{Binding HelpTexts.TangentHelpText}"
-                >
+                />
 
-                </Button>
             </Grid>
             <!-- End Add tangent block -->
 
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="5">
+                <Label Margin="5" Content="Step:"/>
+                <TextBox Width="50" Text="{Binding ntegrationStep, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <Button
+                     Content="Show area under the curve"
+                     Command="{Binding ShowAreaUnderCurveCmd}"
+                     FontSize="14"
+                     FontWeight="Bold"
+                     Margin="5"
+                     Background="#FFC7C7C7"
+                     BorderThickness="2"
+                />
+            </StackPanel>
+
             <!-- Plotting error block -->
             <TextBlock 
-                Grid.Row="4"
+                Grid.Row="5"
                 Text="{Binding Error}"
                 Width="760"
                 Margin="5"
@@ -252,7 +266,7 @@
             <!-- End Plotting error block -->
 
             <!-- Plot block -->
-            <Grid Grid.Row="5">
+            <Grid Grid.Row="6">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>

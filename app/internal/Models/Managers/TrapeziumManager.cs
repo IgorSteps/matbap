@@ -17,7 +17,7 @@ namespace app
         }
 
         /// <summary>
-        /// Create Ttrapezium and add to list of all other trapeziums
+        /// Create Trapezium and add to list of all other trapeziums
         /// </summary>
         public Trapezium CreateTrapezium(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4)
         {
@@ -34,7 +34,7 @@ namespace app
             var seriesList = new List<LineSeries>();
             foreach (var trapezium in Trapeziums)
             {
-                var trapeziumSeries = new LineSeries { Title = $"Trapezium {seriesList.Count + 1}" };
+                var trapeziumSeries = new LineSeries { Title = $"Trapezium {seriesList.Count + 1}", Color = OxyColor.FromRgb(0, 0, 125) };
 
                 // The order of vertices matters to plot correctly.
                 trapeziumSeries.Points.Add(new DataPoint(trapezium.X1, trapezium.Y1));
@@ -49,5 +49,6 @@ namespace app
 
             return seriesList;
         }
+
     }
 }

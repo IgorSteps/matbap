@@ -10,8 +10,8 @@ namespace app
     {
         private readonly IPlotter _plotter;
         private readonly IOxyPlotModelManager _plotModelManager;
-
-        private readonly RelayCommand _plotCmd, _clearCmd, _addTangentCmd;
+        private readonly IAreaUnderCurveShower _areaUnderCurveShower;
+        private readonly RelayCommand _plotCmd, _clearCmd, _addTangentCmd, _showAreaUnderCurvCmd;
 
         private PlotModel _oxyPlotModel;
         private ObservableCollection<Plot> _plots;
@@ -24,14 +24,18 @@ namespace app
         private double _xMaximum;
         private double _xStep;
         private double _tangentX;
-
-        public PlotViewModel(IPlotter plotter, IOxyPlotModelManager plotModelManager)
+        private double _integrationStep;
+        public PlotViewModel(IPlotter plotter, IOxyPlotModelManager plotModelManager, IAreaUnderCurveShower areaUnderCurveShower)
         {
             _plotter = plotter;
             _plotModelManager = plotModelManager;
+            _areaUnderCurveShower = areaUnderCurveShower;
+
             _plotCmd = new RelayCommand(Plot);
             _clearCmd = new RelayCommand(Clear);
             _addTangentCmd = new RelayCommand(AddTangent);
+            _showAreaUnderCurvCmd = new RelayCommand(ShowAreaUnderCurve);
+
             _plots = new ObservableCollection<Plot>();
             _oxyPlotModel = new PlotModel();
 
@@ -41,6 +45,7 @@ namespace app
             _xMinimum = -10;
             _xMaximum = 10;
             _xStep = 0.1;
+            _integrationStep = 1;
 
             // Register to listen for PlotExpressionMessage.
             WeakReferenceMessenger.Default.Register<PlotExpressionMessage>(this, (recipient, msg) =>
@@ -101,6 +106,12 @@ namespace app
         {
             get => _xStep;
             set => SetProperty(ref _xStep, value);
+        }
+
+        public double IntegrationStep
+        {
+            get => _integrationStep;
+            set => SetProperty(ref _integrationStep, value);
         }
 
         /// <summary>
@@ -173,6 +184,21 @@ namespace app
             RefreshPlottingArea() ;
         }
 
+        public RelayCommand ShowAreaUnderCurveCmd => _showAreaUnderCurvCmd;
+        private void ShowAreaUnderCurve()
+        {
+            ClearError();
+            _areaUnderCurveShower.ClearTrapeziumList();
+            var result = _areaUnderCurveShower.ShowAreaUnderCurve(OxyPlotModel, SelectedPlot, IntegrationStep);
+            if (result.HasError)
+            {
+                Error = result.Error.ToString();
+                return;
+            }
+
+            RefreshPlottingArea();
+            Error = "Area under the curve = " + result.Area.ToString();
+        }
         /// <summary>
         /// Set error to empty string.
         /// </summary>
