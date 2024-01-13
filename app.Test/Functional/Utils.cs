@@ -102,6 +102,18 @@ namespace app.Test.Functional
             return service;
         }
 
+        public static IntegrationService CreateIntegrationService()
+        {
+            var validator = new ValidationService();
+            Engine.IntegratorWrapper wrapper = new Engine.IntegratorWrapper();
+            var fSharpIntegratorWrapper = new FSharpIntegratorWrapper(wrapper);
+            var trapeziumManager = new TrapeziumManager();
+            OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
+
+            var service = new IntegrationService(fSharpIntegratorWrapper, trapeziumManager, oxyPlotModelManager, validator);
+            return service;
+        }
+
         public static PlotViewModel CreaePlotViewModel()
         {
             // F# wrappers.
@@ -126,7 +138,8 @@ namespace app.Test.Functional
             TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, CreateDifferentiationService());
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager, expessionManager);
-            PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager);
+            
+            PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager, CreateIntegrationService());
             return plotViewModel;
         }
     }

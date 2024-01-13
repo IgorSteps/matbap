@@ -187,6 +187,12 @@ namespace app
         public RelayCommand ShowAreaUnderCurveCmd => _showAreaUnderCurvCmd;
         private void ShowAreaUnderCurve()
         {
+            if (SelectedPlot == null)
+            {
+                Error = "You must select the plot to show area under it.";
+                return;
+            }
+
             _areaUnderCurveShower.ClearTrapeziumList();
             var result = _areaUnderCurveShower.ShowAreaUnderCurve(OxyPlotModel, SelectedPlot, IntegrationStep);
             if (result.HasError)

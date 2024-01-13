@@ -30,7 +30,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_IntegrationService_HappyPath()
+        public void Test_IntegrationService_ShowAreaUnderCurve_HappyPath()
         {
             // --------
             // ASSEMBLE
@@ -55,11 +55,11 @@ namespace app.Test.Unit
             var mockLineSeriesList = new List<LineSeries> { mockLineSeries };
             _mockTrapeziumManager.Setup(m => m.GetAllTrapeziumSeries()).Returns(mockLineSeriesList);
             _mockOxyPlotManager.Setup(m => m.AddSeriesToPlotModel(plotModel, mockLineSeries));
-
+            Plot testPlot = new Plot(expression, min, max, step);   
             // --------
             // ACT
             // --------
-            var result = _integrationService.ShowAreaUnderCurve(plotModel, expression, min, max, step);
+            var result = _integrationService.ShowAreaUnderCurve(plotModel, testPlot, step);
 
             // --------
             // ASSERT
@@ -74,7 +74,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_IntegrationService_UnhappyPath_ValidatorError()
+        public void Test_IntegrationService_ShowAreaUnderCurve_UnhappyPath_ValidatorError()
         {
             // --------
             // ASSEMBLE
@@ -84,12 +84,12 @@ namespace app.Test.Unit
             double min = 1, max = 10, step = 0.1;
             Error testError = new Error("Boom");
             _mockValidationService.Setup(v => v.ValidateShowAreaUnderCurveInput(expression, min, max, step)).Returns(testError);
-
+            Plot testPlot = new Plot(expression, min, max, step);
 
             // --------
             // ACT
             // --------
-            var result = _integrationService.ShowAreaUnderCurve(plotModel, expression, min, max, step);
+            var result = _integrationService.ShowAreaUnderCurve(plotModel, testPlot, step);
 
             // --------
             // ASSERT
@@ -101,7 +101,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_IntegrationService_UnhappyPath_WrapperError()
+        public void Test_IntegrationService_ShowAreaUnderCurve_UnhappyPath_WrapperError()
         {
             // --------
             // ASSEMBLE
@@ -119,10 +119,11 @@ namespace app.Test.Unit
             _mockIntegratorWrapper.Setup(w => w.CalculateAreaUnderCurve(expression, min, max, step))
                                  .Returns(mockWrapperResult);
 
+            Plot testPlot = new Plot(expression, min, max, step);
             // --------
             // ACT
             // --------
-            var result = _integrationService.ShowAreaUnderCurve(plotModel, expression, min, max, step);
+            var result = _integrationService.ShowAreaUnderCurve(plotModel, testPlot, step);
 
             // --------
             // ASSERT
@@ -135,7 +136,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_IntegrationService_UnhappyPath_NotEnoughVerticesError()
+        public void Test_IntegrationService_ShowAreaUnderCurve_UnhappyPath_NotEnoughVerticesError()
         {
             // --------
             // ASSEMBLE
@@ -155,10 +156,11 @@ namespace app.Test.Unit
             _mockIntegratorWrapper.Setup(w => w.CalculateAreaUnderCurve(expression, min, max, step))
                                  .Returns(mockWrapperResult);
 
+            Plot testPlot = new Plot(expression, min, max, step);
             // --------
             // ACT
             // --------
-            var result = _integrationService.ShowAreaUnderCurve(plotModel, expression, min, max, step);
+            var result = _integrationService.ShowAreaUnderCurve(plotModel, testPlot, step);
 
             // --------
             // ASSERT
@@ -171,7 +173,7 @@ namespace app.Test.Unit
         }
 
         [Test]
-        public void Test_IntegrationService_UnhappyPath_NoVerticesError()
+        public void Test_IntegrationService_ShowAreaUnderCurve_UnhappyPath_NoVerticesError()
         {
             // --------
             // ASSEMBLE
@@ -185,10 +187,11 @@ namespace app.Test.Unit
             _mockIntegratorWrapper.Setup(w => w.CalculateAreaUnderCurve(expression, min, max, step))
                                  .Returns(mockWrapperResult);
 
+            Plot testPlot = new Plot(expression, min, max, step);
             // --------
             // ACT
             // --------
-            var result = _integrationService.ShowAreaUnderCurve(plotModel, expression, min, max, step);
+            var result = _integrationService.ShowAreaUnderCurve(plotModel, testPlot, step);
 
             // --------
             // ASSERT

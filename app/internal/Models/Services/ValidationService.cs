@@ -83,10 +83,6 @@
             {
                 return xStepZeroMsg;
             }
-            if(step > max)
-            {
-                return new Error("Step cannot be bigger than max");
-            }
 
             return null;
         }
