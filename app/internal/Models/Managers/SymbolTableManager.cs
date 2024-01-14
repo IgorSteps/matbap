@@ -16,6 +16,11 @@ namespace app
             return Table;
         }
 
+        public void ClearSymbolTable()
+        {
+            Table.Table.Clear();
+        }
+
         public void UpdateSymbolTable(Dictionary<string, Engine.Types.NumType> newTable)
         {
             Table.UpdateTable(newTable);
