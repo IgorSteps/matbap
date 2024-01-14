@@ -281,7 +281,6 @@ After adding several new features, it became hard to manually test our apps func
 This sprint was a significant improvement in our app's mathematical and architectural sides. The addition of differentiation and tangents improved app's functionality and provided a valuable lesson in software architecture. These features have set the course for future additions and refactors.
 
 \section{Sprint 7:Root finding}
-(TODO: Lyra and Liam please write about your work)
 Root finding was implemented based on the F\# engine's previous point plotting function. To find roots, it first generates the points within a given range. Then, it looks for pairs of adjacent points where one one's y is negative and the other's y is positive. Assuming the function is continuous between these, it uses the bisection method to iterate and find a value of x where y is 0. However, it has a few downsides:
 \begin{itemize}
     \item By assuming the function is continuous, it can find false roots. For example, in 1/x, it falsely claims a root at approximately x = 0, where it is actually undefined.
