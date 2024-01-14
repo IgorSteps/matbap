@@ -9,20 +9,26 @@ namespace app.Test.Unit
         private Mock<IEvaluator> _evaluatorServiceMock;
         private Mock<IRootFinder> _mockRootFinder;
         private Mock<IDifferentiator> _mockDifferentiator;
-
+        private Mock<ISymbolTableManager> _mockSymbolTableManager;
         [SetUp]
         public void Setup()
         {
             _evaluatorServiceMock = new Mock<IEvaluator>();
             _mockRootFinder = new Mock<IRootFinder>();
             _mockDifferentiator = new Mock<IDifferentiator>();
-            _viewModel = new ExpressionViewModel(_evaluatorServiceMock.Object, _mockRootFinder.Object, _mockDifferentiator.Object);
+            _mockSymbolTableManager = new Mock<ISymbolTableManager>();
+            _viewModel = new ExpressionViewModel(
+                _evaluatorServiceMock.Object,
+                _mockRootFinder.Object,
+                _mockDifferentiator.Object,
+                _mockSymbolTableManager.Object
+                );
         }
 
         [Test]
         public void Test_ExpressionViewModel_EvaluateCmd_ReceiveAnswerFromEvaluator()
         {
-            // --------  
+            // --------   
             // ASSEMBLE
             // --------
             var testInput = "123";
@@ -30,6 +36,16 @@ namespace app.Test.Unit
             var mockResponse = new ExpressionEvaluatingServiceResult(testInput, expression, null);
             _viewModel.Expression = testInput;
             _evaluatorServiceMock.Setup(i => i.Evaluate(testInput)).Returns(mockResponse);
+            var mockRawSymbolTable = new Dictionary<string, Engine.Types.NumType>()
+            {
+                {"a", Engine.Types.NumType.NewInt(1)},
+                {"b", Engine.Types.NumType.NewInt(2)},
+                {"c", Engine.Types.NumType.NewInt(3)},
+            };
+            var symbolTable = new SymbolTable();
+            symbolTable.UpdateTable(mockRawSymbolTable);
+
+            _mockSymbolTableManager.Setup(s => s.GetSymbolTable()).Returns(symbolTable);
 
             // ---
             // ACT
@@ -40,6 +56,8 @@ namespace app.Test.Unit
             // ASSERT
             // ------
             Assert.That(_viewModel.Answer, Is.EqualTo(mockResponse.Result), "Actual response is not equal expected");
+            _evaluatorServiceMock.VerifyAll();
+            _mockSymbolTableManager.VerifyAll();
         }
 
         [Test]
@@ -62,6 +80,7 @@ namespace app.Test.Unit
             // ASSERT
             // ------
             Assert.That(_viewModel.Answer, Is.EqualTo(testError.ToString()), "Actual response is not equal expected");
+            _evaluatorServiceMock.VerifyAll();
         }
 
         [Test]
@@ -103,6 +122,7 @@ namespace app.Test.Unit
             Assert.That(_viewModel.Answer, Is.Null, "Actual response must be null because we are plotting");
             Assert.IsTrue(receivedMessage, "Message wasn't received");
             Assert.That(receivedExpression, Is.EqualTo(expression), "Sent and received expressions are not equal");
+            _evaluatorServiceMock.VerifyAll();
         }
 
         [Test]
@@ -125,6 +145,7 @@ namespace app.Test.Unit
             // ASSERT
             // --------
             Assert.That(_viewModel.Answer, Is.EqualTo(testInput), "Answers don't match");
+            _mockDifferentiator.VerifyAll();
         }
 
         [Test]
@@ -150,6 +171,7 @@ namespace app.Test.Unit
             // ASSERT
             // ------
             Assert.That(_viewModel.Answer, Is.EqualTo(mockResponse.Roots), "Actual roots is not equal expected");
+            _mockRootFinder.VerifyAll();
         }
 
         [Test]
@@ -176,6 +198,7 @@ namespace app.Test.Unit
             // ASSERT
             // ------
             Assert.That(_viewModel.Answer, Is.EqualTo(testError.ToString()), "Answer must be the error");
+            _mockRootFinder.VerifyAll();
         }
     }
 }

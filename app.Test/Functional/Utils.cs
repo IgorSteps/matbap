@@ -85,10 +85,9 @@ namespace app.Test.Functional
             var symTableManager = new SymbolTableManager();
             var astManager = new ASTManager();
             var validator = new ValidationService();
-
             var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, fsharpEvalWrapper, expressionManager, astManager);
             
-            var viewModel = new ExpressionViewModel(service, CreateFindRootsService(), CreateDifferentiationService());
+            var viewModel = new ExpressionViewModel(service, CreateFindRootsService(), CreateDifferentiationService(), symTableManager);
             return viewModel;
         }
 
@@ -99,6 +98,18 @@ namespace app.Test.Functional
             var FSharpFindRootsWrapper = new FSharpFindRootsWrapper(rootWrapper);
 
             var service = new FindRootsService(FSharpFindRootsWrapper, validator);
+            return service;
+        }
+
+        public static IntegrationService CreateIntegrationService()
+        {
+            var validator = new ValidationService();
+            Engine.IntegratorWrapper wrapper = new Engine.IntegratorWrapper();
+            var fSharpIntegratorWrapper = new FSharpIntegratorWrapper(wrapper);
+            var trapeziumManager = new TrapeziumManager();
+            OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
+
+            var service = new IntegrationService(fSharpIntegratorWrapper, trapeziumManager, oxyPlotModelManager, validator);
             return service;
         }
 
@@ -126,7 +137,8 @@ namespace app.Test.Functional
             TangentManager tangentManager = new TangentManager(functionEvaluatorWrapper, CreateDifferentiationService());
             OxyPlotModelManager oxyPlotModelManager = new OxyPlotModelManager();
             PlottingService plotter = new PlottingService(validator, oxyPlotModelManager, plotManager, tangentManager, expessionManager);
-            PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager);
+            
+            PlotViewModel plotViewModel = new PlotViewModel(plotter, oxyPlotModelManager, CreateIntegrationService());
             return plotViewModel;
         }
     }

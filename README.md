@@ -8,14 +8,20 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 [Discovery Board](https://ueanorwich-my.sharepoint.com/:wb:/g/personal/mkq20jzu_uea_ac_uk/Efhj28AX26RPhuUebxabd_gBn3a929Ur_9FcngwqGEKR4w?e=GFHg0L)
 
 ## App Spec
+UML Diagrams and Report can be found in the docs folder.
+
+<table>
+<tr>
+<td valign="top"> <!-- First Column -->
+  
 ### F# Engine
 - [ ] Expressions
   - [x] Interger
   - [x] Float
   - [x] Functions
+  - [x] Parse Tree
   - [ ] Rational
   - [ ] Complex
-  - [x] Parse Tree
 - [ ] Assignment
   - [x] Dynamic typing
   - [ ] Static typing
@@ -25,10 +31,13 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Maths toolbox
    - [x] Derivatives
    - [x] Root finding
-   - [ ] Integration
+   - [x] Integration
    - [ ] Matrix and Vector library
 - [ ] Turn into a Compiler
 
+</td>
+<td valign="top"> <!-- Second Column -->
+  
 ### C# GUI
 - [x] Basic GUI
 - [x] Basic Plotting
@@ -37,15 +46,17 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Advanced Plotting
   - [x] Trig and logarithmic functions
   - [x] Plotting multiple plots
-  - [ ] Rational equations
   - [x] Tangents
-  - [ ] Areas under the curve for numerical integration
+  - [x] Show areas under the curve
+  - [ ] Rational equations
 - [ ] Advanced GUI
-  - [x] Visualise Parse Tree
-  - [ ] Visualise Symbol Table
   - [x] Display Plotted Equations
+  - [x] Visualise Parse Tree
+  - [x] Visualise Symbol Table
 
-
+</td>
+</tr>
+</table>
 
 ## Tests
 To run all tests, from project root:
