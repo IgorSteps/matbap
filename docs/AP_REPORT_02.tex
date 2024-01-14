@@ -1,6 +1,6 @@
 
 \documentclass[a4paper, oneside, 11pt]{report}
-\usepackage{epsfig,pifont,float,multirow,amsmath,amssymb,url}
+\usepackage{epsfig,pifont,float,multirow,amsmath,amssymb}
 \newcommand{\mc}{\multicolumn{1}{c|}}
 \newcommand{\mb}{\mathbf}
 \newcommand{\mi}{\mathit}
@@ -24,7 +24,7 @@
 \vspace{1cm}
 {\large  CMP-6048A Advanced Programming}
 \vspace{7.5cm}
-\\{\Large Project Report - 10 January 2024}
+\\{\Large Project Report - 15 January 2024}
 \vspace{1.5cm}
 \\{\LARGE MATBAP: Maths Interpreter software}
 \vspace{1.0cm}
@@ -43,42 +43,47 @@
 
 
 \begin{abstract}
-Please replace this section with your own abstract. An abstract is a brief summary (maximum 250 words) of your entire project. It should cover your objectives, your methodologies used, a brief developmental history, your final results, in particular covering the optional tasks, and a discussion and conclusion. You do not cover the literature or background in an abstract nor should you use abbreviations or acronyms. The remainder of this report template has clear chapter titles and we suggest to stick to these although you can organise your material inside each chapter to your own preferences. A guideline in size is approximately 3,500 words (not including abstract, captions and references) but no real limit on figures, tables, diagrams, pseudo-code etc.
+% Please replace this section with your own abstract. An abstract is a brief summary (maximum 250 words) of your entire project. It should cover your objectives, your methodologies used, a brief developmental history, your final results, in particular covering the optional tasks, and a discussion and conclusion. You do not cover the literature or background in an abstract nor should you use abbreviations or acronyms. The remainder of this report template has clear chapter titles and we suggest to stick to these although you can organise your material inside each chapter to your own preferences. A guideline in size is approximately 3,500 words (not including abstract, captions and references) but no real limit on figures, tables, diagrams, pseudo-code etc.
+
+This project report discusses the development and implementation of a Maths Interpreter Software, aimed at evaluating and plotting maths expression. The main objective was to create an application capable of evaluating complex maths expression, with focus on performing arithmetic operations, plotting lines and polynomials and assigning variables.
+
+Our methodology included Model-View-ViewModel, Dependency Injection and Service Layer design patterns, and followed best practices such as SOLID principles. The development started with creating core functionality like the F\# interpreter and C\# GUI. As we progressed through the semester, we implemented compulsory features like expression solving, plotting and variable assignment that were outlined in the MoSCoW table. In the end, we managed to complete not just all 'Must' and 'Should' objectives, but also several 'Could' features, such as adding tangents, differentiation, visualising parse tree, finding roots, functions, for-loop, which made our app more versatile.
+
+In conclusion, this project not only met all of it compulsory objectives but also included several optional features. The result is a user-friendly, versatile and robust Maths Interpreter Software that proves the effectiveness of our methodology. The report discusses potential future improvements, such as support for Complex and Rational numbers and Parser optimisation, which would improve software's versatility and performance.
+
+
 \end{abstract}
 
 \chapter{Introduction}
 \label{chap:intro}
 
 \section{Project statement}
-This project will be a Maths Interpreter software with extensions aiming
-towards a Turing complete language. It will be used to evaluate expressions, define
-variables and functions, and plot functions of two variables. The software
-will allow the user to enter expressions and equations using a custom language which is processed by a lexer, parser and evaluator. Plots of mathematical equations will be interactive. Additional functionality might include root finding, differentiation and integration. The software will be developed keeping in mind software engineering principles such as low coupling and high cohesion achieved through Model-View-ViewModel and Inversion of Control patterns. 
+This project will be a Maths Interpreter software. It will be used to evaluate expressions, assign variables and plot functions. The software will allow the user to enter expressions using a custom language which is processed by an F\# engine. Additional functionality might include root finding, differentiation and integration. This app will be developed following SOLID principles and best practices through the usage of Model-View-ViewModel and Dependency Injection patterns.
 
 \section{Aims and objectives}
 The main aim is to develop Matbap, a maths interpreter software for solving and plotting mathematical expressions. Main objectives include:
 \begin{itemize}
-    \item Create Lexer, Parser and Evaluator in F\# to process mathematical expressions and equations to plot.
-    \item Develop a Graphical User Interface (GUI) in C\# for user interaction.
-    \item Integrate F\# and C\# components keeping in mind low coupling.
+    \item Create Lexer, Parser and Evaluator in F\# to process mathematical expressions, equations to plot and support future features.
+    \item Develop a Graphical User Interface (GUI) in C\# for user interaction and to handle business logic.
+    \item Integrate F\# and C\# components keeping in mind SOLID principles and best practices.
 \end{itemize}
 
 \noindent % Start a new paragraph without indentation
-They are broken further into subtasks in this MoSCoW table \ref{appendix:moscow} 
+They are broken further into subtasks in this MoSCoW table under Appendix \ref{appendix:moscow}.
 
 
 \chapter{Background}
-The development of maths software capable of plotting graphs has become significantly easier in recent years, because of integration of technology in education and research. Therefore, it is important we acknowledge key software and literature in this field.
+Today, educational institutions starting from schools and going up to top universities in the world utilise powerful maths software, capable of doing arithmetic and visualising graphs, to aid in their teaching and research. In this chapter, we will acknowledge some of the key software and literature in this field.
 
-Desmos\cite{Desmos:2023} software offers a graphical calculator that changed the way students learn mathematics by providing an intuitive UI and robust plotting functionality to allow for visualisations of complex functions and equations.
+The most popular software is 'MATLAB'\cite{Matlab:2023}. It is a mainstream tool in the field of numerical computing, visualisation and programming, that is widely used in academia and professional industry. It offers rich tooling that includes signal and image processing.  
 
-MATLAB\cite{Matlab:2023} is the mainstream tool in the field of mathematical computing, visualising and programming. It offers extensive tooling that includes signal and image processing, which is why it is widely used in academia and industry.
+Desmos\cite{Desmos:2023} is another software, commonly used in education to teach students. It offers a graphical calculator with an intuitive user interface and robust plotting functionality to allow for visualisations of complex functions.
 
-The Windows Presentation Foundation (WPF)\cite{WPF:2023} documentation provided by Microsoft Learn offered tutorials and guidance on creating desktop user interfaces. WPF’s powerful data-bindings were critical in displaying mathematical data back to the user.
+When designing Matbap, we consulted different documentations, such as about the Windows Presentation Foundation (WPF)\cite{WPF:2023} provided by Microsoft Learn which offers tutorials on creating desktop user interfaces on Windows using C\#. WPF’s powerful data-bindings are crucial in accepting user's input and displaying the response.
 
-The Dependency Injection (DI) \cite{DI:2023} documentation from Microsoft Learn described the design pattern that produces more testable and modular software. In the context of our application, this pattern allowed for dynamic integration of different services like equation evaluator and plotting evaluator, and as a result made our software more maintainable and scalable.
+The Dependency Injection (DI) \cite{DI:2023} documentation from Microsoft Learn described the design pattern that produces more testable and modular software. In the context of our application, this pattern allowed for dynamic integration of interfaces like equation evaluator and plotting service within other components, and as a result made our software more maintainable, scalable and testible.
 
-The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Learn describes the architecture, which is primarily used with WPF applications due to its powerful data-binding features. MVVM creates a clear separation of concerns where business logic is decoupled from the UI. This architecture was important in developing our software because it allowed for maintainable and scalable code, which could handle mathematical calculations and user interactions.
+The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Learn describes the architecture, which is primarily used with WPF applications due to its powerful data-binding features. MVVM creates a clear separation of concerns where business logic is decoupled from the UI. This architecture was important in developing our software because it allowed for maintainable and scalable code, which could handle mathematical calculations, user interactions and displaying plots.
 
 
 \chapter{Development History}\label{Chap:DevHist}
@@ -87,7 +92,7 @@ The Model-View-ViewModel (MVVM)\cite{MVVM:2022} documentation from Microsoft Lea
 At the very start of this project, we needed to setup and integrate essentials tools that have been critical in streamlining workflow and improving teamwork.
 
 \subsection{Jira Board}
-To track our work, we chose Jira\cite{Atlassian:JIRA} - tool for task management and sprint planning, which provided us with visual representation of our project's progress. We setup a Jira Board(link \ref{ap-jira-link}) that helped us create a backlog tickets, that can be assigned to a team member and tracked in To Do, In Progress and Done columns.
+To track our work, we chose Jira\cite{Atlassian:JIRA} - tool for task management and sprint planning, which provided us with visual representation of our project's progress. We setup a Jira Board \ref{ap-jira-link} that helped us create a backlog tickets, that can be assigned to a team member and tracked in To Do, In Progress and Done columns.
 
 \subsection{Visual Studio Project}
 Next we configured a Visual Studio solution that could reference a F\# application in a C\# application as a DLL\cite{DLL}.
@@ -119,7 +124,7 @@ We developed a parser that would parse and evaluate expressions that followed th
 We used WPF\cite{WPF:2023} with C\# to develop a basic GUI, focusing on maintainability, testability, and scalability. App's architecture consists of several design patterns like Model-View-ViewModel\cite{MVVM:2022}, that improves GUI's responsiveness to user interactions and Dependency Injection\cite{DI:2023} for better modularity and easy maintenance. The GUI was a minimalistic interface allowing users to enter expressions and view the answers - see Figure \ref{basicgui}.
 
 \subsection{Testing}
-Thorough unit tests were written for both the C\# app and the F\# engine. Table \ref{sprint1-lexer-test} includes unit test for the Lexer. Table \ref{sprint1-parser-test} includes unit tests for the Parser. The table with GUI unit tests can be seen in \ref{sprint1-gui-test}. The use of the MVVM and Dependency Injection patterns allowed us to to use the Moq\cite{Moq} mocking library to mock Model behaviours in our ViewModel. This allowed us to test code in isolation without relying on behaviour of real dependencies and to have control over what is returned from the mocked methods. As a result our code coverage was above 80\%.
+Thorough unit tests were written for both the C\# app and the F\# engine. Table \ref{sprint1-lexer-test} includes unit test for the Lexer. Table \ref{sprint1-parser-test} includes unit tests for the Parser. The table with GUI unit tests can be seen under Appendix \ref{app:test}. The use of the MVVM and Dependency Injection patterns allowed us to to use the Moq\cite{Moq} mocking library to mock Model behaviours in our ViewModel. This allowed us to test code in isolation without relying on behaviour of real dependencies and to have control over what is returned from the mocked methods. As a result our code coverage was above 80\%.
 
 \subsection{Conclusion}
 The first sprint laid a solid foundation for our maths interpreter. The lexer and parser were capable of evaluation basic arithmetic expressions and the GUI was providing simple interface for user interaction. Our testing strategy set a ensured that future features were build upon a reliable codebase. 
@@ -174,11 +179,10 @@ In the third sprint we focused on extending our app’s functionality to support
 We have updated our Lexer to recognise an assignment operator. The addition was critical to allow variable assignment functionality, allowing users to create and manipulate variables in their expressions. The implementation was to add a ‘=‘ operator to our set of tokens.
 
 \subsection{Parser}
-(WIP: Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed)
 Unary minus was simple, as it could simply be detected as a grammar rule with an associated expression. However, variable assignment was slightly more complicated. The highest level expression in the grammar had to be changed to be optionally either a variable assignment or a normal expression.
 
+
 \subsection{Evaluator}
-(Liam/Lyra - how it was done and discuss any key challenges or optimisations implemented/needed, include the Lyra's plotPoints function)
 To assign and interpret variables, a symbol table had to be used. It is effectively a dictionary, where each unique variable (key) has a single associated value. This symbol table is passed to the evaluation function; any variable assignments are stored in the symbol table, and their value is taken from the symbol table when references to them are made.
 A function was created, separate from regular evaluation, to return a list of points for an expression in a given range within a certain step between them. To do this it leveraged the evaluator using a symbol table containing x as a variable, repeating this for every x per step in the given range.
 
@@ -212,22 +216,21 @@ While researching advanced features, we quickly realised we are very limited to 
 
 \subsection{Parser}
 Our strategy was to incrementally build a new parser. We started with integrating simple grammar from our existing BNF. Next we have implemented operators like power, modulo and unary minus. The last addition was variable assignment. This resulted in a fully functional parser that builds an AST of the expression. One of the crucial things we have almost missed was that the requirement for power operations to be right-associative. We were able to catch that using our extensive unit tests framework.
-Variable assignment was straightforward to implement as we had already defined the BNF and produced an implementation for the old parser and evaluator, however one improvement over the old version is the inclusion of more robust error messages, the new AST parser checks for an empty right hand side of an assignment ($x = $) and for an assignment without a variable name ($= 2/3$). Additionally, we have moved away from exceptions for error handling used in the old parser in favor for the Result monad which is more idiomatic for the functional programming paradigm.
 \begin{verbatim}
-    
-The AST Node type looked like this:
-        type NumType =
-            | Int of int
-            | Float of float
+    type NumType =
+        | Int of int
+        | Float of float
 
-       type Node =
-            | Number of NumType
-            | BinaryOperation of string * Node * Node
-            | ParenthesisExpression of Node
-            | UnaryMinusOperation of string * Node
-            | VariableAssignment of string * Node
-            | Variable of string
+    type Node =
+        | Number of NumType
+        | BinaryOperation of string * Node * Node
+        | ParenthesisExpression of Node
+        | UnaryMinusOperation of string * Node
+        | VariableAssignment of string * Node
+        | Variable of string
 \end{verbatim}
+Variable assignment was straightforward to implement as we had already defined the BNF and produced an implementation for the old parser and evaluator, however one improvement over the old version is the inclusion of more robust error messages, the new AST parser checks for an empty right hand side of an assignment ($x = $) and for an assignment without a variable name ($= 2/3$). Additionally, we have moved away from exceptions for error handling used in the old parser in favor for the Result monad which is more idiomatic for the functional programming paradigm.
+
 \subsection{AST Evaluator}
 Previously, the F\# engine evaluated at the same time as parsing. This means that, instead of recursive calls returning nodes, they would return the result of calculations. By splitting the evaluator away from the parser, the tree generated by the parser has to be traversed by the evaluator, again using recursive function calls. F\# is well suited for this, particularly with match statements.
 One difficulty in doing this was moving the evaluation logic from the old parser to work with the new one - a few new helper functions had to be introduced for this, mostly due to differing return types. The traversal logic was rather simple, as it was very similar to the parser's.
@@ -252,10 +255,10 @@ During this sprint, we continued to focus on improving our app's functionality. 
 \subsection{Visualising parse tree}
 Introduction of the Abstract Syntax Tree parser resulted in implementation of a converter between F\# and C\# for visualisation. We have introduced an abstract class $ASTNode$ and a converter class $ASTManager$. For the visualisation, we opted for Microsoft Automatic Graph Layout\cite{MSAGL} - a popular library used to display graph data structures, which we have adapted to display our Abstract Syntax Tree. The visualisation provides clarity for developers and users about the underlying parsing process. The resulting GUI can be seen under Appendix \ref{app:gui}.
 
-\subsection{Adding multiple plots, Clearing plot area, Displaying plotted functions}
+\subsection{Adding multiple plots, Clearing plot area, Displaying plotted functions, Selecting and Clearing plots}
 Anticipating more complex plotting functionality like adding tangents, we decided to extend our plotting mode to support adding multiple plots. The key change was refactoring our PlotViewModel to store a single instance of the OxyPlot's plot model. We also added a button to clear the plotting area to improve interface's flexibility and user experience. 
 
-The ability to add multiple plots to the plot area introduced potential user confusion. To solve this issue, we implemented a feature to display all plotted functions, allowing users to select a plot to perform an operation like adding a tangent. This features involved storing all plots in a map, that could be displayed in the GUI using WPF's powerful data template and data binding features. The resulted GUI can be seen under Appendix \ref{app:gui}.
+The ability to add multiple plots to the plot area introduced potential user confusion. To solve this issue, we implemented a feature to display all plotted functions, allowing users to select a plot to perform an operation like adding a tangent or showing area under the curve. This features involved storing all plots in a map, that could be displayed in the GUI using WPF's powerful data template and data binding features. The resulted GUI can be seen under Appendix \ref{app:gui}.
 
 \subsection{Testing}
 In this sprint, we concentrated our testing on new functionalities like $ASTManager$ class correctly converting F\# nodes to C\# nodes. The tests can be found under Appendix \ref{app:test}.
@@ -263,14 +266,14 @@ In this sprint, we concentrated our testing on new functionalities like $ASTMana
 \subsection{Conclusion}
 In this sprint we have added an advanced feature like Visualising the parse tree and laid a solid foundation for future work by enabling plotting multiple functions.
 
-\section{Sprint 6: Differentiation, Adding tangents, Plotted function table}
+\section{Sprint 6: Differentiation, Adding tangents}
 In this sprint, we tackled maths toolbox objective, specifically Differentiation. This addition aimed at expanding our app's functionality by allowing us to implement features that use differentiation.
 
 \subsection{Differentiation}
 From our first year maths module we recalled simple differentiation, but needed guidance on how to handle more complex expression. We started researching on how to perform differentiation on expressions with binary operations, trigonometric and logarithmic functions. Using Derivative rules\cite{Derivatives} we outlined Sum, Difference, Product, Quotient, Power and Chain rules. The resulting algorithm would recursively traverse the Abstract Syntax Tree and apply appropriate rule on the node it encountered. It can be seen under Appendix \ref{app:algorithms}. An important decision was whether to allow non-constant powers. We decided against it, because supporting them would introduce a level of complexity we wasn't sure we would have time to implement and test properly.
 
 \subsection{Adding tangents and refactoring GUI architecture}
-With the addition of differentiation we were able to implement functionality to add a tangent to a graph, because the derivative tells us a slope of any function. This feature highlighted the scalability issue as all the interaction code with F\# engine and OxyPlot's plot model was in the PlotViewModel, which was complicating adding anything new to it. Our solution was to introduce a variation of a Service Layer design pattern \cite{ServiceLayer:Wiki}. It involved separating logic into tangent and OxyPlot plot model managers and a plotting service - an API that utilises several managers to provide some functionality for the consumer. This is discussed in more depth in Chapter \ref{code-arch}. This refactor improved code modularity and testability by separating concerns, and allowing for easier addition of new features like Tangents. Reworked GUI can be seen under Appendix \ref{app:gui}.
+With the addition of differentiation we were able to implement functionality to add a tangent to a graph, because the derivative tells us a slope of any function. This feature highlighted the scalability issue as all the interaction code with F\# engine and OxyPlot's plot model was in the $PlotViewModel$, which was complicating adding anything new to it. Our solution was to introduce a variation of a Service Layer design pattern \cite{ServiceLayer:Wiki}. It involved separating logic into tangent and OxyPlot plot model managers and a plotting service - an API that utilises several managers to provide some functionality for the consumer. This is discussed in more depth in Chapter \ref{code-arch}. This refactor improved code modularity and testability by separating concerns, and allowing for easier addition of new features like Tangents. Reworked GUI can be seen under Appendix \ref{app:gui}.
 
 \subsection{Testing}
 During this sprint, our unit tests focused on ensuring our differentiation function was producing a correct Abstract Syntax Tree. They included a unit test for each derivative rule. In our GUI, our unit tests had to be expanded to cover new abstractions and interactions, but thanks to Dependency Injection pattern and mocking, we were able to achieve this smoothly. They can be seen under Appendix \ref{app:test}. 
@@ -280,7 +283,15 @@ After adding several new features, it became hard to manually test our apps func
 \subsection{Conclusion}
 This sprint was a significant improvement in our app's mathematical and architectural sides. The addition of differentiation and tangents improved app's functionality and provided a valuable lesson in software architecture. These features have set the course for future additions and refactors.
 
-\section{Sprint 7:Root finding}
+
+\section{Sprint 7: For Loop with plot function and Root finding}
+
+\subsection{Updated C\# app}
+The introduction of the For-Loop with plot function presented an architectural challenge, because it required communication between two ViewModels: $ExpressionViewModel$ and $PlotViewModel$. In the Model-View-ViewModel (MVVM) pattern, it is bad practice to tightly couple two ViewModels together. Our solution involved implementing a messaging system between them. The $ExpressionViewModel$ now sends a message if the user enters a for-loop with plot function. This message carries necessary data avoiding direct interaction between the ViewModels, following MVVM best practices. The $PlotViewModel$ subscribes to these messages and handles them accordingly using the $PlottingSerivce$. This approach maintained the modularity and scalability of our application.
+
+To support finding roots, we have added a new $RootFinder$ service that would evaluate expressions, find roots, validate user input and return the response back to the user. On the GUI side we added a Find Roots, x-minimum and x-maximum buttons. The updated GUI can be seen under Appendix \ref{app:gui}.
+
+\subsection{Root finding}
 Root finding was implemented based on the F\# engine's previous point plotting function. To find roots, it first generates the points within a given range. Then, it looks for pairs of adjacent points where one one's y is negative and the other's y is positive. Assuming the function is continuous between these, it uses the bisection method to iterate and find a value of x where y is 0. However, it has a few downsides:
 \begin{itemize}
     \item By assuming the function is continuous, it can find false roots. For example, in 1/x, it falsely claims a root at approximately x = 0, where it is actually undefined.
@@ -318,8 +329,6 @@ Root finding was implemented based on the F\# engine's previous point plotting f
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
-
-\section{Sprint 8: Iteration and Built-in Function Evaluation}
 
 \subsection{Iteration}
 Iteration was a feature we ran into trouble implementing with our joint parser and evaluator, we could not properly inspect the structure of the loop or the expression to be iterated as parsing and evaluation was done simultaneously as we went . Once our engine was refactored to construct an AST, implementing a robust for-loop became a lot simpler, allowing us to assign a variable within the for-loop declaration and use this variable within the loop block to generate points to be plotted. Our initial for-loop implementation allowed for the line $2x+1$ to be plotted between $x = 1$ and $x = 10$ programmtically the following way:
@@ -390,53 +399,143 @@ Due to many processes going on under the hood of a for-loop, we ensured that err
 Regarding function calls, we made sure to test that nested function calls were supported, as well as complex expressions being passed inside functions.
 
 \subsection{Conclusion}
-This sprint introduced a significant new feature: programmatic plotting through iteration, without the need of a separate GUI window. It also introduced function evaluation, empowering users with the ability to plot function waves such as sine and cosine with ease.
+This sprint introduced two significant new features: programmatic plotting through iteration, without the need of using a separate GUI window. It also introduced function evaluation, empowering users with the ability to plot function waves such as sine and cosine with ease. Furthermore, it has expanded our maths toolbox to include root finding.
 
-\section{Sprint n: And whatever we complete before we submit this}
+\section{Sprint 9: Visualise and calculate area under the curve, Visualise and Clear Symbol Table}
+This final sprint has improved versatility of our app even further. We have added support for visualising and calculating areas under the curve, using Trapezium Rule, and visualisation and clearing of the SymbolTable.
 
+\subsection{Calculating area under the curve}
+While researching how to calculate the area under the curve, we discovered we could find the primitive function first and then apply the limits or simply approximate it instead by using a numerical method such as Newton-Cotes of which the most basic form is the trapezium rule. We opted for the latter option, because, unlike Differentiation, Integration doesn't have rules that we can modify our Abstract Syntax Tree (AST) with. This adds extra complexity to the integration algorithm, which we didn't have time for. 
 
+The trapezium rule works by breaking down the area under the curve into trapeziums and then calculating the sum of the areas of these trapeziums. Below is the pseudocode for it:
 
-\chapter{Final deliverable}\label{Impl}
-
-In this chapter you cover the final or ``ultimate'' version of your project. It will show the final BNF, the final GUI, the architecture (which should be MVVM or MVC) that includes UML diagrams, additional algorithms if not already included in the previous sprint sections.
-
-\section{Final BNF}
-
-\section{Final GUI}
-
-\section{Code architecture}
-\label{code-arch}
-
-\section{Algorithms}
-
-Algorithms can be described in this chapter if not already covered in previous sections. Pseudo-code is preferred over code snippets. If you use the latter then make sure it is well commented inside the code or via the figure caption. 
-
-\begin{algorithm}[th]
-\caption{ The Newton-Raphson method }
+\begin{algorithm}
 \begin{algorithmic}[1]
-\STATE Initialise root based on estimate
-\STATE Set stop criterion
-\\ \texttt{const double error = 0.000001;}
-\WHILE {stop criterion not met}
-	\STATE Compute f(root)
-	\STATE Compute f'(root)
-	\STATE root := root - f(root)/f'(root)
+\caption{Trapezium rule}
+\label{algorithm-trapezium-rule}
+\STATE f - A function of the curve
+\STATE min - Lower limit of integration
+\STATE max - Upper limit of integration
+\STATE step - Step
+\STATE $trapezoidWidth \gets$ ($max - min$)/$step$
+\STATE $totalArea \gets 0$
+\STATE $currentX \gets min$ 
+\WHILE{$currentX \leq max$}
+    \STATE $trapeziumArea \gets 0.5 * (f(x) + f(x + trapezoidWidth)) * trapezoidWidth$
+    \STATE $totalArea = totalArea + trapeziumArea$
+    \STATE $currentX = currentX + trapezoidWidth$
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
 
+There are limitations for this algorithm, for example it is not accurate for very non-linear functions, because the rule approximates the area under the curve using straight lines, which may not fit well with curves with high curvature.
 
-Note that code snippets or lists of crucial programming code or large UML diagrams should go in Appendix \ref{app:other} (or further appendices).
+\subsection{Displaying area under the curve}
+ Each trapezium has 4 vertices, which are calculated as follows, going clockwise starting from the bottom left corner.
+\begin{verbatim}
+    ( currentX, 0.0 )
+    ( currentX, f(currentX) )
+    ( currentX + trapezoidWidth, f(currentX + trapezoidWidth) )
+    ( currentX + trapezoidWidth, 0.0 )
+\end{verbatim}
+
+Our F\# engine would send these vertices, along with the area to the GUI. They would be handled by the $IntegrationService$ to get a line series for each trapezium and plot it using OxyPlot, resulting in this:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.7]{Area under the curve.png}
+\caption{Area under the curve in the GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\subsection{Visualise and Clear Symbol table}
+To help users keep track of variable assignments and allow to clear the symbol table, we decided to visualise it. Given that we already had a $SymbolTable$ and $SymbolTableManager$ classes, it only took a couple of functions to provide this functionality to the view model. The resulting GUI would include the following Symbol Table:
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.7]{SymbolTableGUIElement.png}
+\caption{Symbol table GUI element}
+\label{basicgui}
+\end{center}
+\end{figure}
 
 \subsection{Testing}
+Our testing approach for this sprint remained unchanged. We tested the integration module in F\# by asserting correct areas and vertices are calculated for input expressions. They can be seen under Appendix \ref{app:test}.
 
-Describe what testing you have done on the interpreter (lexer, parser and execution), GUI and GUI-Interpreter communication, plotting, etc. Table \ref{Table2} in Appendix \ref{app:test} should be completed to do basic arithmetic expression tests.
+For our GUI, we developed unit tests to assert correct behaviour of all new functions. Additionally, we created a functional test to validate system's end-to-end functionality regarding showing areas under the curve. For the symbol table, we have added extra assertions to the existing functional test. They can be seen under Appendix \ref{app:test}.
 
+\subsection{Conclusion}
+This sprint was an improvement for our maths toolbox and user-experience. The addition of visualising areas under the curve made our app more versatile and the addition of the SymbolTable visualisation made our app more user-friendly.
+
+\chapter{Final deliverable}\label{Impl}
+\section{Final BNF}
+
+\begin{verbatim}
+    ForLoop ::= "for" <varID> "in" "range(<E>,<E>)" ":" <E>
+               | "for" <varID> "in" "range(<E>,<E>,<float>)" ":" <E>
+    <varA> ::= <varID> = <E>
+    <E>    ::= <T> <Eopt>
+    <Eopt> ::= + <T> <Eopt> | - <T> <Eopt> | <empty>
+    <T>    ::= <P> <Topt>
+    <Topt> ::= * <P> <Topt> | / <P> <Topt> | % <P> <Topt> | <empty>
+    <P>    ::= <NR> <Popt>
+    <Popt> ::= ^ <NR> <Popt> | <empty>
+    <NR>   ::= <num> | (E) | <func-call>
+    <num>  ::= <int> | <float> | <varVal>
+
+    <func-call> ::= <func-name>(<E>)
+    <func-name> ::= sin | cos | tan | log
+
+    varVal is fetched from symbol table using varID
+\end{verbatim}
+    
+
+\section{Final GUI}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.4]{FinalGUI.png}
+\caption{Final GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{Code architecture}
+\label{code-arch}
+The final architecture of Matbap follows the Model-View-ViewModel (MVVM) design pattern, with addition of Dependency Injection (DI), Separation of Concerns and other best practices. This approach helps with maintainability, testability and scalability of our application.
+
+\subsection{F\# Engine and Wrappers}
+Our F\# mathematical engine is a critical component of our architecture, that provides functionality for interpreting expressions, finding coordinates for plots and others. We have developed interfaces within it to integrate with our C\# application. We used DI to inject these interfaces into F\# Wrappers, which act as adapters enabling our Services and Managers to use the engine.
+
+
+\subsection{Model}
+Model layer consists of entities such as $Expression$, which encapsulates the mathematical expression, that our software handles. Each entity has a manager, like an $ExpressionManager$ that handles Differentiation or Creating an expression. There are also services, such as $ExpressionEvaluationService$, that highlight separation of concerns by handling interactions between several Managers, Services and F\# Wrappers. DI is used here to decouple Services from its dependencies like Managers and Wrappers, ensuring modularity and testability. Services act as APIs for the consumer, such as a ViewModel. They encapsulate complex operations like evaluating expressions and remain decoupled from other layers.
+
+\subsection{ViewModel}
+ViewModel's purpose is to link our user interface with the Model layer. It interacts with Services like $ExpressionEvalutingService$, that communicates with Managers and Wrappers. DI is used here to ensure code modularity and testability.
+
+\subsection{UML Diagrams}
+Links to our architecture UML class and sequence diagrams can be found under 
+Appendix \ref{app:links}.
+
+By using MVVM, Service Layer and DI patterns, following SOLID principles we created an architecture, that is scalable, maintainable and adaptable in the long run.
+
+\section{Testing}
+Our testing approach followed best practices in the software engineering industry to ensure reliability of our system. We developed unit tests, which were important in ensuring correct implementation of every function. The use of Dependency Injection helped, because it allowed us to use Mock objects to simulate various scenarios of the dependencies. As a result, we were able to identify bugs and solve them quickly.
+
+In addition to unit tests, we implemented functional tests. They verified end-to-end  functionality of our app, from user's button click to the computations in the F\# engine and to presentation of the response in the GUI. This approach was critical in validating, that integration of new features or a refactor didn't break existing functionality.
+
+The link to the test files can be found under Appendix \ref{app:links}.
 
 \chapter{Discussion, conclusion and future work}
 
-Briefly discuss  your achievements and put them in perspective with the MoSCoW analysis you specified in Table \ref{Table1}. Also discuss future developments and how you see the deliverable improving if more time could be spent. Note that this section should not be used as a medium to vent frustrations on whatever did not work out (group issues, not enough time, illness, etc.) as this should be dealt with separately - keep it professional!
+In this final chapter, we will discuss our accomplishments and reflect on the objectives that were outlined in the MoSCoW table under Appendix \ref{appendix:moscow}. We have achieved all of the 'Must' and 'Should', including solving expressions, assigning variables, plotting lines and polynomials, user-friendly GUI, AST parser, visualising parse tree, functions and multiple plots. Furthermore, our team developed several of the 'Could' features, like Differentiation, Adding Tangents, Root finding, For-Loop and Visualsing and calcualting area under the curve. 
 
+Given the project's complexity, the timeframe and the team size, our decision to focus on these features proved to be right in order to achieve the best results.
+
+In the future, we would like Matbap to include support for Rational and Complex numbers. We expect to review our architecture, particularly refactoring visualising AST into its own service. This would improve modularity and testability of our software. Additionally, we will be refactoring our Parser to be more efficient. The implementation of twin functions for our existing F\# functions to accept the AST directly, rather than a string, would save computational costs of converting the AST between F\# and C\#. Another improvement will be the implementation of simplification algorithm for ASTs produced by differentiation, simplifying expression where terms, for example, are multiplied by 0 or 1.
+
+These future improvements reflect our commitment to make Matbap into a more versatile tool. Through continuous iterations and improvements we aim to make it accessible to anyone, regardless of their knowledge of mathematics.
 
 \bibliographystyle{apalike}
 \raggedright
@@ -446,13 +545,13 @@ Briefly discuss  your achievements and put them in perspective with the MoSCoW a
 \appendix
 \chapter{Contributions}
 
-State here the \% contribution to the project of each individual member of the group and describe in brief what each member has done (if this corresponds to particular sections in the report then please specify these).
 
 \chapter{Aims and objectives}
 \section{MoSCoW table}
 \label{appendix:moscow}
 \begin{table}[h]
 \caption{MoSCoW}
+\resizebox{\textwidth}{!}{%
 \begin{center}
 \begin{tabular}{|p{1in}|p{2in}|p{2.5in}|} \hline
 Priority & Task & Comments \\ \hline \hline
@@ -465,19 +564,26 @@ Priority & Task & Comments \\ \hline \hline
 \multirow{3}{1in}{Should}
 & AST Parser & Parser constructs an Abstract Syntax Tree \\ \cline{2-3}
 & Functions & Works with built-in functions such as cos, sin, tan, exp, log  \\ \cline{2-3}
+& AST Visualisation & Visualise the parse tree  \\ \cline{2-3}
 & Multiple plots & User can plot multiple equations and clear the plotting area \\ \hline \hline
 \multirow{3}{1in}{Could}
-& For loops & \\ \cline{2-3}
-& Conditionals & If statements \\ \cline{2-3}
-& Rational numbers & \\ \cline{2-3}
-& Complex numbers & \\ \cline{2-3}
-& Rational equations plotting & Plot equations like 1/x that produce more than 1 line \\ \hline \hline
+& For loops with plot function & Entering for-loop with plot function will plot it \\ \cline{2-3}
+& Differentiation & Can differentiate polynomials \\ \cline{2-3}
+& Root finding & Can find roots of polynomials \\ \cline{2-3}
+& Integration & Can integrate polynomials \\ \cline{2-3}
+& Adding tangents & Can add tangents to plots \\ \cline{2-3}
+& Visualising and calculating the area under the curve & Can visualise area under cure and it's area \\ \cline{2-3}
+& Rational equations plotting & Plot equations that produce more than 1 line \\ \hline \hline
 \multirow{3}{1in}{Will not}
+& Rational numbers & \\ \cline{2-3}
+& Conditionals & If statements \\ \cline{2-3}
+& Complex numbers & \\ \cline{2-3}
 & Compiler & Too much work to implement a compiler in a given timeframe \\ \cline{2-3}
-& Static typing & Making our language statically typed requires a very strong typing system in place which is too hard to implement in a give timeframe \\ \hline
+& Static typing & Requires a very strong typing system in place which is too hard to implement in a given timeframe \\ \hline
 \end{tabular}
 \label{Table1}
 \end{center}
+}
 \end{table}
 
 \chapter{Testing}
@@ -524,8 +630,6 @@ sin(43)/cos(1.5) * tan(34) & Pass               & Function tokenisation         
 1/0                 & Pass               & Division by 0                                                                        \\ \hline
 \end{tabular}
 \end{table}
-
-\newpage
 
 \begin{table}[h]
 \caption{Sprint 3, plotting tests}
@@ -611,9 +715,10 @@ sin(1/x)              & Fail               & Rapidly changing function - not acc
 \end{tabular}
 \end{table}
 
-
-\caption{Sprint 8, Iteration and Function Evaluation}
+\begin{table}[h]
+\caption{Sprint 7, Iteration and Function Evaluation}
 \label{sprint8-Iteration-and-Function-unit-test}
+\resizebox{\textwidth}{!}{%
 \begin{tabular}{|l|l|l|}
 \hline
 \textbf{Expression}              & \textbf{Pass/Fail} & \textbf{Comment}                                           \\ \hline
@@ -627,6 +732,18 @@ exp(2                            &Pass                &Test error: Missing closi
 2xx                              &Pass                &Test error: Unable to parse token at end of expression: xx  \\ \hline
 for in range(/,10): 2*x          &Pass                &Test error: Error parsing xMin value in range               \\ \hline
 for in range(1,*): 2*x           &Pass                &Test error: Error parsing xMax value in range               \\ \hline
+\end{tabular}
+}
+\end{table}
+
+
+\begin{table}[h]
+\caption{Sprint 8, Integration Unit test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression}  & \textbf{Pass/Fail} & \textbf{Comment}                                                            \\ \hline
+x                    & Pass               & Testing y=x, in the interval {[}0, 2{]} with a step of 1                    \\ \hline
+x\textasciicircum{}2 & Pass               & Testing y=x\textasciicircum{}2, in the interval {[}0, 2{]} with a step of 1 \\ \hline
 \end{tabular}
 \end{table}
 
@@ -746,19 +863,34 @@ VisualiseASTTest                         & Fail               & Cannot be tested
 \section{Basic GUI}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.3 ]{Basic GUI.png}
+\includegraphics[scale=0.5]{Basic GUI.png}
 \caption{Our first basic GUI}
 \label{basicgui}
 \end{center}
 \end{figure}
 
-\section{Updated GUI with Help Window}
-\label{helpgui}
+\section{GUI With Help window}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{FirstGUIWithHelp.png}
+\caption{Help window}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{GUI with plot mode}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{FirstGUIWithPlotModepng.png}
+\caption{First GUI with plot mode}
+\label{firstGUIWithPlotMode}
+\end{center}
+\end{figure}
 
 \section{Visualise parse tree GUI}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.3 ]{VisualuseASTGUI.png}
+\includegraphics[scale=0.5]{VisualuseASTGUI.png}
 \caption{AST visualistion}
 \label{basicgui}
 \end{center}
@@ -767,22 +899,46 @@ VisualiseASTTest                         & Fail               & Cannot be tested
 \section{GUI with multiple plots, clear and plotted functions table}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.3 ]{MultiplePlotsGUI.png}
-\caption{Reworked GUI}
+\includegraphics[scale=0.5]{MultiplePlotsGUI.png}
+\caption{Multiple plots and plotted functions table}
 \label{basicgui}
 \end{center}
 \end{figure}
 
-\section{GUI with adding tangents}
+\section{Differentiation GUI}
 \begin{figure}[H]
 \begin{center}
-\includegraphics[scale=0.3 ]{AddTangentsGUI.png}
-\caption{Adding tangent GUI GUI}
+\includegraphics[scale=0.5]{DifferentiationGUI.png}
+\caption{Differentiation GUI}
 \label{basicgui}
 \end{center}
 \end{figure}
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{AddTangentsGUI.png}
+\caption{Adding tangent GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
 
+\section{GUI with Find Roots}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.5]{FindRootsGUI.png}
+\caption{Find roots GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
+
+\section{GUI with Visualising and Calculating Area under the curve, and SymbolTable}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.4]{LastSprintGUI.png}
+\caption{Visualising Area Under The Curve and SymbolTable GUI}
+\label{basicgui}
+\end{center}
+\end{figure}
 \chapter{Algorithms}
 \label{app:algorithms}
 
@@ -827,6 +983,7 @@ VisualiseASTTest                         & Fail               & Cannot be tested
 \end{algorithmic}
 \end{algorithm}
 
+
 \chapter{Links}
 \label{app:links}
 \section{Jira Board}
@@ -836,6 +993,15 @@ https://liamfarese.atlassian.net/jira/software/projects/AP/boards/2
 \section{GitHub repository}
 https://github.com/IgorSteps/matbap
 \label{github-repo}
+
+\section{UML diagrams}
+https://github.com/IgorSteps/matbap/tree/main/docs/UML\%20Diagrams
+\label{github-repo}
+
+\section{Test Files for C\#}
+https://github.com/IgorSteps/matbap/tree/main/app.Test
+\section{Test Files for F\#}
+https://github.com/IgorSteps/matbap/tree/main/engine.Test
 
 \end{document}
 
