@@ -43,7 +43,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 - [ ] Advanced GUI
   - [x] Display Plotted Equations
   - [x] Visualise Parse Tree
-  - [ ] Visualise Symbol Table
+  - [x] Visualise Symbol Table
 
 
 
