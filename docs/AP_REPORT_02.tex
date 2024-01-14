@@ -212,7 +212,7 @@ While researching advanced features, we quickly realised we are very limited to 
 
 \subsection{Parser}
 Our strategy was to incrementally build a new parser. We started with integrating simple grammar from our existing BNF. Next we have implemented operators like power, modulo and unary minus. The last addition was variable assignment. This resulted in a fully functional parser that builds an AST of the expression. One of the crucial things we have almost missed was that the requirement for power operations to be right-associative. We were able to catch that using our extensive unit tests framework.
-(Liam, please expand on the variable assignment parsing challenges and solutions.)
+Variable assignment was straightforward to implement as we had already defined the BNF and produced an implementation for the old parser and evaluator, however one improvement over the old version is the inclusion of more robust error messages, the new AST parser checks for an empty right hand side of an assignment ($x = $) and for an assignment without a variable name ($= 2/3$). Additionally, we have moved away from exceptions for error handling used in the old parser in favor for the Result monad which is more idiomatic for the functional programming paradigm.
 \begin{verbatim}
     
 The AST Node type looked like this:
@@ -280,9 +280,7 @@ After adding several new features, it became hard to manually test our apps func
 \subsection{Conclusion}
 This sprint was a significant improvement in our app's mathematical and architectural sides. The addition of differentiation and tangents improved app's functionality and provided a valuable lesson in software architecture. These features have set the course for future additions and refactors.
 
-
-\section{Sprint 7: For Loop with plot function and Root finding}
-(TODO: Lyra and Liam please write about your work)
+\section{Sprint 7:Root finding}
 Root finding was implemented based on the F\# engine's previous point plotting function. To find roots, it first generates the points within a given range. Then, it looks for pairs of adjacent points where one one's y is negative and the other's y is positive. Assuming the function is continuous between these, it uses the bisection method to iterate and find a value of x where y is 0. However, it has a few downsides:
 \begin{itemize}
     \item By assuming the function is continuous, it can find false roots. For example, in 1/x, it falsely claims a root at approximately x = 0, where it is actually undefined.
@@ -320,6 +318,79 @@ Root finding was implemented based on the F\# engine's previous point plotting f
 \ENDWHILE
 \end{algorithmic}
 \end{algorithm}
+
+\section{Sprint 8: Iteration and Built-in Function Evaluation}
+
+\subsection{Iteration}
+Iteration was a feature we ran into trouble implementing with our joint parser and evaluator, we could not properly inspect the structure of the loop or the expression to be iterated as parsing and evaluation was done simultaneously as we went . Once our engine was refactored to construct an AST, implementing a robust for-loop became a lot simpler, allowing us to assign a variable within the for-loop declaration and use this variable within the loop block to generate points to be plotted. Our initial for-loop implementation allowed for the line $2x+1$ to be plotted between $x = 1$ and $x = 10$ programmtically the following way:
+
+\begin{verbatim}
+    for x in range(1,10):
+        2*x + 1
+\end{verbatim}
+
+However, we ran into issues testing negative values defined in the range such as:
+
+\begin{verbatim}
+    for x in range(-10,10):
+        2*x + 1
+\end{verbatim}
+
+This was due to the initial BNF for our for-loop taking int values as parameters, not taking into account that $-10$ is infact a unary minus operations between $-$ and $10$ and not just an $<int>$.
+
+\begin{verbatim}
+    // ForLoop ::= "for" <varID> "in" "range(<int>,<int>)" ":" <E>
+    //           | "for" <varID> "in" "range(<int>,<int>,<float>)" ":" <E>
+\end{verbatim}
+
+
+
+We updated our BNF to become more robust, enabling expressions to be passed as parameters to range() instead of only $<int>$, allowing for negative values
+
+\begin{verbatim}
+    // ForLoop ::= "for" <varID> "in" "range(<E>,<E>)" ":" <E>
+    //           | "for" <varID> "in" "range(<E>,<E>,<float>)" ":" <E>
+\end{verbatim}
+
+\subsection{Function Evaluation}
+
+Now that plotting was possible programmatically, we wanted to re-implement function evaluation from our old combined parser and evaluator in order to plot lines such as $sin(x)$. The initial step was updating the lexer to recognise reserved keywords such as $sin$, $cos$, $tan$ using a map.
+
+\begin{verbatim}
+    let private keywords = Map.empty.Add("sin", Sin)
+                                    .Add("cos", Cos)
+                                    .Add("tan", Tan)
+                                    .Add("log", Log)
+                                    .Add("exp", Exp)
+                                    .Add("for", For)
+                                    .Add("in", In)
+                                    .Add("range", Range)
+\end{verbatim}
+
+during lexing, if one of the strings in this map was encountered, it would replace it with the corresponding token. These tokens were then used to parse and evaluate function calls using the following BNF:
+
+\begin{verbatim}
+    // <NR>   ::= <num> | (E) | <func-call>
+    // <num>  ::= <int> | <float> | <varVal>
+
+    // <func-call> ::= <func-name>(<E>)
+    // <func-name> ::= sin | cos | tan | log
+\end{verbatim}
+
+Since the parameters of the for-loop declaration were lexed and parsed, functions were also valid as parameters to a for-loop, such as:
+
+\begin{verbatim}
+    for x in range(-cos(1),cos(1), 0.01): 
+        sin(x)
+\end{verbatim}
+
+\subsection{Testing}
+Due to many processes going on under the hood of a for-loop, we ensured that error messages were comprehensive and pointed to as close to the source of the issue as possible, to verify this we included tests that covered every way a for-loop declaration could fail, as well as testing function calls within for-loops.
+
+Regarding function calls, we made sure to test that nested function calls were supported, as well as complex expressions being passed inside functions.
+
+\subsection{Conclusion}
+This sprint introduced a significant new feature: programmatic plotting through iteration, without the need of a separate GUI window. It also introduced function evaluation, empowering users with the ability to plot function waves such as sine and cosine with ease.
 
 \section{Sprint n: And whatever we complete before we submit this}
 
@@ -537,6 +608,25 @@ x\^{}2+3              & Pass               & Basic polynomial                   
 (x\^{}3)+(3*x\^{}2)-2 & Pass               & Polynomial with three roots                                                         \\ \hline
 sin(x)                & Pass               & Trigonometric function                                                              \\ \hline
 sin(1/x)              & Fail               & Rapidly changing function - not accurate enough                                     \\ \hline
+\end{tabular}
+\end{table}
+
+
+\caption{Sprint 8, Iteration and Function Evaluation}
+\label{sprint8-Iteration-and-Function-unit-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression}              & \textbf{Pass/Fail} & \textbf{Comment}                                           \\ \hline
+tan(7/2)                         &Pass                &Testing correct function parsing                            \\ \hline
+for x in range(1,5): 2*x + 1     &Pass                &Testing for loop returns a list of points                   \\ \hline
+for x in range(0,1): sin(x)      &Pass                &Testing for loop with a function call                          \\ \hline
+for x in range(-1,1): sin(x)     &Pass                &Testing for loop with negative values                       \\ \hline
+for(1,10) : sin(x)               &Pass                &Test error: Incorrect for-loop declaration                  \\ \hline
+for x in range(1,10, 4 : sin(x)  &Pass                &Test error: Incorrect for-loop declaration                  \\ \hline
+exp(2                            &Pass                &Test error: Missing closing bracket on function call        \\ \hline
+2xx                              &Pass                &Test error: Unable to parse token at end of expression: xx  \\ \hline
+for in range(/,10): 2*x          &Pass                &Test error: Error parsing xMin value in range               \\ \hline
+for in range(1,*): 2*x           &Pass                &Test error: Error parsing xMax value in range               \\ \hline
 \end{tabular}
 \end{table}
 
