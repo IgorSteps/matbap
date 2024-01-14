@@ -8,6 +8,12 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 [Discovery Board](https://ueanorwich-my.sharepoint.com/:wb:/g/personal/mkq20jzu_uea_ac_uk/Efhj28AX26RPhuUebxabd_gBn3a929Ur_9FcngwqGEKR4w?e=GFHg0L)
 
 ## App Spec
+UML Diagrams and Report can be found in the docs folder.
+
+<table>
+<tr>
+<td valign="top"> <!-- First Column -->
+  
 ### F# Engine
 - [ ] Expressions
   - [x] Interger
@@ -29,6 +35,9 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
    - [ ] Matrix and Vector library
 - [ ] Turn into a Compiler
 
+</td>
+<td valign="top"> <!-- Second Column -->
+  
 ### C# GUI
 - [x] Basic GUI
 - [x] Basic Plotting
@@ -45,7 +54,9 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
   - [x] Visualise Parse Tree
   - [x] Visualise Symbol Table
 
-
+</td>
+</tr>
+</table>
 
 ## Tests
 To run all tests, from project root:
