@@ -497,6 +497,25 @@ ln(x)                     & Pass               & Test error: unsupported functio
 \end{tabular}
 \end{table}
 
+\begin{table}[h]
+\caption{Sprint 8, Iteration and Function Evaluation}
+\label{sprint5-differentiation-unit-test}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Expression}              & \textbf{Pass/Fail} & \textbf{Comment}                                           \\ \hline
+tan(7/2)                         &Pass                &Testing correct function parsing                            \\ \hline
+for x in range(1,5): 2*x + 1     &Pass                &Testing for loop returns a list of points                   \\ \hline
+for x in range(0,1): sin(x)      &Pass                &Testing for loop with a function call                          \\ \hline
+for x in range(-1,1): sin(x)     &Pass                &Testing for loop with negative values                       \\ \hline
+for(1,10) : sin(x)               &Pass                &Test error: Incorrect for-loop declaration                  \\ \hline
+for x in range(1,10, 4 : sin(x)  &Pass                &Test error: Incorrect for-loop declaration                  \\ \hline
+exp(2                            &Pass                &Test error: Missing closing bracket on function call        \\ \hline
+2xx                              &Pass                &Test error: Unable to parse token at end of expression: xx  \\ \hline
+for in range(/,10): 2*x          &Pass                &Test error: Error parsing xMin value in range               \\ \hline
+for in range(1,*): 2*x           &Pass                &Test error: Error parsing xMax value in range               \\ \hline
+\end{tabular}
+\end{table}
+
 \newpage
 \section{C\# GUI unit  and functional testing}
 
