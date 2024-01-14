@@ -101,27 +101,26 @@
             <Button 
                 Grid.Row="7"
                 Content="Visualise parse tree"
-                FontSize="15"
+                FontSize="14"
                 FontWeight="Bold" 
                 Command="{Binding VisualiseCmd}"
                 Margin="10"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>
             
-            <Button 
-                Grid.Row="8"
-                Content="Find roots"
-                FontSize="15"
-                FontWeight="Bold" 
-                Command="{Binding FindRootsCmd}"
-                Margin="10"
-                Background="#FFC7C7C7"
-                BorderThickness="2"/>
             
-            <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="5">
-                <Label Content="Root X Min:"/>
+            <StackPanel Grid.Row="8" Orientation="Horizontal">
+                <Button 
+                    Content="Find roots"
+                    FontSize="14"
+                    FontWeight="Bold" 
+                    Command="{Binding FindRootsCmd}"
+                    Margin="10"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+                <Label  Margin="10" Content="X Min:"/>
                 <TextBox Width="50" Text="{Binding RootXMin, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                <Label Content="Root X Max:"/>
+                <Label  Margin="10" Content="X Max:"/>
                 <TextBox Width="50" Text="{Binding RootXMan, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
             </StackPanel>
 
