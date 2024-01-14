@@ -85,10 +85,10 @@ namespace app.Test.Functional
             var symTableManager = new SymbolTableManager();
             var astManager = new ASTManager();
             var validator = new ValidationService();
-
+            var symtableManger = new SymbolTableManager();
             var service = new ExpressionEvaluatingService(fSharpASTGetterWrapper, validator, symTableManager, fsharpEvalWrapper, expressionManager, astManager);
             
-            var viewModel = new ExpressionViewModel(service, CreateFindRootsService(), CreateDifferentiationService());
+            var viewModel = new ExpressionViewModel(service, CreateFindRootsService(), CreateDifferentiationService(), symtableManger);
             return viewModel;
         }
 

@@ -85,7 +85,7 @@ namespace app
                 PlotExpression(result.Expression);
                 return;
             }
-            UpdateGUISymbolTable(_symTableManager.GetSymbolTable().Table);
+            UpdateGUISymbolTable(_symTableManager.GetSymbolTable().RawSymbolTable);
             Answer = result.Result;
         }
 

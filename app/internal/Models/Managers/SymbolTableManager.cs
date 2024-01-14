@@ -18,7 +18,7 @@ namespace app
 
         public void ClearSymbolTable()
         {
-            Table.Table.Clear();
+            Table.RawSymbolTable.Clear();
         }
 
         public void UpdateSymbolTable(Dictionary<string, Engine.Types.NumType> newTable)

@@ -42,7 +42,7 @@ namespace app.Test.Unit
             // ------
             // ASSERT
             // ------
-            Assert.That(testSymTable.Table, Is.EqualTo(rawTable), "SymbolTables must be the same");
+            Assert.That(testSymTable.RawSymbolTable, Is.EqualTo(rawTable), "SymbolTables must be the same");
         }
     }
 }
