@@ -10,8 +10,8 @@
             // --------
             SymbolTableManager manager = new SymbolTableManager();
             SymbolTable testSymTable = new SymbolTable();
-            testSymTable.Table.Add("test key", Engine.Types.NumType.NewInt(1));
-            manager.UpdateSymbolTable(testSymTable.Table);
+            testSymTable.RawSymbolTable.Add("test key", Engine.Types.NumType.NewInt(1));
+            manager.UpdateSymbolTable(testSymTable.RawSymbolTable);
 
             // ----
             // ACT
@@ -21,7 +21,7 @@
             // ------
             // ASSERT
             // ------
-            Assert.That(actualSymTable.Table, Is.EqualTo(testSymTable.Table), "SymbolTables don't match");
+            Assert.That(actualSymTable.RawSymbolTable, Is.EqualTo(testSymTable.RawSymbolTable), "SymbolTables don't match");
         }
 
         [Test]
@@ -33,18 +33,41 @@
             SymbolTableManager manager = new SymbolTableManager();
             
             SymbolTable testSymTable = new SymbolTable();
-            testSymTable.Table.Add("test key", Engine.Types.NumType.NewInt(1));
+            testSymTable.RawSymbolTable.Add("test key", Engine.Types.NumType.NewInt(1));
 
             // ----
             // ACT
             // ----
-            manager.UpdateSymbolTable(testSymTable.Table);
+            manager.UpdateSymbolTable(testSymTable.RawSymbolTable);
             SymbolTable afterUpdateSymTable = manager.GetSymbolTable();
 
             // ------
             // ASSERT
             // ------
-            Assert.That(afterUpdateSymTable.Table, Is.EqualTo(testSymTable.Table), "SymbolTables don't match");
+            Assert.That(afterUpdateSymTable.RawSymbolTable, Is.EqualTo(testSymTable.RawSymbolTable), "SymbolTables don't match");
+        }
+
+        [Test]
+        public void Test_SymbolTableManager_ClearSymbolTable()
+        {
+            // --------
+            // ASSEMBLE
+            // --------
+            SymbolTableManager manager = new SymbolTableManager();
+
+            SymbolTable testSymTable = new SymbolTable();
+            testSymTable.RawSymbolTable.Add("test key", Engine.Types.NumType.NewInt(1));
+            manager.UpdateSymbolTable(testSymTable.RawSymbolTable);
+
+            // ----
+            // ACT
+            // ----
+            manager.ClearSymbolTable();
+
+            // ------
+            // ASSERT
+            // ------
+            Assert.That(manager.GetSymbolTable().RawSymbolTable, Is.Empty, "SymbolTable must be empty");
         }
     }
 }

@@ -6,7 +6,7 @@
         xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:local="clr-namespace:app"
         mc:Ignorable="d"
-        Title="Matbap" Height="600" Width="1200">
+        Title="Matbap" Height="700" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
@@ -32,6 +32,8 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
 
@@ -79,7 +81,7 @@
                     Content="Evaluate expression"
                     Command="{Binding EvaluateCmd}"
                     Margin="10"
-                    FontSize="20"
+                    FontSize="14"
                     FontWeight="Bold"
                     Background="#FFC7C7C7"
                     BorderThickness="2"/>
@@ -92,37 +94,61 @@
                 Content="Differentiate expression"
                 Command="{Binding DifferentiateCmd}"
                 Margin="10"
-                FontSize="20"
+                FontSize="14"
                 FontWeight="Bold"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>   
             <Button 
                 Grid.Row="7"
                 Content="Visualise parse tree"
-                FontSize="20"
+                FontSize="14"
                 FontWeight="Bold" 
                 Command="{Binding VisualiseCmd}"
                 Margin="10"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>
             
-            <Button 
+            
+            <StackPanel Grid.Row="8" Orientation="Horizontal">
+                <Button 
+                    Content="Find roots"
+                    FontSize="14"
+                    FontWeight="Bold" 
+                    Command="{Binding FindRootsCmd}"
+                    Margin="10"
+                    Background="#FFC7C7C7"
+                    BorderThickness="2"/>
+                <Label  Margin="10" Content="X Min:"/>
+                <TextBox Width="50" Text="{Binding RootXMin, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+                <Label  Margin="10" Content="X Max:"/>
+                <TextBox Width="50" Text="{Binding RootXMan, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
+            </StackPanel>
+
+            <StackPanel Grid.Row="10" Orientation="Horizontal" Margin="5">
+            <TextBlock  Text="Symbol Table:" Margin="10" FontSize="16" FontWeight="Bold"/>
+            <Button
                 Grid.Row="8"
-                Content="Find roots"
-                FontSize="20"
+                Content="Clear"
+                FontSize="15"
                 FontWeight="Bold" 
-                Command="{Binding FindRootsCmd}"
+                Command="{Binding ClearSymTableCmd}"
                 Margin="10"
                 Background="#FFC7C7C7"
                 BorderThickness="2"/>
-            
-            <StackPanel Grid.Row="9" Orientation="Horizontal" Margin="5">
-                <Label Content="Root X Min:"/>
-                <TextBox Width="50" Text="{Binding RootXMin, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
-                <Label Content="Root X Max:"/>
-                <TextBox Width="50" Text="{Binding RootXMan, UpdateSourceTrigger=PropertyChanged}" Margin="5"/>
             </StackPanel>
-            
+
+            <ListView Grid.Row="11" ItemsSource="{Binding GUISymbolTable}"  SelectedItem="{Binding SelectedPlot}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Key}" Margin="5" />
+                            <TextBlock Text="=" Margin="5" />
+                            <TextBlock Text="{Binding Value}" Margin="5" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
         </Grid>
 
         <!-- Plotting Column -->

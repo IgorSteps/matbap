@@ -33,7 +33,7 @@ namespace app
 
         public FSharpEvaluationResult Evaluate(string expression, SymbolTable symbolTable )
         {
-            var result = _fsharpEvaluator.Eval(expression, symbolTable.Table);
+            var result = _fsharpEvaluator.Eval(expression, symbolTable.RawSymbolTable);
             if (result.IsError)
             {
                 return new FSharpEvaluationResult(null, null, null, new Error(result.ErrorValue));

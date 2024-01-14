@@ -40,10 +40,10 @@ namespace app.Test.Unit
                 new double [] {3.0, 4.0},
             };
 
-            var tuple = Tuple.Create("2", fsharpPointsList, sTable.Table, sampleAST);
+            var tuple = Tuple.Create("2", fsharpPointsList, sTable.RawSymbolTable, sampleAST);
             var successResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewOk(tuple);
 
-            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(successResult);
+            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.RawSymbolTable)).Returns(successResult);
 
             // -----
             // ACT
@@ -71,7 +71,7 @@ namespace app.Test.Unit
             string error = "Boom";
             var errorResult = FSharpResult<Tuple<string, FSharpPoints, Dictionary<string, Types.NumType>, FSharpASTNode>, string>.NewError(error);
 
-            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.Table)).Returns(errorResult);
+            _mockEngineEvaluator.Setup(e => e.Eval(expression, sTable.RawSymbolTable)).Returns(errorResult);
 
             // -----
             // ACT
