@@ -8,7 +8,7 @@ Maths interpreter software with extensions aiming towards a Turing complete lang
 [Discovery Board](https://ueanorwich-my.sharepoint.com/:wb:/g/personal/mkq20jzu_uea_ac_uk/Efhj28AX26RPhuUebxabd_gBn3a929Ur_9FcngwqGEKR4w?e=GFHg0L)
 
 ## App Spec
-UML Diagrams and Report can be found in the docs folder.
+UML Diagrams and Report can be found under the [docs](https://github.com/IgorSteps/matbap/tree/main/docs/UML%20Diagrams) folder.
 
 <table>
 <tr>
